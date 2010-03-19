@@ -1,0 +1,29 @@
+THINGS THAT NEED TO BE DONE BEFORE RELEASE
+- Deal with lerkatna.pl (including the to-do items at the end of the file)
+- Rewrite sisku.pl to use the new Vlasisku functions
+- Lojban::Vlatid:
+ - Come up with a better name than "Vlatid" (Vlastetcidu? Vlapoi?
+   Vlasisku::Tcidu? Vlasisku::Porsi?)
+ - Give the Vlatid modules $VERSION numbers
+- Lojban::Vlatai:
+ - Handle passing of Valsi objects
+ - Mention in the documentation that jvozba() may produce {lujvo cmene} that
+   contain "{la}" or the like.
+ - Make vlalei() into a wrapper around the xu* functions
+ - Test xufuhivla() to make sure it works correctly!!!
+ - Rename the following regexes:
+  - $CxC - $_CC? $innerCC? $xCC?
+  - $CyC - $CxC? $badCC?
+- Update all of the documentation for the modified files (see CHANGES.txt)
+- Write documentation for Lojban::Vlatid and Lojban::Vlatid::Sampu
+- Update the README
+ - Document the changes in this version
+ - Update the list of files & installation instructions
+- Check the acceptability/popularity of the term "{lujma'o}"
+- Rewrite vlasisku.cgi and jvozba.cgi to support the new code
+- Consider deleting Lojban::Vlatid::Sampu in favor of Lojban::Vlatid
+- Finish/deal with Vlasisku.pm
+ - Consider changing all of the functions into methods of Lojban::Vlatid
+   (possibly renamed to Lojban::Vlasisku).  Calling these functions as class
+   methods should cause them to operate on the global Vlatid (which is
+   publicly accessible) instead.

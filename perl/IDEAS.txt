@@ -1,0 +1,65 @@
+General:
+ - Translate all of the documentation into Lojban
+ - Improve the example code at the start of the modules' POD
+ - Make the modules available on CPAN?
+ - Write a bunch of test programs for every aspect of the modules
+  - Include tests for reading from the old-format word lists (old lists not
+    included)
+
+sisku.pl:
+ - Idea: Instead of taking multiple operands on the command line which are
+   searched for separately, make the command-line syntax more like that of
+   `test` and allow specification of multiple conditions which must be matched
+   in a given combination.  Or not.
+ - Add a way to break {lujvo} apart and give the entries for the parts
+ - Add options for searching the notes & hints of {valsi}
+ - Add an option for searching by {selma'o}
+
+jvozba.pl:
+ - Implement {lujvo} formation with "{zei}" for otherwise invalid words (i.e.,
+   {cmavo} without {rafsi}, {cmene}, & {fu'ivla})
+ - Handle {lujvo} given on the command line
+ - Deal with the possibility of {cmene} containing {la}, {lai}, or {doi} being
+   generated (at the very least, mention it in the documentation).
+
+Lojban/Valsi.pm:
+ - Improve merging of differing {selma'o} attributes in xrejmina()
+ - Eventually, implement mutator methods
+ - Add a (safe) way for the user to get a Lojban::Valsi as a hash
+ - Add a way for cusku() to force calculation of unknown attributes at the
+   user's request?
+ - Deal with the possibility of cusku() printing out a {lujvo}-like with undef
+   {veljvo} elements
+ - Add a method for setting the {valsi} to its normalized form?
+ - Cache the normalized form like the other calculated attributes?
+ - Add a method for converting Valsi objects into entries for the new
+   tab-separated vlaste format
+ - Add a class method that takes an entry from either list format and
+   automatically passes it to the appropriate constructor
+
+Lojban/Vlasisku.pm:
+ - Write a function for getting words by both keyword and definition
+ - Lojbanize all of the function names (rewrite getValsiByRafsi() to contain
+   the term 'selraf'?)
+ - Document the fact that failure to open the word list causes the functions to
+   croak.
+ - Add a getValsiByKlesi() function?
+ - Add a getValsiByAny() function that checks all fields for matches?
+
+Lojban/Vlatai.pm:
+ - Correctness:
+  - Rewrite xulujvo() so that it rejects {lujvo} with superfluous or missing
+    hyphens
+  - Make the xu{brivla}() functions test for the correct location of emphasis
+  - Make &xufuhivla (and &xucmavo/&xulujmaho?) able to handle commas correctly
+  - Bring everything in line with the "BPFK Section: PEG Morphology Algorithm"
+    page of the tiki
+ - Add a $VV regex?
+ - Handle all currently undefined situations
+ - Further optimize the C*C regexes
+ - Improve &fadgau
+  - Make it remove more superfluous commas
+  - Make it convert all letters to lowercase, unless the word is a {cmene} with
+    irregular emphasis, in which case only the vowels from the emphasized
+    syllable should be uppercase
+  - Deal with more types of accents?

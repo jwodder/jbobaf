@@ -1,0 +1,58 @@
+CHANGES IN VERSION 2.0
+- Lojban::Valsi now supports {cmene}, {lujvo}, & {fu'ivla}.  The names of these
+  types may be returned by Lojban::Valsi::klesi(), and there are xuXXX()
+  methods for each of them. *
+- Renamed Lojban::Vlatai::terjvo() to "veljvo()"
+- Lojban::Vlatai: Renamed $c, $v, and $lidne to $C, $V, and $CC, respectively. *
+- Made the Lojban::Vlatai regexes & functions case-insensitive. *
+- Added the following functions:
+ - Lojban::Vlatai:
+  - xugismu *
+  - xucmavo *
+  - xucmene *
+  - xulujvo *
+  - xufuhivla *
+  - jvozba (along with the constants JVOZBA_BRIVLA and JVOZBA_CMENE) *
+  - xulujmaho *
+  - fadgau *
+ - Lojban::Valsi:
+  - cnino *
+  - veljvo *
+  - fukpi *
+  - cmuselmaho *
+  - catniho *
+  - klesi *
+  - krarafsi *
+  - termre *
+  - xuvladra *
+  - fadni *
+  - xubrivla *
+  - xusuzmaho *
+- Added the $Lojban::Vlatai::dotside configuration variable (not exported) *
+- Added the :lujvo and :klesi export tags to Lojban::Vlatai *
+- Lojban::Vlatai::jvomre can now be passed the {lujvo}'s {rafsi} after the
+  {lujvo} itself so that jvomre doesn't have to split it. *
+- Added the following regexes to Lojban::Vlatai:
+ - $Vy *
+ - $CyC *
+ - $C_C *
+ - $CxC *
+- Gave sisku.pl & jvozba.pl --help messages
+- Added @Lojban::Vlatai::klesi, a list of all recognized {vlalei} *
+- Gave compound {cmavo} their own {vlalei}, "lujma'o"
+- @Lojban::Valsi::{qw< voiced unvoiced nodup verboten >} are now gone.
+- &Lojban::Vlatai::vlalei now returns undef for unrecognized word forms *
+- Lojban::Vlatai's :fancu export tag is now gone, as it was the same as
+  :DEFAULT
+- Got rid of $Lojban::Vlasisku::dosyste
+- Lojban::Valsi: The isXXX() methods are now named isxxx() *
+- Lojban::Valsi::printEntry() is now named "cusku()" and treats calculated
+  attributes ... specially *
+- getValsi() matches against a word's normalized form, not against the {valsi}
+  itself. *
+- Added Lojban::Vlatid *
+- The Lojban::Vlasisku functions now take an optional first argument giving the
+  Lojban::Vlatid object to read {valsi} from; if it is omitted, a global Vlatid
+  object is used instead. *
+
+* These need to be documented in the POD prior to release.

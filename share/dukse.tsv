@@ -1,0 +1,67 @@
+biki'o	PA*		8,000		number/quantity: 8,000 expressed with comma
+bimei	MOI*		is a octet		quantifier selbri: convert 8 to cardinal selbri; x1 is a set with the octet of members x2
+bimoi	MOI*		is eighth among		quantified selbri: convert 8 to ordinal selbri; x1 is eighth among x2 ordered by rule x3
+bino	PA*		80		number/quantity: 80 [eighty]
+binono	PA*		800		number/quantity: 800 [eight hundred]
+binonovo	PA*		8004		number/quantity: 8004, without comma
+ciki'o	PA*		3,000		number/quantity: 3,000 expressed with comma
+cimei	MOI*		is a trio		quantifier selbri: convert 3 to cardinal selbri; x1 is a set with the trio of members x2
+cimoi	MOI*		is third among		quantified selbri: convert 3 to ordinal selbri; x1 is third among x2 ordered by rule x3
+cino	PA*		30		number/quantity: 30 [thirty]
+cinono	PA*		300		number/quantity: 300 [three hundred]
+ciroi	ROI*		thrice		tense interval modifier: thrice; objectively quantified tense; defaults as time tense
+muki'o	PA*		5,000		number/quantity: 5,000 expressed with comma
+mumei	MOI*		is a quintet		quantifier selbri: convert 5 to cardinal selbri; x1 is a set with the quintet of members x2
+mumoi	MOI*		is fifth among		quantified selbri: convert 5 to ordinal selbri; x1 is fifth among x2 ordered by rule x3
+muno	PA*		50		number/quantity: 50 [fifty]
+munono	PA*		500		number/quantity: 500 [five hundred]
+pabi	PA*		18		number/quantity: 18 [eighteen]
+paci	PA*		13		number/quantity: 13 [thirteen]
+paki'o	PA*		1,000		number/quantity: 1,000 expressed with comma
+pamai	MAI*		firstly		discursive: first utterance ordinal
+pamei	MOI*		is singular		quantified selbri: convert 1 to cardinal selbri; x1 is a set with single/sole/only member x2
+pamo'o	MAI*		section 1		discursive utterance ordinal: first section/chapter ordinal
+pamoi	MOI*		is first among		quantified selbri: convert 1 to ordinal selbri; x1 is first among x2 ordered by rule x3
+pamu	PA*		15		number/quantity: 15 [fifteen]
+pano	PA*		10		number/quantity: 10 [ten]
+panomei	MOI*		is a decade		quantifier selbri: convert 10 to cardinal selbri; x1 is a set with the decade of members x2
+panomoi	MOI*		is tenth among		quantified selbri: convert 10 to ordinal selbri; x1 is tenth among x2 ordered by rule x3
+panono	PA*		100		number/quantity: 100 [one hundred]
+panonomei	MOI*		is a century		quantifier selbri: convert 100 to cardinal selbri; x1 is a set with the century of members x2
+papa	PA*		11		number/quantity: 11 [eleven]
+pare	PA*		12		number/quantity: 12 [twelve]
+paremei	MOI*		is a dozen		quantified selbri: convert 12 to cardinal selbri; x1 is a set with a dozen members x2
+paroi	ROI*		once		tense interval modifier: once; objectively quantified tense; defaults as time tense
+paso	PA*		19		number/quantity: 19 [nineteen]
+pavo	PA*		14		number/quantity: 14 [fourteen]
+paxa	PA*		16		number/quantity: 16 [sixteen]
+paze	PA*		17		number/quantity: 17 [seventeen]
+pimucu'o	MOI*		has even odds		quantified selbri: convert .5 to probability selbri; event x1 has a 50/50 chance under cond. x2
+piresi'e	MOI*		is a fifth portion		quantified selbri: convert .2 = 1/5 to portion selbri; x1 is 1/5 of mass/totality x2
+reki'o	PA*		2,000		number/quantity: 2,000 expressed with comma
+remai	MAI*		secondly		discursive: second utterance ordinal
+remei	MOI*		is a pair		quantified selbri: convert 2 to cardinal selbri; x1 is a set with the pair of members x2
+remoi	MOI*		is second among		quantified selbri: convert 2 to ordinal selbri; x1 is second among x2 ordered by rule x3
+reno	PA*		20		number/quantity: 20 [twenty]
+renomei	MOI*		is a score		quantifier selbri: convert 20 to cardinal selbri; x1 is a set with the score of members x2
+renono	PA*		200		number/quantity: 200 [two hundred]
+reroi	ROI*		twice		tense interval modifier; objectively quantified tense; defaults as time tense
+soki'o	PA*		9,000		number/quantity: 9,000 expressed with comma
+somoi	MOI*		is ninth among		quantified selbri: convert 9 to ordinal selbri; x1 is ninth among x2 ordered by rule x3
+sono	PA*		90		number/quantity: 90 [ninety]
+sonono	PA*		900		number/quantity: 900 [nine hundred]
+sosoce'i	PA*		99 percent		number/quantity: 99% (number)
+sozepimu	PA*		97.5		number/quantity:  97.5
+voki'o	PA*		4,000		number/quantity: 4,000 expressed with comma
+vomoi	MOI*		is fourth among		quantified selbri: convert 4 to ordinal selbri; x1 is fourth among x2 ordered by rule x3
+vono	PA*		40		number/quantity: 40 [forty]
+vonono	PA*		400		number/quantity: 400 [four hundred]
+xaki'o	PA*		6,000		number/quantity: 6,000 expressed with comma
+xamoi	MOI*		is sixth among		quantified selbri: convert 6 to ordinal selbri; x1 is sixth among x2 ordered by rule x3
+xano	PA*		60		number/quantity: 60 [sixty]
+xanono	PA*		600		number/quantity: 600 [six hundred]
+xavoki'o	PA*		64,000		number/quantity: 64,000 expressed with comma
+zeki'o	PA*		7,000		number/quantity: 7,000 expressed with comma
+zemoi	MOI*		is seventh among		quantified selbri: convert 7 to ordinal selbri; x1 is seventh among x2 ordered by rule x3
+zeno	PA*		70		number/quantity: 70 [seventy]
+zenono	PA*		700		number/quantity: 700 [seven hundred]

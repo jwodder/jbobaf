@@ -1,0 +1,11 @@
+lojban.peg and morph_header.peg are from [1] (specifically, the "by-hand
+modified PEG grammar" and "morphology header file" links, respectively), while
+morpho.peg is copied & pasted from [2].  Apparently, when camxes is built, the
+three files are all processed & merged together into a single Rats! file.
+
+peg.txt is from the camxes source directory at [3]; I'm not entirely clear on
+how it relates to everything else, but it looks useful.
+
+[1] <http://www.digitalkingdom.org/~rlpowell/hobbies/lojban/grammar/>
+[2] <http://www.lojban.org/tiki/BPFK+Section%3A+PEG+Morphology+Algorithm>
+[3] <http://www.digitalkingdom.org/~rlpowell/hobbies/lojban/grammar/rats/>

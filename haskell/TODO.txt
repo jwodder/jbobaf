@@ -1,0 +1,20 @@
+- Add & implement Tamcux options for:
+ - LAhOI
+ - allowing commas between consonants
+ - allowing commas between a consonant and a vowel
+ - prohibiting commas between vowels
+ - allowing commas in {cmavo}
+ - prohibiting commas in {fu'ivla} and {cmevla}
+ - restricting consonant clusters in {fu'ivla} and {cmevla} (separate options)
+   to have all consonant pairs after the first be initial
+ - prohibiting rising diphthongs after a consonant
+ - prohibiting rising diphthongs in {fu'ivla}?
+ - prohibiting {cmevla} that begin with non-initial consonant pairs
+ - allowing {rafsi} of the form C[iu]V?
+ - allowing {rafsi} containing Y's?
+ - allowing {rafsi} containing syllables with empty onsets? (e.g., "ka,e")
+ - replacing the 5-letter rule with a "{ma'osmi} rule"
+- Make sure that everything complies with (or at least is compatible with) the
+  "BPFK Section: Formal Morphology" and "BPFK Section: PEG Morphology
+  Algorithm" pages on the tiki!
+- Add Haddock documentation for all of the exported functions

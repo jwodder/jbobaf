@@ -1,0 +1,35 @@
+VALSI.TSV FILE FORMAT
+
+Beginning with version 2.0, the word list distributed with jboval uses a single
+tab-separated format that accommodates all types of words ({gismu}, {cmavo},
+{cmene}, etc.) and allows definitions of unlimited length, among other
+benefits.  Each {valsi} is given by a single line containing one or more
+tab-separated fields, which, in order, are:
+
+ - {valsi} - the word itself (with no leading or trailing periods)
+ - {selma'o}
+ - {rafsi} - list of short {rafsi}, space-separated
+ - {ralvla} - keyword or gloss
+ - {djuvla} - hint
+ - {selvla} - definition
+ - {notci} - notes
+ - {klesi} - word type ("gismu", "cmavo" (non-compound), "lujma'o" (compound
+   {cmavo}), "lujvo", "fu'ivla", or "cmene"; all other values are ignored)
+
+ [The following fields are only relevant to {lujvo} and {lujvo cmene}; for all
+  other word types, they should be either left blank or omitted (assuming there
+  are no other fields after them).]
+
+ - {krarafsi} - the list of {rafsi} (in order, space-separated, and without
+   hyphens) from which the {valsi} was formed
+ - {veljvo} - the {tanru} from which the {valsi} was derived
+ - {termre} - the {lujvo} score of the {valsi}
+
+Unused, inapplicable, or simply undesirable fields are left empty (but must
+still be separated from adjacent fields by a tab).  A series of empty fields at
+the end of the line may be omitted.  Any extra fields are ignored but may be
+used for new fields in the future.
+
+When converting entries from the {lujvo} lists into this format, it is
+recommended that the place structure descriptions be stored in the {selvla}
+field, though the {notci} field is also acceptable.
