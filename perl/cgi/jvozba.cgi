@@ -1,4 +1,4 @@
-#!/usr/pkg/bin/perl -wT -I/sys/sdf/share/perl
+#!/usr/bin/perl -wT
 # This program was written by John T. "kamymecraijun." Wodder II
 # <minimiscience+jvozba@gmail.com>.  Feel free to do whatever the {bais.} you
 # want with it.
@@ -9,20 +9,7 @@ use Lojban::Vlatai qw< :fancu :lerpoi >;
 use Lojban::Vlasisku qw< :DEFAULT :stodi >;
 use Lojban::Valsi;
 
-if (url_param('sehicta')) {
- print header('text/plain');
- open my $sevzi, '<', 'jvozba.cgi' or die "Could not read self: $!\n";
- print while <$sevzi>;
- exit 0;
-}
-
-print header, start_html(-title => 'Jvozba', -xbase =>
- 'http://jwodder.freeshell.org/lojban/', -style => {-src => '../site.css',
- -code => <<EOCSS});
-td.kaicme {text-align: right; font-weight: bold; font-family: monospace;
- font-size: 10px; }
-EOCSS
-
+print header, start_html(-title => 'Jvozba', -style => {-src => 'jbobaf.css'});
 print start_table({-align => 'center', -border => 0, -class => 'main'});
 print start_Tr, start_td, h2('Jvozba');
 
@@ -108,12 +95,9 @@ if (url_param('lujvo')) {
  }
 }
 
-print br, p({-class => 'link'}, i('selzba fi la', a({-href =>
- '/downloads/jboval-src.tgz'}, 'jboval.'), 'poi bakfu'));
-
-print p({-class => 'link'}, a({-href => url . '?sehicta=1'}, 'Source'), '|',
- a({-href => 'vlasisku.cgi'}, 'Vlasisku'), '|', a({-href => 'ralju.html'},
- 'ralju'));
+print p({-class => 'link'}, a({-href => 'http://github.com/jwodder/jbobaf'},
+ 'Jbobaf'), '|', a({-href => 'vlasisku.cgi'}, 'Vlasisku'), '|',
+ a({-href => 'ralju.html'}, 'ralju'));
 
 print end_table, end_Tr, end_td, end_html;
 

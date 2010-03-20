@@ -1,0 +1,45 @@
+body {
+ font-family: helvetica, sans-serif;
+ background-color: #ffffff;
+ color: #000000;
+}
+
+table {font-size: 15px; border-collapse: collapse; }
+table.main {width: 500pt; margin-left: auto; margin-right: auto; }
+
+th {text-align: justify; }
+td {vertical-align: top; }
+td.kaicme {text-align: right; font-weight: bold; font-family: monospace;
+ font-size: 10px; }
+
+h1 {font-size: 32px; text-align: center; }
+h2 {font-size: 24px; text-align: center; }
+h3 {font-size: 18px; text-align: center; }
+h4 {font-size: 16px; text-align: center; }
+h5 {font-size: 13px; text-align: center; }
+h6 {font-size: 10px; text-align: center; }
+
+h2 tt {font-size: 80%; }
+h4 tt {font-size: 80%; }
+
+hr {width: 450px; height: 2px; text-align: center; }
+ul {list-style-type: disc; }
+li {text-align: justify; margin-bottom: 13px; }
+ul li {margin-bottom: 5px; }
+
+p {text-align: justify; }
+p.link {text-align: center; }
+p.text {text-indent: .5in; margin: 0px; }
+
+tt {font-size: 10px; font-family: monaco, courier, monospace; }
+pre {font-size: 10px; font-family: monaco, courier, monospace; }
+
+a:link {color: #0000ff; text-decoration: underline; }
+a:hover {color: #ffff00; text-decoration: underline; }
+a:active {color: #ffff00; text-decoration: none; }
+a:visited {color: #ff0000; text-decoration: underline; }
+
+@media screen, projection, tv {
+ body {background-color: #dddddd; color: #000000; }
+ a:active {color: #ffffff; text-decoration: none; }
+}

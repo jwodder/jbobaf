@@ -1,4 +1,4 @@
-#!/usr/pkg/bin/perl -wT -I/sys/sdf/share/perl
+#!/usr/bin/perl -wT
 # This program was written by John T. "kamymecraijun." Wodder II
 # <minimiscience+vlasisku@gmail.com>.  Feel free to do whatever the {bais.} you
 # want with it.
@@ -8,21 +8,9 @@ use CGI::Carp 'fatalsToBrowser';
 use Lojban::Valsi;
 use Lojban::Vlasisku qw< :DEFAULT :stodi >;
 
-if (url_param('sehicta')) {
- print header('text/plain');
- open my $sevzi, '<', 'vlasisku.cgi' or die "Could not read self: $!\n";
- print while <$sevzi>;
- exit 0;
-}
-
-print header, start_html(-title => 'Vlasisku', -xbase =>
- 'http://jwodder.freeshell.org/lojban/', -style => {-src => '../site.css',
- -code => <<EOCSS}, -script => {-src => 'sisydju.js', -language =>
-td.kaicme {text-align: right; font-weight: bold; font-family: monospace;
- font-size: 10px; }
-EOCSS
- 'JavaScript'}, -onLoad => 'initFormAddition()');
-
+print header, start_html(-title => 'Vlasisku', -style => {-src => 'jbobaf.css'},
+ -script => {-src => 'sisydju.js', -language => 'JavaScript'},
+ -onLoad => 'initFormAddition()');
 print start_table({-align => 'center', -border => 0, -class => 'main'});
 print start_Tr, start_td, h2('Vlasisku');
 
@@ -144,21 +132,11 @@ and the boolean search operators are left, er, top-associative (I'm working on
 a way to implement grouping).  Any lines with empty fields (or, if you can
 manage it, options that shouldn't exist) are ignored.  Lastly, to search, click
 "<tt>sisku</tt>"; "<tt>cunso</tt>" will give you a random word.</p>
-
-<p class="text">The Perl source for this page is freely redistributable and can
-be found <a href="vlasisku.cgi?sehicta=1">here</a>, and the JavaScript portion
-is located <a href="sisydju.js">here</a>; feel free to do whatever the
-<tt>bais.</tt> you want with them.  The code uses the <tt>Lojban::Vlasisku</tt>
-and <tt>Lojban::Valsi</tt> Perl modules that I wrote as part of <a
-href="/downloads/jboval-src.tgz"><tt>jboval</tt></a>, a small set of Lojbanic
-Perl modules &amp; scripts.</p>
-
-<p class="text">You may also be interested in <a href="jvozba.cgi">Jvozba</a>,
-which automatically makes <tt>tanru</tt> into <tt>lujvo</tt> &amp; <i>vice
-versa</i>.</p>
-
-<p class="link"><a href="ralju.html">ralju</a></p>
 EOT
+
+print p({-class => 'link'}, a({-href => 'http://github.com/jwodder/jbobaf'},
+ 'Jbobaf'), '|', a({-href => 'jvozba.cgi'}, 'Jvozba'), '|',
+ a({-href => 'ralju.html'}, 'ralju'));
 
 print end_table, end_Tr, end_td, end_html;
 
