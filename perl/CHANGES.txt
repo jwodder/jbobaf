@@ -1,4 +1,4 @@
-CHANGES IN VERSION 2.0
+CHANGES TO THE PERL CODE SINCE JBOVAL 1.1
 - Lojban::Valsi now supports {cmene}, {lujvo}, & {fu'ivla}.  The names of these
   types may be returned by Lojban::Valsi::klesi(), and there are xuXXX()
   methods for each of them. *

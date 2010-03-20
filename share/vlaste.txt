@@ -1,10 +1,10 @@
 VALSI.TSV FILE FORMAT
 
-Beginning with version 2.0, the word list distributed with jboval uses a single
-tab-separated format that accommodates all types of words ({gismu}, {cmavo},
-{cmene}, etc.) and allows definitions of unlimited length, among other
-benefits.  Each {valsi} is given by a single line containing one or more
-tab-separated fields, which, in order, are:
+In place of the clunky formats of the official word lists, Jbobaf's valsi.tsv
+file uses a single tab-separated format that accommodates all types of words
+({gismu}, {cmavo}, {cmene}, etc.) and allows definitions of unlimited length,
+among other benefits.  Each {valsi} is given by a single line containing one or
+more tab-separated fields, which, in order, are:
 
  - {valsi} - the word itself (with no leading or trailing periods)
  - {selma'o}

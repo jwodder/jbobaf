@@ -49,7 +49,7 @@ General notes:
    selzva() are zero-based.
  - Values of 'type':
   - 0 - original word list format from the LLG
-  - 1 - tab-separated format introduced in jboval 2.0
+  - 1 - tab-separated format now used primarily by Jbobaf
  - The method names are all Lojbanic:
   - new - {cnino}
   - rewind - {rapcfa}
