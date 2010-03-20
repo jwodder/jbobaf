@@ -254,7 +254,7 @@ sub fadgau($) {
  $valsi =~ s/,*[\s.][\s.,]*/ /g;
  $valsi =~ tr/,//s;
  # Delete commas not between vowels; is this correct?
- # $valsi =~ s/(?<!$Vy),|,(?!$Vy)//g;
+ $valsi =~ s/(?<!$Vy),|,(?!$Vy)//g;
  return $valsi !~ tr/A-GI-PR-VX-Za-gi-pr-vx-z',. //c && $valsi !~ $CyC
   && $valsi !~ /(?<!$Vy)'(?!$Vy)/ && $valsi;
 }

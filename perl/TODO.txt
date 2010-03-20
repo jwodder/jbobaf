@@ -1,15 +1,11 @@
 THINGS THAT NEED TO BE DONE BEFORE RELEASE
-- Deal with lerkatna.pl (including the to-do items at the end of the file)
-- Finish/deal with Vlasisku2.pm
+- Finish lerfendi.pl (including the to-do items at the end of the file)
+- Finish Vlasisku.pm
  - Consider changing all of the functions into methods of Lojban::Vlatid
    (possibly renamed to Lojban::Vlasisku).  Calling these functions as class
    methods should cause them to operate on the global Vlatid (which is
    publicly accessible) instead.
  - Rewrite sisku.pl to use the new Vlasisku functions
-- Lojban::Vlatid:
- - Come up with a better name than "Vlatid" (Vlastetcidu? Vlapoi?
-   Vlasisku::Tcidu? Vlasisku::Porsi?)
- - Give the Vlatid modules $VERSION numbers
 - Lojban::Vlatai:
  - Handle passing of Valsi objects
  - Mention in the documentation that jvozba() may produce {lujvo cmene} that
@@ -22,4 +18,6 @@ THINGS THAT NEED TO BE DONE BEFORE RELEASE
 - Update all of the documentation for the modified files (see CHANGES.txt)
 - Write documentation for Lojban::Vlatid
 - Check the acceptability/popularity of the term "{lujma'o}"
-- Import vlasisku.cgi & jvozba.cgi and rewrite them to support the new code
+- Rewrite vlasisku.cgi & jvozba.cgi to support the new code
+- Come up with a better name for Lojban::Vlatid (Vlastetcidu? Vlapoi?
+  Vlasisku::Tcidu? Vlasisku::Porsi?)

@@ -54,5 +54,6 @@ CHANGES TO THE PERL CODE SINCE JBOVAL 1.1
 - The Lojban::Vlasisku functions now take an optional first argument giving the
   Lojban::Vlatid object to read {valsi} from; if it is omitted, a global Vlatid
   object is used instead. *
+- Lojban::Vlasisku has been completely rewritten. *
 
-* These need to be documented in the POD prior to release.
+* These still need to be documented in the POD.

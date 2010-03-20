@@ -1,26 +1,15 @@
 package Lojban::Vlasisku;
+
 require Exporter;
-our @ISA = ("Exporter");
+our @ISA = ('Exporter');
 our $VERSION = v2.0;
-
-our @EXPORT = qw< getGismu getCmavo getRafsiByValsi getValsiByRafsi
- getGismuByKeyword getCmavoByKeyword getGismuByDefinition getCmavoByDefinition
- cungihu cunmaho getValsi getValsiByKeyword getValsiByDefinition >;
-
-our @EXPORT_OK = qw< $gimste $mahoste VLASISKU_ANCHORED VLASISKU_LITERAL
+our @EXPORT = qw< cunvla getValsi getRafsiByValsi getValsiByRafsi
+ getValsiByKeyword getValsiByHint getValsiByDefinition getValsiByNotes
+ getCmavoBySelmaho >;
+our @EXPORT_OK = qw< $vlaste VLASISKU_ANCHORED VLASISKU_LITERAL
  VLASISKU_WHOLE_WORD VLASISKU_INSENSITIVE >;
-
-our %EXPORT_TAGS = (
- vlasisku => [qw< getValsi getValsiByKeyword getValsiByDefinition >],
- gimsisku => [qw< getGismu getGismuByKeyword getGismuByDefinition cungihu >],
- mahorsisku => [qw< getCmavo getCmavoByKeyword getCmavoByDefinition cunmaho >],
- rafsisku => [qw< getValsiByRafsi getRafsiByValsi >],
- cunso => [qw< cungihu cunmaho >],
- stodi => [qw< VLASISKU_ANCHORED VLASISKU_LITERAL VLASISKU_WHOLE_WORD
-  VLASISKU_INSENSITIVE >]
-);
-
-# Do not export: gimcfa, mahocfa, prepareRegex, trim, $gimvor, $mahorvor
+our %EXPORT_TAGS = (stodi => [qw< VLASISKU_ANCHORED VLASISKU_LITERAL
+ VLASISKU_WHOLE_WORD VLASISKU_INSENSITIVE >]);
 
 use constant {
  VLASISKU_ANCHORED => 1,
@@ -30,31 +19,18 @@ use constant {
 };
 
 use Carp;
-use Lojban::Valsi;
-our @CARP_NOT = qw< Lojban::Valsi Lojban::Vlatai >;
+use Lojban::Vlatid;
+our @CARP_NOT = ('Lojban::Valsi', 'Lojban::Vlatai');
 
-our $gimste = "$ENV{HOME}/share/gismu.txt";
-our $mahoste = "$ENV{HOME}/share/cmavo.txt";
+our $vlaste = "$ENV{HOME}/share/vlaste.tsv";
+my $vlavor;
 
-my($gimvor, $mahorvor);
-
-sub gimcfa() {
- if (!defined $gimvor) {
-  open $gimvor, '<', $gimste or croak "Lojban::Vlasisku: $gimste: $!"
- } else { seek $gimvor, 0, 0 }
- <$gimvor>;
- $. = 1;
+sub vlacfa() { # not exported
+ if (!defined $vlavor) { $vlavor = cnino Lojban::Vlatid $vlaste }
+ else { $vlavor->rapcfa }
 }
 
-sub mahocfa() {
- if (!defined $mahorvor) {
-  open $mahorvor, '<', $mahoste or croak "Lojban::Vlasisku: $mahoste: $!\n"
- } else { seek $mahorvor, 0, 0 }
- <$mahorvor>;
- $. = 1;
-}
-
-sub prepareRegex {
+sub prepareRegex { # not exported
  my($pattern, $opts) = @_;
  $opts = $pattern =~ /[][.*+?^\$\\|{}]/ ? 0 : VLASISKU_ANCHORED |
   VLASISKU_LITERAL if !defined $opts;
@@ -65,139 +41,113 @@ sub prepareRegex {
  return $pattern;
 }
 
-sub trim($) {my $str = shift; $str =~ s/^\s+|\s+$//g; return $str; }
-
-
-sub getGismu($;$) {  # Technically, get an entry from the gismu list
- gimcfa;
+sub getValsi(@) {
+ my $vorme = ref $_[0] eq 'Lojban::Vlatid' ? shift : vlacfa;
  my $pattern = prepareRegex(@_);
  my @vlaste = ();
- for (grep { trim(substr $_, 1, 5) =~ $pattern } <$gimvor>) {
-  return cminiho Lojban::Valsi $_ unless wantarray;
-  push @vlaste, cminiho Lojban::Valsi $_;
+ while (my $vla = <$vorme>) {
+  if ($vla->fadni =~ $pattern) {
+   return $vla unless wantarray;
+   push @vlaste, $vla;
+  }
  }
  return @vlaste;
 }
 
-sub getCmavo($;$) {
- mahocfa;
- my $pattern = prepareRegex(@_);
- my @vlaste = ();
- for (grep { trim(substr $_, 1, 10) =~ $pattern } <$mahorvor>) {
-  return cminiho Lojban::Valsi $_ unless wantarray;
-  push @vlaste, cminiho Lojban::Valsi $_;
- }
- return @vlaste;
-}
-
-sub getRafsiByValsi($;$) {
-# Unlike the others, this function does not search the entire gismu list when
+sub getRafsiByValsi(@) {
+# Unlike the others, this function does not search the entire word list when
 # called in list context.
- gimcfa;
+ my $vorme = ref $_[0] eq 'Lojban::Vlatid' ? shift : vlacfa;
  my $pattern = prepareRegex(@_);
- while (<$gimvor>) {
-  return split ' ', substr($_, 7, 12) if trim(substr($_, 1, 5)) =~ $pattern
- }
+ while (my $vla = <$vorme>) { return $vla->rafsi if $vla->valsi =~ $pattern }
  return ();
 }
 
-sub getValsiByRafsi($;$) {
- gimcfa;
+sub getValsiByRafsi(@) {
+ my $vorme = ref $_[0] eq 'Lojban::Vlatid' ? shift : vlacfa;
  my $pattern = prepareRegex(@_);
  my @vlaste = ();
- for (grep { grep /$pattern/, split ' ', substr $_, 7, 12 } <$gimvor>) {
-  return cminiho Lojban::Valsi $_ unless wantarray;
-  push @vlaste, cminiho Lojban::Valsi $_;
+ while (my $vla = <$vorme>) {
+  if (grep /$pattern/, $vla->rafsi) {
+   return $vla unless wantarray;
+   push @vlaste, $vla;
+  }
  }
  return @vlaste;
 }
 
-sub getGismuByKeyword($;$) { # get gimstecmi, actually
- gimcfa;
+sub getValsiByKeyword(@) {
+ my $vorme = ref $_[0] eq 'Lojban::Vlatid' ? shift : vlacfa;
  my $pattern = prepareRegex(@_);
  my @vlaste = ();
- for (grep { trim(substr $_, 20, 20) =~ $pattern } <$gimvor>) {
-  return cminiho Lojban::Valsi $_ unless wantarray;
-  push @vlaste, cminiho Lojban::Valsi $_;
+ while (my $vla = <$vorme>) {
+  if (defined $vla->ralvla && $vla->ralvla =~ $pattern) {
+   return $vla unless wantarray;
+   push @vlaste, $vla;
+  }
  }
  return @vlaste;
 }
 
-sub getCmavoByKeyword($;$) { # or by "gloss"
- mahocfa;
- my $pattern = prepareRegex(@_);
- my @vlaste = ();
- for (grep { trim(substr $_, 20, 42) =~ $pattern } <$mahorvor>) {
-  return cminiho Lojban::Valsi $_ unless wantarray;
-  push @vlaste, cminiho Lojban::Valsi $_;
- }
- return @vlaste;
-}
-
-sub getGismuByDefinition($;$) { # get gimstecmi, actually
- gimcfa;
+sub getValsiByDefinition(@) {
+ my $vorme = ref $_[0] eq 'Lojban::Vlatid' ? shift : vlacfa;
  $_[1] = $_[0] =~ /[][.*+?^\$\\|{}]/ ? 0 : VLASISKU_LITERAL if !defined $_[1];
- # No anchoring by default
+  # No anchoring by default
  my $pattern = prepareRegex(@_);
  my @vlaste = ();
- for (grep { trim(substr $_, 62, 96) =~ $pattern } <$gimvor>) {
-  return cminiho Lojban::Valsi $_ unless wantarray;
-  push @vlaste, cminiho Lojban::Valsi $_;
+ while (my $vla = <$vorme>) {
+  if (defined $vla->selvla && $vla->selvla =~ $pattern) {
+   return $vla unless wantarray;
+   push @vlaste, $vla;
+  }
+ }
+ return @valsi;
+}
+
+sub cunvla(;$) {
+ my $vorme = ref $_[0] eq 'Lojban::Vlatid' ? shift : vlacfa;
+ my $valsi;
+ while (my $vla = <$vorme>) { $valsi = $vla if (int rand $vorme->selzva) == 0 }
+ return $valsi;
+}
+
+sub getValsiByNotes(@) {
+ my $vorme = ref $_[0] eq 'Lojban::Vlatid' ? shift : vlacfa;
+ my $pattern = prepareRegex(@_);
+ my @vlaste = ();
+ while (my $vla = <$vorme>) {
+  if (defined $vla->notci && $vla->notci =~ $pattern) {
+   return $vla unless wantarray;
+   push @vlaste, $vla;
+  }
  }
  return @vlaste;
 }
 
-sub getCmavoByDefinition($;$) {
- mahocfa;
- $_[1] = $_[0] =~ /[][.*+?^\$\\|{}]/ ? 0 : VLASISKU_LITERAL if !defined $_[1];
- # No anchoring by default
+sub getValsiByHint(@) {
+ my $vorme = ref $_[0] eq 'Lojban::Vlatid' ? shift : vlacfa;
  my $pattern = prepareRegex(@_);
  my @vlaste = ();
- for (grep { trim(substr $_, 62, 96) =~ $pattern } <$mahorvor>) {
-  return cminiho Lojban::Valsi $_ unless wantarray;
-  push @vlaste, cminiho Lojban::Valsi $_;
+ while (my $vla = <$vorme>) {
+  if (defined $vla->djuvla && $vla->djuvla =~ $pattern) {
+   return $vla unless wantarray;
+   push @vlaste, $vla;
+  }
  }
  return @vlaste;
 }
 
-sub cungihu() {  # cunso gimstecmi, actually
- gimcfa;
- my $gismu;
- while (<$gimvor>) { $gismu = $_ if (int rand $.) == 0 }
- return cminiho Lojban::Valsi $gismu;
-}
-
-sub cunmaho() {
- mahocfa;
- my $cmavo;
- while (<$mahorvor>) { $cmavo = $_ if (int rand $.) == 0 }
- return cminiho Lojban::Valsi $cmavo;
-}
-
-# These functions search both the gismu & cmavo lists and return the combined
-# results from both.
-
-sub getValsi($;$) {
- if (wantarray) { Lojban::Valsi::girxre &getGismu, &getCmavo }
- else { (Lojban::Valsi::girxre scalar &getGismu, scalar &getCmavo)[0] }
-}
-
-sub getValsiByKeyword($;$) {
- if (wantarray) {
-  Lojban::Valsi::girxre &getGismuByKeyword, &getCmavoByKeyword
- } else {
-  (Lojban::Valsi::girxre scalar &getGismuByKeyword, scalar
-   &getCmavoByKeyword)[0]
+sub getCmavoBySelmaho(@) {
+ my $vorme = ref $_[0] eq 'Lojban::Vlatid' ? shift : vlacfa;
+ my $pattern = prepareRegex(@_);
+ my @vlaste = ();
+ while (my $vla = <$vorme>) {
+  if (defined $vla->selmaho && $vla->selmaho =~ $pattern) {
+   return $vla unless wantarray;
+   push @vlaste, $vla;
+  }
  }
-}
-
-sub getValsiByDefinition($;$) {
- if (wantarray) {
-  Lojban::Valsi::girxre &getGismuByDefinition, &getCmavoByDefinition
- } else {
-  (Lojban::Valsi::girxre scalar &getGismuByDefinition, scalar
-   &getCmavoByDefinition)[0]
- }
+ return @vlaste;
 }
 
 1;
@@ -365,29 +315,9 @@ order to import groups of functions:
 
 All functions (excluding constants)
 
-=item :cunso
-
-cungihu, cunmaho
-
-=item :gimsisku
-
-cungihu, getGismu, getGismuByDefinition, getGismuByKeyword
-
-=item :mahorsisku
-
-cunmaho, getCmavo, getCmavoByDefinition, getCmavoByKeyword
-
-=item :rafsisku
-
-getRafsiByValsi, getValsiByRafsi
-
 =item :stodi
 
 VLASISKU_ANCHORED, VLASISKU_INSENSITIVE, VLASISKU_LITERAL, VLASISKU_WHOLE_WORD
-
-=item :vlasisku
-
-getValsi, getValsiByDefinition, getValsiByKeyword
 
 =back
 
@@ -416,12 +346,10 @@ first argument to one of these functions, you are advised to use a second
 argument of 0 rather than leaving it undefined.  If you supply a bad regex,
 whatever happens is your own fault.
 
-Note that any periods at the beginning of I<cmavo> in the I<cmavo> list are
-ignored when performing matches.  Thus, the string C<'.e'> will match I<be> but
-not I<.e>, and forcing literal interpretation with C<'\.e'> will cause no
-results to be returned.  Periods elsewhere in I<cmavo> are left intact, but
-note that I<na.a> is the only entry in the official I<cmavo> list to have a
-non-leading period.
+As C<getValsi> matches against the normalized forms of words, note that any
+periods at the beginning of I<cmavo> are ignored.  Thus, the string C<'.e'>
+will match I<be> but not I<.e>, and forcing literal interpretation with
+C<'\.e'> will cause no results to be returned.
 
 =head1 SEE ALSO
 

@@ -1,10 +1,7 @@
 General:
  - Translate all of the documentation into Lojban
  - Improve the example code at the start of the modules' POD
- - Make the modules available on CPAN?
  - Write a bunch of test programs for every aspect of the modules
-  - Include tests for reading from the old-format word lists (old lists not
-    included)
 
 sisku.pl:
  - Idea: Instead of taking multiple operands on the command line which are
@@ -45,6 +42,7 @@ Lojban/Vlasisku.pm:
    croak.
  - Add a getValsiByKlesi() function?
  - Add a getValsiByAny() function that checks all fields for matches?
+ - Add a wrapper around grep that checks for matches using a closure?
 
 Lojban/Vlatai.pm:
  - Correctness:

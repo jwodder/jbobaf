@@ -14,6 +14,8 @@ use Carp;
 use Fcntl 'O_RDONLY';
 use Tie::File;
 use Lojban::Valsi;
+
+our $VERSION = v2.0;
 our @CARP_NOT = ('Lojban::Valsi', 'Lojban::Vlasisku');
 
 sub cnino {

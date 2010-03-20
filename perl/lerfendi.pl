@@ -2,7 +2,7 @@ use utf8;
 use Lojban::Vlatai;
 use Lojban::Valsi;
 
-sub lerkatna($) {
+sub lerfendi($) {
  # Deal with (common) accents and Hs:
  (my $selsku = shift) =~ tr/áéíóúHh/AEIOU''/;
  # Split on whitespace & periods:
@@ -72,11 +72,10 @@ sub lerkatna($) {
 
 __END__
 
-To do:
- - Test lerkatna() to make sure it works!!!!!
- - Rename lerkatna() to lerfendi()?
- - Make lerkatna() remove Cy {cmavo} from the ends of potential {brivla}
- - Rewrite lerkatna() to handle ZOI constructs; this may require changing it
-   from processing the string all at once to processing it in pieces from start
-   to finish.
- - Make lerkatna() be able to handle commas
+TO DO
+- Test &lerfendi to make sure it works!!!!!
+- Make &lerfendi remove Cy {cmavo} from the ends of potential {brivla}
+- Rewrite &lerfendi to handle ZOI constructs; this may require changing it from
+  processing the string all at once to processing it in pieces from start to
+  finish.
+- Make &lerfendi able to handle commas
