@@ -28,7 +28,7 @@ module Jbobaf.Vlatai where
   "xs", "xt", "zl", "zn", "zr"]
 
  xubrivla, xugismu, xulujvo, xufu'ivla, xucmevla, xucmavo,
- xugismu', xulujvo', xufu'ivla', xucmevla', xucmavo' :: String -> Tamcux Bool
+  xugismu', xulujvo', xufu'ivla', xucmevla', xucmavo' :: String -> Tamcux Bool
  -- The "prime" forms of the xu* functions assume that their arguments are
  -- already normalized.  The non-prime functions do not.
 
@@ -52,7 +52,13 @@ module Jbobaf.Vlatai where
  xufu'ivla' str = ?????
 
  xucmevla str = fadgau str >>= maybe (return False) xucmevla'
- xucmevla' str = ?????
+ xucmevla' str = do
+  dotty <- isOpt Use_dotside
+  ndj <- isOpt Allow_ndj_in_cmevla
+  return $ noBadCC str && case (dotty, findLa str, ndj, hasNDJ str) of
+   (False, Just _, _, _) -> False
+   (_, _, False, True) -> False
+   _ -> True
 
  xucmavo str = fadgau str >>= maybe (return False) xucmavo'
  xucmavo' str = ?????
@@ -94,6 +100,11 @@ module Jbobaf.Vlatai where
  -- * Digits are converted to their corresponding /cmavo/.
  --
  -- * Consecutive apostrophes are merged together?
+ --
+ -- * If an apostrophe is found in an invalid location (i.e., next to a
+ --   consonant or at the the beginning or end of the string), 'Nothing' is
+ --   returned.  (Currently, only apostrophes at the end of the string are
+ --   detected.)
 
  fadgau :: String -> Tamcux (Maybe String)
  fadgau str = do
@@ -112,6 +123,7 @@ module Jbobaf.Vlatai where
       lerfad (' ':',':xs) = lerfad (' ':xs)
       lerfad (' ':c:xs) | isSpace c = lerfad (' ':xs)
       lerfad ('.':xs) = lerfad (' ':xs)
+      lerfad "'" = Nothing
       lerfad "," = Just []
       lerfad "." = Just []
       lerfad [c] | isSpace c = Just []
@@ -135,3 +147,18 @@ module Jbobaf.Vlatai where
       lerfad (c:xs) = if isC c then toLower c else c
       lerfad [] = Just []
   lerfad $ dropWhile (\c -> isSpace c || c == '.' || c == ',') str
+
+-- Unexported functions: ------------------------------------------------------
+
+ hasNDJ :: String -> Bool
+ hasNDJ [] = False
+ hasNDJ str = case dropWhile (/= 'n') str of
+  'n':'d':'j':_ -> True
+  'n':'d':'z':_ -> True
+  'n':'t':'c':_ -> True
+  'n':'t':'s':_ -> True
+  'n':xs -> hasNDJ xs
+
+ noBadCC :: String -> Bool
+ noBadCC str = null (filter (\i -> length cc /= 1 && (isC $ cc !! 1)
+  && not (isC_C cc) where cc = take 2 (drop i str)) (findIndices isC str))

@@ -98,9 +98,9 @@ module Jbobaf.Lerfendi (lerfendi) where
  fendi (',':xs) = fendi xs
 
  fendi str | isC (last str) = do
-  dotty <- isNopt Use_dotside
+  dotty <- isOpt Use_dotside
   case (dotty, findLa ca) of
-   (True, Just n) -> fendi (take n str) ~~ mkCmevla (drop n str)
+   (False, Just n) -> fendi (take n str) ~~ mkCmevla (drop n str)
    _ -> mkCmevla str
 
  fendi str | toLower (last str) == 'y' =
@@ -133,24 +133,6 @@ module Jbobaf.Lerfendi (lerfendi) where
  spicpa str = break (\c -> isSpace c || c == '.')
   $ dropWhile (\c -> isSpace c || c == '.')
 
- findLa :: String -> Maybe Int
- -- How should this handle commas after "la" et al?
- findLa = fla 0 False . map toLower
-  where fla _ _ [] = Nothing
-	fla pos False ('l':'a':'\'':'i':c:xs) =
-	 if not (isV c) && c /= '\\'' then Just (pos+4)
-	 else fla (pos+5) False xs
-	fla pos False ('l':'a':'i':c:xs) =
-	 if not (isV c) && c /= '\\'' then Just (pos+3)
-	 else fla (pos+4) False xs
-	fla pos False ('l':'a':c:xs) =
-	 if not (isV c) && c /= '\\'' then Just (pos+2)
-	 else fla (pos+3) False xs
-	fla pos False ('d':'o':'i':c:xs) =
-	 if not (isV c) && c /= '\\'' then Just (pos+3)
-	 else fla (pos+4) False xs
-	fla pos _ (c:xs) = fla (pos+1) (isC c) xs
-
  finalMa'osmi :: String -> Maybe Int
  -- How should this handle commas?
  finalMa'osmi = fmas 0 0 False False
@@ -161,10 +143,6 @@ module Jbobaf.Lerfendi (lerfendi) where
 	fmas start _   _  False []     = Just start
 	fmas _     pos tf _     (c:xs) | isC c = fmas pos (pos+1) True tf xs
 	fmas start pos _  tf    (_:xs) = fmas start (pos+1) False tf xs
-
- findCC :: String -> Maybe Int
- findCC str = find (\i -> isC (str !! (i+1)) || toLower (str !! (i+1)) == 'y'
-  && isC (str !! (i+2))) $ findIndices isC str
 
  ma'ocpa :: String -> [Either String Valsi]
  ma'ocpa str = mp $ 0 : findIndices isC str

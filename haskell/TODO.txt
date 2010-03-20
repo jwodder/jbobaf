@@ -18,3 +18,4 @@
   "BPFK Section: Formal Morphology" and "BPFK Section: PEG Morphology
   Algorithm" pages on the tiki!
 - Add Haddock documentation for all of the exported functions
+- Deal with {lujma'o} somehow

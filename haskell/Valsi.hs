@@ -1,6 +1,7 @@
 module Jbobaf.Valsi where
  import Char (toLower)
  import Ix
+ import Jbobaf.Internals (findCC)
 
  data Vlalei = Gismu | Lujvo | Fu'ivla | Cmavo {- | Lujma'o -} | Cmevla
   deriving (Eq, Ord, Read, Show, Bounded, Enum, Ix)
@@ -45,7 +46,9 @@ module Jbobaf.Valsi where
  rafsi (Vla2 {ck_rafsi = r}) = r
 
  toValsi :: String -> Tamcux (Maybe Valsi)
- toValsi str = ?????
+ toValsi [] = return Nothing
+ toValsi str = if isC (last str) then toCmevla str
+	       else maybe (toCmavo str) (const $ toBrivla str) (findCC str)
 
  toCmavo, toCmevla, toBrivla :: String -> Tamcux (Maybe Valsi)
  toGismu, toLujvo, toFu'ivla :: String -> Tamcux (Maybe Valsi)
