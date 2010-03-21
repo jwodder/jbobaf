@@ -3,7 +3,6 @@
  - allowing commas between consonants
  - allowing commas between a consonant and a vowel
  - prohibiting commas between vowels
- - allowing commas in {cmavo}
  - prohibiting commas in {fu'ivla} and {cmevla}
  - restricting consonant clusters in {fu'ivla} and {cmevla} (separate options)
    to have all consonant pairs after the first be initial

@@ -17,6 +17,7 @@ module Jbobaf.Tamcux where
   | LOhU_disables_ZEI
   | LOhU_disables_ZOI
   | LOhU_disables_FAhO
+  | Allow_commas_in_cmavo
   | Ignore_FAhO
     -- ^When performing word splitting, keep splitting even after a /fa'o/ is
     -- encountered (The /fa'o/ will still be returned in the list of words).

@@ -25,7 +25,7 @@ module Jbobaf.Selmaho (Selma'o(..), getSelma'o, rolma'o) where
   Cmavo -> case Map.lookup (valsi vla) rolma'o of
    Just s -> s
    Nothing -> UNKNOWN
-  -- Lujma'o -> undefined
+--Lujma'o -> undefined
   Cmevla -> CMEVLA
 
  rolma'o :: Map.Map String Selma'o

@@ -52,16 +52,23 @@ module Jbobaf.Vlatai where
  xufu'ivla' str = ?????
 
  xucmevla str = fadgau str >>= maybe (return False) xucmevla'
+ xucmevla' [] = return False
  xucmevla' str = do
   dotty <- isOpt Use_dotside
   ndj <- isOpt Allow_ndj_in_cmevla
-  return $ noBadCC str && case (dotty, findLa str, ndj, hasNDJ str) of
-   (False, Just _, _, _) -> False
-   (_, _, False, True) -> False
-   _ -> True
+  return $ isC (last str) && null (filter isSpace str) && noBadCC str
+	   && case (dotty, findLa str, ndj, hasNDJ str) of
+	       (False, Just _, _, _) -> False
+	       (_, _, False, True) -> False
+	       _ -> True
 
  xucmavo str = fadgau str >>= maybe (return False) xucmavo'
- xucmavo' str = ?????
+ xucmavo' [] = return False
+ xucmavo' str@(c:xs) = do
+  commas <- isOpt Allow_commas_in_cmavo
+  let maho = if isC c then xs else str
+  return $ not (null maho) && null (filter (\c -> isSpace c || isC c) maho)
+   && (commas || null (filter (== ',') maho))
 
  -- |@fadgau@ is a basic "cleanup" routine used by various functions in Jbobaf
  -- for converting Lojban strings into a more regular, "normalized" form.  It
