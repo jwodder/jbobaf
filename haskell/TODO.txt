@@ -6,7 +6,8 @@
  - prohibiting commas in {fu'ivla} and {cmevla}
  - restricting consonant clusters in {fu'ivla} and {cmevla} (separate options)
    to have all consonant pairs after the first be initial
- - prohibiting rising diphthongs after a consonant
+ - prohibiting rising diphthongs after a consonant (with an option for only
+   prohibiting/allowing them in {cmavo}?)
  - prohibiting rising diphthongs in {fu'ivla}?
  - prohibiting {cmevla} that begin with non-initial consonant pairs
  - allowing {rafsi} of the form C[iu]V?
@@ -18,3 +19,7 @@
   Algorithm" pages on the tiki!
 - Add Haddock documentation for all of the exported functions
 - Deal with {lujma'o} somehow
+- Add functions to Valsi.hs for computing the component {rafsi}, source
+  {tanru}, and {lujvo} score for {lujvo} & {lujvo cmene}.
+- Add a rewrite rule (or whatever) that tells GHC that ``fadgau >>= fadgau ==
+  fadgau''

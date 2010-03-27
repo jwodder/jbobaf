@@ -65,8 +65,8 @@ sub rafyjongau {  # join rafsi into a lujvo
   $rafsi .= 'y' if $rafsi =~ /^$gism$/o && $i != $#rafste;
   if (defined $lihenraf) {
    my($pa, $re) = (substr($lihenraf, -1), substr($rafsi, 0, 1));
-   $rafsi = 'y' . $rafsi
-    if "$pa$re" =~ $CyC || $pa eq 'n' && $rafsi =~ /^(?:d[jz]|t[cs])/i;
+   $rafsi = 'y' . $rafsi if "$pa$re" =~ $CyC
+    || $pa eq 'n' && $rafsi =~ /^(?:d[jz]|t[cs])/i;
   } else {
    $rafsi .= $rafste[1] =~ /^r/i ? 'n' : 'r' if $rafsi =~ /^$CVV$/o
     && (@rafste > 2 || $rafste[1] !~ /^$CCV$/o)
@@ -77,11 +77,9 @@ sub rafyjongau {  # join rafsi into a lujvo
  # tosmabru test
  if ($lujvo =~ /^($CVC+)(?:($C)$V$CC$V|($C)$V${C}y.+)$/oi) {
   # If there aren't at least two CVCs before a 'y', no hyphen is needed.
-  my($pre, $nextC, $needsY) = ($1, $2 || $3, 1);
-  while ($pre =~ /($C$C)/g) {
-   if ($1 !~ $CC) {$needsY = 0; last; }
-  }
-  $lujvo =~ s/($C)($C)/$1y$2/o if $needsY && (substr($pre, -1) . $nextC) =~ $CC;
+  my($pre, $nextC) = ($1, $2 || $3);
+  $lujvo =~ s/($C)($C)/$1y$2/o
+   if $pre !~ $CxC && (substr($pre, -1) . $nextC) =~ $CC;
  }
  return $lujvo;
 }

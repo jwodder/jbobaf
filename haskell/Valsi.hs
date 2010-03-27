@@ -1,4 +1,11 @@
-module Jbobaf.Valsi where
+module Jbobaf.Valsi (
+  -- * Types
+  Vlalei(..), Valsi,
+  -- * Fields
+  valsi, klesi, selma'o, rafsi, ralvla, djuvla, selvla, notci,
+  -- * Conversion from strings
+  toValsi, toCmavo, toCmevla, toBrivla, toGismu, toLujvo, toFu'ivla
+ ) where
  import Char (toLower)
  import Ix
  import Jbobaf.Internals (findCC)
@@ -20,8 +27,6 @@ module Jbobaf.Valsi where
    ck_selma'o, ck_ralvla, ck_djuvla, ck_selvla, ck_notci :: Maybe String,
    ck_rafsi :: [String],
   } deriving (Eq, Ord, Read, Show)
-
- -- Computable properties: termre, krarafsi, veljvo
 
  valsi :: Valsi -> String
  valsi = ck_valsi

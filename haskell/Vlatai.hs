@@ -1,5 +1,17 @@
-module Jbobaf.Vlatai where
+module Jbobaf.Vlatai (
+  -- * Basic character sequences
+  isV, isVy, isC, isCC, isC_C, lidne, fadni,
+  -- * Word classification & validity
+  xubrivla, xugismu, xulujvo, xufu'ivla, xucmevla, xucmavo,
+  -- ** Pre-normalized
+  xugismu', xulujvo', xufu'ivla', xucmevla', xucmavo',
+  -- * Normalization
+  fadgau,
+  -- * /Lujvo/ manipulation
+  jvokatna, jvokatna', Raftai(..), raftai
+ ) where
  import Char
+ import Ix
  import qualified Data.Set as Set
  import Jbobaf.Internals
 
@@ -46,7 +58,8 @@ module Jbobaf.Vlatai where
  xugismu' _ = return False
 
  xulujvo str = fadgau str >>= maybe (return False) xulujvo'
- xulujvo' str = ?????
+ xulujvo' str = jvokatna' str >>= return . not . null
+  -- This needs to check for proper emphasis.
 
  xufu'ivla str = fadgau str >>= maybe (return False) xufu'ivla'
  xufu'ivla' str = ?????
@@ -112,6 +125,8 @@ module Jbobaf.Vlatai where
  --   consonant or at the the beginning or end of the string), 'Nothing' is
  --   returned.  (Currently, only apostrophes at the end of the string are
  --   detected.)
+ --
+ -- * If an invalid consonant pair is detected, 'Nothing' is returned?
 
  fadgau :: String -> Tamcux (Maybe String)
  fadgau str = do
@@ -119,7 +134,7 @@ module Jbobaf.Vlatai where
   ignoring <- isOpt Ignore_naljbo_chars
   hasH <- isOpt Allow_H
   let goodchr c = elem (toLower c) "',.abcdefgijklmnoprstuvxyz"
-		   || accents && elem (toLower c) "áéíóú"
+		   || accents && elem (toLower c) "áéíóúý"
 		   || hasH && toLower c == 'h'
       lerfad ('\'':',':xs) = lerfad ('\'':xs)
       lerfad (',':'\'':xs) = lerfad ('\'':xs)
@@ -155,6 +170,105 @@ module Jbobaf.Vlatai where
       lerfad [] = Just []
   lerfad $ dropWhile (\c -> isSpace c || c == '.' || c == ',') str
 
+ jvokatna, jvokatna' :: String -> Tamcux [String]
+  -- Although jvokatna' currently doesn't use any Tamcux options, it is still
+  -- wrapped in the Tamcux monad in preparation for the day that it does.
+ jvokatna str = fadgau str >>= maybe (return []) jvokatna'
+ jvokatna' str =
+  -- As part of the assumption that str is normalized, all vowel pairs are
+  -- assumed to be valid diphthongs and all consonants & Y's are assumed to be
+  -- lowercase.
+  let (pre, fanmo) = case lertype (reverse str) of
+	V v2 : Apos : V v1 : C c1 : xs -> (xs, [[c1, v1, '\'', v2]])
+	V v2 : V v1 : C c1 : xs -> (xs, [[c1, v1, v2]])
+	V v2 : C c3 : V v1 : C c2 : C c1 : xs
+	 | isCC [c1, c2] -> (xs, [[c1, c2, v1, c3, v2]])
+	V v2 : C c3 : C c2 : V v1 : C c1 : xs
+	 | Set.member [c2, c3] fadni -> (xs, [[c1, v1, c2, c3, v2]])
+	V v1 : C c2 : C c1 : xs | isCC [c1, c2] -> ccv' xs [[c1, c2, v1]]
+	 where ccv' (V v1' : C c2' : C c1' : xs') ccvs | isCC [c1', c2']
+		= ccv' xs' ([c1', c2', v1'] : ccvs)
+	       ccv' (V _:C _: _) _ = case xs of
+		 V v' : C c' : xs' -> (xs', [[c', v', c1, c2, v1]])
+		 _ -> ([], [])  -- This shouldn't happen, but just in case...
+	       ccv' xs' ccvs = (xs', ccvs)
+	_ -> ([], [])  -- invalid {lujvo}
+      katna [] rafs = rafs
+      katna (V v : C c2 : C c1 : xs) rafs | isCC [c1, c2]
+       = katna xs ([c1, c2, v] : rafs)
+      katna (V v2 : V v1 : C c : xs) rafs = katna xs ([c, v1, v2] : rafs)
+      katna (V v2 : Apos : V v1 : C c : xs) rafs
+       = katna xs ([c, v1, '\'', v2] : rafs)
+      katna (C c2 : V v : C c1 : xs) rafs = katna xs ([c1, v, c2] : rafs)
+      katna (Y : C c3 : C c2 : V v : C c1 : xs) rafs | isC_C [c2, c3]
+       = katna xs ([c1, v, c2, c3] : rafs)
+      katna (Y : C c2 : V v : C c1 : xs) rafs =
+       let ccvc' (C c2' : V _ : C c1' : xs') p = isCC [c2', p] && ccvc' xs' c1'
+	   ccvc' (C c:_) prec = isCC [c, prec]
+	   ccvc' _ _ = False
+       in case (ccvc' xs c1, xs) of
+        (True, C c0 : xs') -> katna xs' ([c0, c1, v, c2] : rafs)
+	_ -> if isC_C (c2 : head (head rafs)) && not (hasNDJ $ c2 : head rafs)
+	     then if isCC (c2 : head (head rafs))
+		  then katna xs ([c1, v, c2] : [] : rafs)
+		  else []
+	     else katna xs ([c1, v, c2] : "y" : rafs)
+      katna [rn, V v2, V v1, C c] rafs =
+       if rn == C (head (head rafs) == 'r' ?: 'n' :? 'r')
+	&& (length rafs > 1 || raftai (head rafs) /= CCV)
+       then [c, v1, v2] : rafs
+       else []
+      katna [rn, V v2, Apos, V v1, C c] rafs =
+       if rn == C (head (head rafs) == 'r' ?: 'n' :? 'r')
+	&& (length rafs > 1 || raftai (head rafs) /= CCV)
+       then [c, v1, '\'', v2] : rafs
+       else []
+      katna [V v2, V v1, C c] rafs =
+       if length rafs == 1 && raftai (head rafs) == CCV
+       then [c, v1, v2] : rafs
+       else []
+      katna [V v2, Apos, V v1, C c] rafs =
+       if length rafs == 1 && raftai (head rafs) == CCV
+       then [c, v1, '\'', v2] : rafs
+       else []
+      katna _ _ = []
+      rolrafsi = katna pre fanmo
+      mulrafsi = filter (\r -> not (null r) && r /= "y") rolrafsi
+  in if hasNDJ str || not (noBadCC str) || null fanmo
+      || (null pre && length fanmo < 2)
+      || length (filter null rolrafsi) > 1
+      || length mulrafsi < 2
+     then return []
+     else return case span (\r -> raftai r == CVC || null r) rolrafsi of
+      (cvcs, "y":_) ->
+       if has_C_C (concat cvcs)  -- no need for a tosmabru hyphen
+       then if null (filter null rolrafsi) then mulrafsi else []
+       else if length cvcs > 1 && null (cvcs !! 1) then mulrafsi else []
+      (cvcs, [[_,_,c1,c2,_]]) | isCC [c1, c2] ->
+       if has_C_C (concat rolrafsi)  -- no need for a tosmabru hyphen
+       then if null (filter null rolrafsi) then mulrafsi else []
+       else if length cvcs > 1 && null (cvcs !! 1) then mulrafsi else []
+      _ -> if null (filter null rolrafsi) then mulrafsi else []
+
+ data Raftai = CVV | CCV | CVC | CCVC | CVC_C | CCVCV | CVC_CV | Srerafsi
+  deriving (Eq, Ord, Read, Show, Enum, Bounded, Ix)
+ 
+ raftai :: String -> Raftai
+ -- assumes its argument is normalized; should this use a Tamcux monad?
+ raftai [c, v1, v2] | isC c && isV v1 && isV v2 = CVV
+ raftai [c, v1, '\'', v2] | isC c && isV v1 && isV v2 = CVV
+ raftai [c1, c2, v] | isCC [c1, c2] && isV v = CCV
+ raftai [c1, v, c2] | isC c1 && isV v && isC c2 = CVC
+ raftai [c1, c2, v, c3] | isCC [c1, c2] && isV v && isC c3 = CCVC
+ raftai [c1, c2, v, c3, 'y'] | isCC [c1, c2] && isV v && isC c3 = CCVC
+ raftai [c1, v, c2, c3] | isC c1 && isV v && isC_C [c2, c3] = CVC_C
+ raftai [c1, v, c2, c3, 'y'] | isC c1 && isV v && isC_C [c2, c3] = CVC_C
+ raftai [c1, c2, v1, c3, v2] | isCC [c1, c2] && isV v1 && isC c3 && isV v2
+  = CCVCV
+ raftai [c1, v1, c2, c3, v2] | isC c1 && isV v1 && isC_C [c2, c3] && isV v2
+  = CVC_CV
+ raftai _ = Srerafsi
+
 -- Unexported functions: ------------------------------------------------------
 
  hasNDJ :: String -> Bool
@@ -167,5 +281,25 @@ module Jbobaf.Vlatai where
   'n':xs -> hasNDJ xs
 
  noBadCC :: String -> Bool
- noBadCC str = null (filter (\i -> length cc /= 1 && (isC $ cc !! 1)
-  && not (isC_C cc) where cc = take 2 (drop i str)) (findIndices isC str))
+ noBadCC str = null $ filter (\i -> length cc /= 1 && (isC $ cc !! 1)
+  && not (isC_C cc) where cc = take 2 (drop i str)) (findIndices isC str)
+ 
+ data Lertype = C Char | V Char | Y | Apos | BadCh
+  deriving (Eq, Ord, Read, Show, Bounded)
+ 
+ lertype :: String -> [Lertype]
+ -- Pre-classifying letterals as consonants & vowels cuts down on obsessive
+ -- checking later.
+ lertype [] = []
+ lertype ('y':xs) = Y : lertype xs
+ lertype ('Y':xs) = Y : lertype xs
+ lertype ('\'':xs) = Apos : lertype xs
+ lertype (c:xs)
+  | isC c = C c : lertype xs
+  | isV c = V c : lertype xs
+  | otherwise = BadCh : lertype xs
+
+ has_C_C :: String -> Bool
+ -- checks for the presence of a non-initial valid consonant pair
+ has_C_C str = not $ null $ filter (\i -> Set.member (take 2 $ drop i str)
+  fadni) (findIndices isC str)
