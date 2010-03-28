@@ -1,7 +1,8 @@
 module Jbobaf.Internals where
+ import Char (toLower)
  import List (find, findIndices)
  import Monad (liftM2)
- import Jbobaf.Vlatai (isC, isVy, isV)
+ import {-# SOURCE #-} Jbobaf.Vlatai (isC, isVy, isV)
 
  infixr 5 ~:, ~~, ~:~
  infixr 0 ?:, :?
@@ -32,16 +33,16 @@ module Jbobaf.Internals where
  findLa = fla 0 False . map toLower
   where fla _ _ [] = Nothing
 	fla pos False ('l':'a':'\'':'i':c:xs) =
-	 if not (isV c) && c /= '\\'' then Just (pos+4)
+	 if not (isV c) && c /= '\'' then Just (pos+4)
 	 else fla (pos+5) False xs
 	fla pos False ('l':'a':'i':c:xs) =
-	 if not (isV c) && c /= '\\'' then Just (pos+3)
+	 if not (isV c) && c /= '\'' then Just (pos+3)
 	 else fla (pos+4) False xs
 	fla pos False ('l':'a':c:xs) =
-	 if not (isV c) && c /= '\\'' then Just (pos+2)
+	 if not (isV c) && c /= '\'' then Just (pos+2)
 	 else fla (pos+3) False xs
 	fla pos False ('d':'o':'i':c:xs) =
-	 if not (isV c) && c /= '\\'' then Just (pos+3)
+	 if not (isV c) && c /= '\'' then Just (pos+3)
 	 else fla (pos+4) False xs
 	fla pos _ (c:xs) = fla (pos+1) (isC c) xs
 

@@ -12,12 +12,17 @@ module Jbobaf.Vlatai (
  ) where
  import Char
  import Ix
+ import List (findIndices)
  import qualified Data.Set as Set
  import Jbobaf.Internals
+ import Jbobaf.Tamcux
 
+ isV, isVy, isC :: Char -> Bool
  isV = (`elem` "aeiou") . toLower
  isVy = (`elem` "aeiouy") . toLower
  isC = (`elem` "bcdfgjklmnprstvxz") . toLower
+
+ isCC, isC_C :: String -> Bool
  isCC = (`Set.member` lidne) . map toLower
  isC_C cc = Set.member cc' fadni || Set.member cc' lidne
   where cc' = map toLower cc
@@ -71,22 +76,25 @@ module Jbobaf.Vlatai (
   noemph <- isOpt Ignore_brivla_emphasis
   canY <- isOpt Allow_Y_in_fu'ivla
   ndj <- isOpt Allow_ndj_in_fu'ivla
+  xugim <- xugismu' str
+  xuluj <- xulujvo' str
+  toluj <- xulujvo' $ 't':'o':str
   if not (null str) && notElem ' ' str && isV (last str)
    && (ndj || not (hasNDJ str)) && (canY || notElem 'y' str)
-   && not (xugismu' str) && not (xulujvo' str)
-   && not (isC (head str) && xulujvo' ('t':'o':str))
+   && not xugim && not xuluj && not (isC (head str) && toluj)
    then case findCC str of
-	 Just ccLoc ->
+	 Just ccLoc -> do
 	  let (clust, rest) = span (\c -> isC c || c == 'y') (drop ccLoc str)
 	      preclust = take ccLoc str
 	      preCs = length $ filter isC preclust
-	  in if elem 'y' clust || has_C_C clust
-		 || null (filter (\c -> isC c || elem c "',") rest)
-		 || ccLoc /= 0 && xulujvo' ('t':'o':drop ccLoc str)
-	     then return $ ccLoc /= 0
-	      && length (filter (`notElem` "',y") preclust) <= 3
-	      && (preCs == 1 && isC (head preclust) || preCs == 0)
-	     else return (ccLoc == 0)
+	  slinky <- xulujvo' $ 't':'o':drop ccLoc str
+	  if elem 'y' clust || has_C_C clust
+	      || null (filter (\c -> isC c || elem c "',") rest)
+	      || ccLoc /= 0 && slinky
+	   then return $ ccLoc /= 0
+		 && length (filter (`notElem` "',y") preclust) <= 3
+		 && (preCs == 1 && isC (head preclust) || preCs == 0)
+	   else return (ccLoc == 0)
 	 Nothing -> return False
    else return False
 
@@ -162,7 +170,9 @@ module Jbobaf.Vlatai (
   let goodchr c = elem (toLower c) "',.abcdefgijklmnoprstuvxyz"
 		   || accents && elem (toLower c) "áéíóúý"
 		   || hasH && toLower c == 'h'
+      lerfad "'" = Nothing
       lerfad ('\'':',':xs) = lerfad ('\'':xs)
+      lerfad "," = Just []
       lerfad (',':'\'':xs) = lerfad ('\'':xs)
       lerfad (',':',':xs) = lerfad (',':xs)
       lerfad (',':'.':xs) = lerfad (' ':xs)
@@ -170,10 +180,8 @@ module Jbobaf.Vlatai (
       lerfad (' ':'.':xs) = lerfad (' ':xs)
       lerfad (' ':',':xs) = lerfad (' ':xs)
       lerfad (' ':c:xs) | isSpace c = lerfad (' ':xs)
-      lerfad ('.':xs) = lerfad (' ':xs)
-      lerfad "'" = Nothing
-      lerfad "," = Just []
       lerfad "." = Just []
+      lerfad ('.':xs) = lerfad (' ':xs)
       lerfad [c] | isSpace c = Just []
       lerfad (c:xs) | isSpace c = lerfad (' ':xs)
       lerfad (c:xs) | not (goodchr c) = if ignoring then lerfad xs else Nothing
@@ -192,9 +200,9 @@ module Jbobaf.Vlatai (
       lerfad ('Y':xs) = 'y' ~: lerfad xs
       lerfad ('ý':xs) = 'y' ~: lerfad xs
       lerfad ('Ý':xs) = 'y' ~: lerfad xs
-      lerfad (c:xs) = if isC c then toLower c else c
+      lerfad (c:xs) = (if isC c then toLower c else c) ~: lerfad xs
       lerfad [] = Just []
-  lerfad $ dropWhile (\c -> isSpace c || c == '.' || c == ',') str
+  return $ lerfad $ dropWhile (\c -> isSpace c || c == '.' || c == ',') str
 
  jvokatna, jvokatna' :: String -> Tamcux [String]
   -- Although jvokatna' currently doesn't use any Tamcux options, it is still
@@ -222,8 +230,8 @@ module Jbobaf.Vlatai (
       katna [] rafs = rafs
       katna (V v : C c2 : C c1 : xs) rafs | isCC [c1, c2]
        = katna xs ([c1, c2, v] : rafs)
-      katna (V v2 : V v1 : C c : xs) rafs = katna xs ([c, v1, v2] : rafs)
-      katna (V v2 : Apos : V v1 : C c : xs) rafs
+      katna (V v2 : V v1 : C c : xs@(_:_)) rafs = katna xs ([c, v1, v2] : rafs)
+      katna (V v2 : Apos : V v1 : C c : xs@(_:_)) rafs
        = katna xs ([c, v1, '\'', v2] : rafs)
       katna (C c2 : V v : C c1 : xs) rafs = katna xs ([c1, v, c2] : rafs)
       katna (Y : C c3 : C c2 : V v : C c1 : xs) rafs | isC_C [c2, c3]
@@ -234,8 +242,8 @@ module Jbobaf.Vlatai (
 	   ccvc' _ _ = False
        in case (ccvc' xs c1, xs) of
         (True, C c0 : xs') -> katna xs' ([c0, c1, v, c2] : rafs)
-	_ -> if isC_C (c2 : head (head rafs)) && not (hasNDJ $ c2 : head rafs)
-	     then if isCC (c2 : head (head rafs))
+	_ -> if isC_C [c2, head (head rafs)] && not (hasNDJ $ c2 : head rafs)
+	     then if isCC [c2, head (head rafs)]
 		  then katna xs ([c1, v, c2] : [] : rafs)
 		  else []
 	     else katna xs ([c1, v, c2] : "y" : rafs)
@@ -265,7 +273,7 @@ module Jbobaf.Vlatai (
       || length (filter null rolrafsi) > 1
       || length mulrafsi < 2
      then return []
-     else return case span (\r -> raftai r == CVC || null r) rolrafsi of
+     else return $ case span (\r -> raftai r == CVC || null r) rolrafsi of
       (cvcs, "y":_) ->
        if has_C_C (concat cvcs)  -- no need for a tosmabru hyphen
        then if null (filter null rolrafsi) then mulrafsi else []
@@ -307,11 +315,11 @@ module Jbobaf.Vlatai (
   'n':xs -> hasNDJ xs
 
  noBadCC :: String -> Bool
- noBadCC str = null $ filter (\i -> length cc /= 1 && (isC $ cc !! 1)
-  && not (isC_C cc) where cc = take 2 (drop i str)) (findIndices isC str)
+ noBadCC str = null $ filter (\i -> let cc = take 2 (drop i str)
+  in length cc /= 1 && (isC $ cc !! 1) && not (isC_C cc)) (findIndices isC str)
  
  data Lertype = C Char | V Char | Y | Apos | BadCh
-  deriving (Eq, Ord, Read, Show, Bounded)
+  deriving (Eq, Ord, Read, Show)
  
  lertype :: String -> [Lertype]
  -- Pre-classifying letterals as consonants & vowels cuts down on obsessive
