@@ -67,14 +67,35 @@ module Jbobaf.Vlatai (
    || emphed == 1 && not (null $ filter isUpper $ last $ init sylls))
 
  xufu'ivla str = fadgau str >>= maybe (return False) xufu'ivla'
- xufu'ivla' str = ?????
+ xufu'ivla' str = do
+  noemph <- isOpt Ignore_brivla_emphasis
+  canY <- isOpt Allow_Y_in_fu'ivla
+  ndj <- isOpt Allow_ndj_in_fu'ivla
+  if not (null str) && notElem ' ' str && isV (last str)
+   && (ndj || not (hasNDJ str)) && (canY || notElem 'y' str)
+   && not (xugismu' str) && not (xulujvo' str)
+   && not (isC (head str) && xulujvo' ('t':'o':str))
+   then case findCC str of
+	 Just ccLoc ->
+	  let (clust, rest) = span (\c -> isC c || c == 'y') (drop ccLoc str)
+	      preclust = take ccLoc str
+	      preCs = length $ filter isC preclust
+	  in if elem 'y' clust || has_C_C clust
+		 || null (filter (\c -> isC c || elem c "',") rest)
+		 || ccLoc /= 0 && xulujvo' ('t':'o':drop ccLoc str)
+	     then return $ ccLoc /= 0
+	      && length (filter (`notElem` "',y") preclust) <= 3
+	      && (preCs == 1 && isC (head preclust) || preCs == 0)
+	     else return (ccLoc == 0)
+	 Nothing -> return False
+   else return False
 
  xucmevla str = fadgau str >>= maybe (return False) xucmevla'
  xucmevla' [] = return False
  xucmevla' str = do
   dotty <- isOpt Use_dotside
   ndj <- isOpt Allow_ndj_in_cmevla
-  return $ isC (last str) && null (filter isSpace str) && noBadCC str
+  return $ isC (last str) && notElem ' ' str && noBadCC str
 	   && case (dotty, findLa str, ndj, hasNDJ str) of
 	       (False, Just _, _, _) -> False
 	       (_, _, False, True) -> False
@@ -86,7 +107,7 @@ module Jbobaf.Vlatai (
   commas <- isOpt Allow_commas_in_cmavo
   let maho = if isC c then xs else str
   return $ not (null maho) && null (filter (\c -> isSpace c || isC c) maho)
-   && (commas || null (filter (== ',') maho))
+   && (commas || notElem ',' maho)
 
  -- |@fadgau@ is a basic "cleanup" routine used by various functions in Jbobaf
  -- for converting Lojban strings into a more regular, "normalized" form.  It

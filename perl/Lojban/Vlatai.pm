@@ -171,20 +171,22 @@ sub xufuhivla($) {
   && xulujvo("to$valsi")) && $valsi =~ /($C$C+)/o or return 0;
  my($cluster, $clustBegin, $clustEnd) = ($1, $-[1], $+[1]);
  my $head = substr $valsi, 0, $clustBegin;
- # If the consonant cluster is not initial or the part after the cluster is
- # monosyllabic, then the cluster must be preceded by /^$C?$V('?$V)*$/, which
- # may contain no more than three non-apostrophes.
- if ($cluster =~ $CxC || substr($valsi, $clustEnd) =~ /^$V+$/o) {
-  return $head =~ /^$C?$V(?:'?$V)*$/o && length($head) - ($head =~ tr/'//) <= 3
- } else {
-  # If the cluster is initial and the part after it is not monosyllabic, then
-  # either (a) the part after the cluster fails the {slinku'i} test, in which
-  # case the part before the cluster must be a valid beginning not of form CV,
-  # or (b) the cluster is at the beginning of $valsi.
-  return xulujvo('to' . substr($valsi, $clustEnd))
-   ? $head =~ /^$C?$V(?:'?$V)*$/o && $head !~ /^$C$V$/o
-   : $clustBegin == 0
- }
+ return 0 if length($head) - ($head =~ tr/',//) > 3;
+
+ # If the consonant cluster is initial and the part starting at it is neither
+ # monosyllabic (i.e., there is a comma, apostrophe, or consonant somewhere
+ # after the cluster) nor fails the {slinku'i} test (i.e., prepending a CV to
+ # it does not result in a {lujvo}; if the cluster is at the beginning of the
+ # string, this has already been checked above), then the cluster must be at
+ # the beginning of the string.  Otherwise, the cluster must be preceded by a
+ # string of the form /^$C?$V([',]?$V)*$/ (which cannot be CV under certain
+ # circumstances, but that's handled above, and which cannot contain more than
+ # three non-punctuation characters, which is also handled above).
+
+ return $cluster !~ $CxC && substr($valsi, $clustEnd) =~ /$C|[',]/o
+  && ($clustBegin == 0 || !xulujvo('to' . substr($valsi, $clustBegin)))
+  ? $clustBegin == 0
+  : $head =~ /^$C?$V(?:[',]?$V)*$/;
 }
 
 sub jvozba {
@@ -248,13 +250,14 @@ my @namcu = qw< no pa re ci vo mu xa ze bi so >;
 sub fadgau($) {
  (my $valsi = shift) =~ s/^[\s.,]+|[\s.,]+$//g;
  $valsi =~ s/(\d)/$namcu[$1]/g;
- $valsi =~ tr/áéíóúHh/AEIOU''/;
+ $valsi =~ tr/áéíóúýÁÉÍÓÚÝHh/AEIOUyAEIOUy''/;
  $valsi =~ s/,*[\s.][\s.,]*/ /g;
  $valsi =~ tr/,//s;
+ $valsi =~ s/($C)/\l$1/g;
  # Delete commas not between vowels; is this correct?
  $valsi =~ s/(?<!$Vy),|,(?!$Vy)//g;
- return $valsi !~ tr/A-GI-PR-VX-Za-gi-pr-vx-z',. //c && $valsi !~ $CyC
-  && $valsi !~ /(?<!$Vy)'(?!$Vy)/ && $valsi;
+ return $valsi !~ tr/AEIOUa-gi-pr-vx-z',. //c && $valsi !~ $CyC
+  && $valsi !~ /(?<!$Vy)'|'(?!$Vy)/ && $valsi;
 }
 
 1;
