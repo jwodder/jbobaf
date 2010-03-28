@@ -1,7 +1,7 @@
 module Jbobaf.Internals where
  import List (find, findIndices)
  import Monad (liftM2)
- import Jbobaf.Vlatai (isC)
+ import Jbobaf.Vlatai (isC, isVy, isV)
 
  infixr 5 ~:, ~~, ~:~
  infixr 0 ?:, :?
@@ -44,3 +44,12 @@ module Jbobaf.Internals where
 	 if not (isV c) && c /= '\\'' then Just (pos+3)
 	 else fla (pos+4) False xs
 	fla pos _ (c:xs) = fla (pos+1) (isC c) xs
+
+ syllabicate :: String -> [String]
+ -- How should this handle consonant clusters, especially non-initial ones?
+ syllabicate [] = []
+ syllabicate ('\'':xs) = ('\'':a) : syllabicate b where (a, b) = span isVy xs
+ syllabicate (',':xs) = (',':a) : syllabicate b where (a, b) = span isVy xs
+ syllabicate str = (c ++ v) : syllabicate rest
+  where (c, r) = span isC str
+        (v, rest) = span isVy r

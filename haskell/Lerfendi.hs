@@ -112,7 +112,7 @@ module Jbobaf.Lerfendi (lerfendi) where
   Nothing -> ma'ocpa str
   Just n -> let (alpha, omega) = splitAt n str
 		omsyls = syllabicate omega
-	    in case span (null . filter (\c -> isV c && isUpper c)) omsyls of
+	    in case span (null . filter isUpper) omsyls of
 	     (_, []) -> brivlate alpha omsyls
 	     (_, [_]) -> [Left str]  -- only last syllable emphasized; error?
 	     (_, [_, _]) -> brivlate alpha omsyls
@@ -121,7 +121,7 @@ module Jbobaf.Lerfendi (lerfendi) where
 	      (_, []) -> [Left str]  -- This is never supposed to happen.
 	      (_, [_]) -> brivlate alpha omsyls
 	      (c, d:ys) -> 
-	       -- make sure `d' isn't capitalized
+	       -- Make sure `d' isn't capitalized!
 	       if head (head ys) == '\'' then [Left str]
 		-- It is also an error if `head ys' begins with a non-initial
 		-- consonant cluster.
@@ -155,15 +155,6 @@ module Jbobaf.Lerfendi (lerfendi) where
  -- Tests whether a syllable contains a non-Y vowel and is thus accentable.
  -- The short name is solely for aesthetic reasons.
  voc = not . null . filter isV
-
- syllabicate :: String -> [String]
- -- How should this handle consonant clusters, especially non-initial ones?
- syllabicate [] = []
- syllabicate ('\'':xs) = ('\'':a) : syllabicate b where (a, b) = span isVy xs
- syllabicate (',':xs) = (',':a) : syllabicate b where (a, b) = span isVy xs
- syllabicate str = (c ++ v) : syllabicate rest
-  where (c, r) = span isC str
-        (v, rest) = span isVy r
 
  brivlate :: String -> [String] -> Tamcux [Either String Valsi]
  brivlate pre body@(b1:bxs) = do

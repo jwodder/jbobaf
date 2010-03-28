@@ -58,8 +58,13 @@ module Jbobaf.Vlatai (
  xugismu' _ = return False
 
  xulujvo str = fadgau str >>= maybe (return False) xulujvo'
- xulujvo' str = jvokatna' str >>= return . not . null
-  -- This needs to check for proper emphasis.
+ xulujvo' str = do
+  noemph <- isOpt Ignore_brivla_emphasis
+  rafsi <- jvokatna' str
+  let sylls = syllabicate str
+      emphed = length $ filter (not . null . filter isUpper) sylls
+  return $ not (null rafsi) && (noemph || emphed == 0
+   || emphed == 1 && not (null $ filter isUpper $ last $ init sylls))
 
  xufu'ivla str = fadgau str >>= maybe (return False) xufu'ivla'
  xufu'ivla' str = ?????
