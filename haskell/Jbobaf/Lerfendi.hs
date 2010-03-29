@@ -151,11 +151,6 @@ module Jbobaf.Lerfendi (lerfendi) where
 	mp (a:b:xs) = mkCmavo (take (b-a) $ drop a str) ~~ mp (b:xs)
 	mp [a] = mkCmavo $ drop a str
 
- voc :: String -> Bool
- -- Tests whether a syllable contains a non-Y vowel and is thus accentable.
- -- The short name is solely for aesthetic reasons.
- voc = not . null . filter isV
-
  brivlate :: String -> [String] -> Tamcux [Either String Valsi]
  brivlate pre body@(b1:bxs) = do
   tosmabru <- xulujvo' $ 't':'o':concat body

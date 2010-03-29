@@ -67,9 +67,9 @@ module Jbobaf.Vlatai (
   noemph <- isOpt Ignore_brivla_emphasis
   rafsi <- jvokatna' str
   let sylls = syllabicate str
-      emphed = length $ filter (not . null . filter isUpper) sylls
-  return $ not (null rafsi) && (noemph || emphed == 0
-   || emphed == 1 && not (null $ filter isUpper $ last $ init sylls))
+      emphQty = length $ filter (not . null . filter isUpper) sylls
+  return $ not (null rafsi) && (noemph || emphQty == 0 || emphQty == 1
+   && not (null $ filter isUpper $ last $ init $ filter voc sylls))
 
  xufu'ivla str = fadgau str >>= maybe (return False) xufu'ivla'
  xufu'ivla' str = do
@@ -79,7 +79,11 @@ module Jbobaf.Vlatai (
   xugim <- xugismu' str
   xuluj <- xulujvo' str
   toluj <- xulujvo' $ 't':'o':str
+  let vocSyls = filter voc $ syllabicate str
+      emphQty = length $ filter (not . null . filter isUpper) vocSyls
   if not (null str) && notElem ' ' str && isV (last str)
+   && length vocSyls >= 2 && (noemph || emphQty == 0
+    || emphQty == 1 && not (null $ filter isUpper $ last $ init vocSyls))
    && (ndj || not (hasNDJ str)) && (canY || notElem 'y' str)
    && not xugim && not xuluj && not (isC (head str) && toluj)
    then case findCC str of
@@ -89,7 +93,7 @@ module Jbobaf.Vlatai (
 	      preCs = length $ filter isC preclust
 	  slinky <- xulujvo' $ 't':'o':drop ccLoc str
 	  if elem 'y' clust || has_C_C clust
-	      || null (filter (\c -> isC c || elem c "',") rest)
+	      || length (filter voc $ syllabicate rest) == 1
 	      || ccLoc /= 0 && slinky
 	   then return $ ccLoc /= 0
 		 && length (filter (`notElem` "',y") preclust) <= 3

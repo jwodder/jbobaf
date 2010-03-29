@@ -54,3 +54,8 @@ module Jbobaf.Internals where
  syllabicate str = (c ++ v) : syllabicate rest
   where (c, r) = span isC str
         (v, rest) = span isVy r
+
+ voc :: String -> Bool
+ -- Tests whether a syllable contains a non-Y vowel and is thus accentable.
+ -- The short name is solely for aesthetic reasons.
+ voc = not . null . filter isV
