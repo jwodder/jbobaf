@@ -179,9 +179,8 @@ sub xufuhivla($) {
  # it does not result in a {lujvo}; if the cluster is at the beginning of the
  # string, this has already been checked above), then the cluster must be at
  # the beginning of the string.  Otherwise, the cluster must be preceded by a
- # string of the form /^$C?$V([',]?$V)*$/ (which cannot be CV under certain
- # circumstances, but that's handled above, and which cannot contain more than
- # three non-punctuation characters, which is also handled above).
+ # string of the form /^$C?$V([',]?$V)*$/ which cannot contain more than three
+ # non-punctuation characters (handled above).
 
  return $cluster !~ $CxC && substr($valsi, $clustEnd) =~ /$C|[',]/o
   && ($clustBegin == 0 || !xulujvo('to' . substr($valsi, $clustBegin)))

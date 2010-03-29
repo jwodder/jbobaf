@@ -27,6 +27,7 @@ module Jbobaf.Vlatai (
  isC_C cc = Set.member cc' fadni || Set.member cc' lidne
   where cc' = map toLower cc
 
+ lidne, fadni :: Set.Set String
  lidne = Set.fromAscList ["bl", "br", "cf", "ck", "cl", "cm", "cn", "cp", "cr",
   "ct", "dj", "dr", "dz", "fl", "fr", "gl", "gr", "jb", "jd", "jg", "jm", "jv",
   "kl", "kr", "ml", "mr", "pl", "pr", "sf", "sk", "sl", "sm", "sn", "sp", "sr",
@@ -218,7 +219,7 @@ module Jbobaf.Vlatai (
   -- lowercase.
   let (pre, fanmo) = case lertype (reverse str) of
 	V v2 : Apos : V v1 : C c1 : xs -> (xs, [[c1, v1, '\'', v2]])
-	V v2 : V v1 : C c1 : xs -> (xs, [[c1, v1, v2]])
+	V v2 : V v1 : C c1 : xs | notElem v1 "iuIU" -> (xs, [[c1, v1, v2]])
 	V v2 : C c3 : V v1 : C c2 : C c1 : xs
 	 | isCC [c1, c2] -> (xs, [[c1, c2, v1, c3, v2]])
 	V v2 : C c3 : C c2 : V v1 : C c1 : xs
@@ -234,7 +235,8 @@ module Jbobaf.Vlatai (
       katna [] rafs = rafs
       katna (V v : C c2 : C c1 : xs) rafs | isCC [c1, c2]
        = katna xs ([c1, c2, v] : rafs)
-      katna (V v2 : V v1 : C c : xs@(_:_)) rafs = katna xs ([c, v1, v2] : rafs)
+      katna (V v2 : V v1 : C c : xs@(_:_)) rafs | notElem v1 "iuIU"
+       = katna xs ([c, v1, v2] : rafs)
       katna (V v2 : Apos : V v1 : C c : xs@(_:_)) rafs
        = katna xs ([c, v1, '\'', v2] : rafs)
       katna (C c2 : V v : C c1 : xs) rafs = katna xs ([c1, v, c2] : rafs)
@@ -253,7 +255,7 @@ module Jbobaf.Vlatai (
 	     else katna xs ([c1, v, c2] : "y" : rafs)
       katna [rn, V v2, V v1, C c] rafs =
        if rn == C (head (head rafs) == 'r' ?: 'n' :? 'r')
-	&& (length rafs > 1 || raftai (head rafs) /= CCV)
+	&& (length rafs > 1 || raftai (head rafs) /= CCV) && notElem v1 "iuIU"
        then [c, v1, v2] : rafs
        else []
       katna [rn, V v2, Apos, V v1, C c] rafs =
@@ -262,7 +264,7 @@ module Jbobaf.Vlatai (
        then [c, v1, '\'', v2] : rafs
        else []
       katna [V v2, V v1, C c] rafs =
-       if length rafs == 1 && raftai (head rafs) == CCV
+       if length rafs == 1 && raftai (head rafs) == CCV && notElem v1 "iuIU"
        then [c, v1, v2] : rafs
        else []
       katna [V v2, Apos, V v1, C c] rafs =
@@ -293,7 +295,7 @@ module Jbobaf.Vlatai (
  
  raftai :: String -> Raftai
  -- assumes its argument is normalized; should this use a Tamcux monad?
- raftai [c, v1, v2] | isC c && isV v1 && isV v2 = CVV
+ raftai [c, v1, v2] | isC c && isV v1 && isV v2 && notElem v1 "iuIU" = CVV
  raftai [c, v1, '\'', v2] | isC c && isV v1 && isV v2 = CVV
  raftai [c1, c2, v] | isCC [c1, c2] && isV v = CCV
  raftai [c1, v, c2] | isC c1 && isV v && isC c2 = CVC
