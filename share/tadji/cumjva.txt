@@ -1,0 +1,52 @@
+Morphological rules which may or may not be in effect:
+ - whether any or all of these rules apply to {cmavo}, {cmene}, and/or
+   {fu'ivla}
+ - Diphthongs & triphthongs:
+  - whether rising diphthongs containing 'y' are eligible for emphasis
+  - whether rising diphthongs are allowed immediately after a consonant
+  - whether triphthongs are allowed
+ - Consonant clusters:
+  - whether clusters of three or more consonants in a row are allowed and, if
+    so, what rules they must obey
+   - Under a strict reading of the CLL, only {lujvo} have restrictions on
+     lengthy consonant clusters; {fu'ivla} & {cmene} can contain any sequence of
+     consonants in which each pair is valid (except for consonant clusters at
+     the beginning of a {fu'ivla}, for which every consonant pair must be an
+     initial pair).
+  - whether the prohibition against "ndj", "ndz", "ntc", & "nts" applies to
+    {fu'ivla} and/or {cmene}
+  - whether {cmene} may begin with non-initial consonant pairs
+ - Punctuation:
+  - whether an apostrophe can occur on either side of a diphthong (and for
+    which kinds of diphthongs)
+  - whether three or more vowels/diphthongs in a row may be separated by
+    apostrophes
+  - whether (non-superfluous) commas may appear between adjacent consonants
+  - whether a non-superfluous comma may appear between a consonant & a vowel
+  - the dotside
+  - whether mandatory periods may be formally omitted when adjacent to
+    whitespace
+ - whether two adjacent vowels/diphthongs are allowed without an intervening
+   consonant or apostrophe
+  - whether this is allowed without an intervening comma
+  - whether such a division should be assumed for any adjacent vowels otherwise
+    in the same syllable that do not form a valid diphthong
+ - whether a {cmene} may lack both vowels & syllabic consonants
+  - If they cannot, and assuming that the dotside is not in effect, is "{la
+    lan.}" valid?
+ - whether {cmene} may contain more than one capitalized/emphasized syllable
+ - whether a {cmene} can be emphasized on a syllabic consonant or 'y'?
+ - whether {rafsi} can contain syllables with an empty onset (i.e., beginning
+   with a comma)
+ - whether {rafsi} can be of the form C[iu]V
+ - whether or not {fu'ivla} may contain 'y'
+  - relatedly, whether {rafsi fu'ivla} are in effect
+ - whether rising diphthongs containing 'y' count towards a {brivla}'s
+   polysyllabicity requirement
+ - whether {brivla} should obey the five-letter rule or a {ma'osmi} rule
+ - Magic words:
+  - which magic words take effect inside LOhU ... LEhU quotes
+  - whether an erasure can re-open a ZO, ZOI, or error quote
+  - which magic words are nullified by being on the left and/or right of a ZEI
+  - precedences of magic words
+  - whether to recognize LAhOI

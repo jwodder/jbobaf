@@ -1,0 +1,90 @@
+A generalized form of the Lojban word-splitting algorithm, as I understand it:
+ - Let FENDI be a function (described below) that maps a nonempty string of
+   characters that contains neither spaces nor periods to a nonempty string of
+   Lojban {valsi}.
+ - Let CMAVO, CMEVLA, and BRIVLA be functions that convert a string of
+   characters into the corresponding Lojban {cmavo}, {cmevla}, or {brivla},
+   respectively, assuming total morphological validity of the input.  If their
+   input is invalid, either for the given type of {valsi} or by the more
+   general rules of Lojban morphology, the result is undefined.
+ - Let ++ be an operator that concatenates strings.
+ - Given a string Λ of Lojban text, the Lojban words contained in it are the
+   concatenated results of applying FENDI to each nonempty maximal substring of
+   non-space, non-period characters in Λ in order of appearance, with the
+   following exceptions:
+  - Should FENDI return a {valsi} string containing a {cmavo} of {selma'o} ZOI,
+    let δ be the {valsi} returned immediately after this {cmavo}; if δ does not
+    occur at the end of a single {valsi} string returned by a call to FENDI,
+    the text is invalid.  Let ζ be the string of all characters in Λ after the
+    string corresponding to δ, up to but not including the next occurrence of a
+    string representation of δ preceded by spaces and/or periods.  (If the ZOI
+    occurs at the end of Λ, or if there is no subsequent occurrence of δ, the
+    text is invalid.)  The contents of ζ shall not be examined for Lojban
+    words, and the tokenization of Λ shall otherwise continue after ζ as
+    before.
+  - Should FENDI return a {valsi} string containing a {cmavo} of {selma'o}
+    FAhO, all {valsi} occurring after it in Λ, including any & all occurrences
+    of errors or invalid text, are to be ignored.
+  - [[TO DO: Add in how ZOI & FAhO are affected by the other magic words.]]
+ - A syllable whose nucleus is neither a 'y' nor a syllabic consonant is
+   hereafter referred to as an "accentable syllable."
+ - A maximal-length string of the form /^C?[Vy]+([',][Vy]+)*$/ is hereafter
+   referred to as a "{ma'osmi}."
+ - Techniques for attempting to handle or recover from invalid strings are
+   outside the scope of this algorithm.
+ - FENDI(γ) is defined by the following cases:
+  0. FENDI(ε) := ε
+  1. If γ contains a violation of the general morphological rules of Lojban
+     (e.g., it contains a character not in the Lojban alphabet, an invalid
+     consonant pair/triple/vowel sequence, or an apostrophe not between two
+     vowels), then γ is invalid.
+  2. If the last character in γ is a consonant:
+   a. If the dotside is not in effect and γ contains one or more occurrences of
+      the strings "la", "lai", "la'i", or "doi" that are neither preceded by a
+      consonant nor followed by an apostrophe or vowel, then FENDI(γ) :=
+      FENDI(α) ++ CMEVLA(ω), where α is the substring before the last such
+      string in γ and ω is the remaining substring in γ.
+   b. Otherwise, FENDI(γ) := CMEVLA(γ).
+  3. If the last character in γ is a 'y', then FENDI(γ) := FENDI(α) ++
+     CMAVO(ω), where ω is the {ma'osmi} at the end of γ and α is the substring
+     of γ preceding ω.  (If α ends with a consonant, γ is invalid.)
+  4. If γ contains two or more adjacent consonants, each possibly separated by
+     a single 'y' (hereafter referred to as a "consonant cluster"):
+   a. If the portion of γ after the consonant cluster contains an accentable
+      syllable with a capitalized or accented nucleus and followed (not
+      necessarily immediately) by two or more accentable syllables (the first
+      of which is hereafter called the "ultima"; if this syllable is terminated
+      by an apostrophe or non-initial consonant cluster, γ is invalid), then
+      let α be the substring of γ up to and including the end of the ultima,
+      and let ω be the substring of γ after the ultima.  Otherwise, let α equal
+      γ and let ω be the empty string (ε).
+    i. Note that, due to steps 2 and 3, it is impossible at this point for the
+       ultima to be followed by a non-empty non-punctuation string that does
+       not contain an accentable syllable.
+   b. Let the "body" consist of the contents of α from the beginning of the
+      first consonant cluster onwards.  If all of the following conditions
+      hold:
+    i.   The consonant cluster at the beginning of the body consists entirely
+	 of initial (overlapping, if more than one) consonant clusters.
+    ii.  The body has more than one accentable syllable.
+    iii. Prepending a string of the form CV to the body cannot result in a
+	 morphologically valid {lujvo}.
+      then let β be the body and let β′ be true.  Otherwise, if the portion of
+      α before the body ends with a {ma'osmi} that, when encompassing as many
+      characters as possible, contains no more than three non-punctuation,
+      non-Y characters, then let β be this {ma'osmi} prepended to the body and
+      let β′ be true.  Otherwise, let β be the body and let β′ be false.  For
+      all cases, let δ be the portion of α not in β.
+   c. FENDI(γ) := FENDI(δ) ++ χ ++ FENDI(ω), where χ is defined as follows:
+    i.   If β′ is true and β is a valid {brivla}, χ := BRIVLA(β).
+    ii.  Otherwise, if the first consonant cluster in β has a 'y' between its
+	 first two consonants, χ := FENDI(φ) ++ FENDI(ψ), where φ is the
+	 portion of β up to & including this 'y' and ψ is the remaining portion
+	 of β.
+    iii. Otherwise, β is invalid.
+  5. Otherwise, FENDI(γ) is the string formed by applying CMAVO to each maximal
+     non-overlapping {ma'osmi} substring of γ, starting from the beginning of
+     γ.
+ - Observation: In a non-{cmene} string containing a consonant cluster, all
+   {ma'osmi} before the one immediately before the cluster will always be
+   converted into {cmavo}.

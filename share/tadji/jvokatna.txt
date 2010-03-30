@@ -1,0 +1,62 @@
+How to split a {lujvo} into its component {rafsi} and check it for validity:
+ 0. If the {lujvo} contains any invalid consonant pairs, invalid consonant
+    triples, or other features prohibited by general Lojban morphology, it is
+    invalid.
+ 1. Let ω be the string formed from the last three letters of the {lujvo},
+    including but not counting inner apostrophes.
+  a. If ω is of the form CVV, it forms a single {rafsi}.
+  b. If ω is of the form VCV, it must be preceded by an initial consonant pair,
+     together with which it forms a CCVCV {rafsi}.
+  c. If ω is of the form C/CV where C/C is not an initial consonant pair, it
+     must be preceded by a string of the form CV, together with which it forms
+     a CVC/CV {rafsi}.
+  d. If ω is of the form CCV, let ψ be the portion of the {lujvo} preceding it,
+     not including any & all consecutive strings of the form CCV immediately
+     preceding ω.  If ψ ends with a string of the form CV, then ω must be
+     immediately preceded by a CV string, together with which it forms a CVCCV
+     {rafsi}; otherwise, ω is a CCV {rafsi}, and all CCV strings in the {lujvo}
+     that are in neither ψ nor ω are also CCV {rafsi}.
+  e. Otherwise, the {lujvo} is invalid.
+ 2. While there remains a non-empty substring of the {lujvo} that has not yet
+    been split into {rafsi}:
+  a. If the remaining substring is of the form CVV[rn]?, then if neither or
+     both of the below conditions hold, the CVV portion forms a {rafsi}.  If
+     exactly one of the below conditions holds, the {lujvo} is invalid.
+   i.  If either more than one {rafsi} has been identified or else exactly one
+       {rafsi}, which is not of the form CCV, has been identified, then the
+       remaining substring must end with a consonant that is an 'r', unless the
+       first letter after the substring is an 'r', in which case the substring
+       must end with an 'n'.
+   ii. Otherwise, the substring may not end with a consonant.
+  b. If the remaining substring ends with a string of the form CVCy (hereafter
+     referred to as φ), then if all of the following conditions hold:
+   i.   φ is immediately preceded by a consonant which forms an initial
+	consonant pair with the first letter of φ.
+   ii.  φ is immediately preceded by zero or more consecutive (non-hyphenated)
+	strings of the form CVC.
+   iii. All consonant pairs existing in the concatenation of the strings in
+	(ii) are initial consonant pairs.
+   iv.  The strings in (ii) are immediately preceded by a consonant which forms
+	an initial consonant pair with the consonant immediately after it.
+     then φ, together with the consonant preceding it, forms a CCVCy {rafsi}.
+     Otherwise, φ (minus the 'y', which is discarded) is a CVC {rafsi}.  In the
+     latter case, if the absense of the 'y' would not cause an invalid
+     consonant pair or triple to be present in the {lujvo}, denote the location
+     of the 'y' by τ; if a value has already been assigned to τ during the
+     execution of this algorithm, or if the two letterals on either side of the
+     'y' do not form an initial consonant pair, the {lujvo} is invalid.
+  c. If the remaining substring ends with a string of the form CCV, CVV, CVC,
+     or CVC/Cy, this terminal string forms a {rafsi}.
+  d. Otherwise, the {lujvo} is invalid.
+ 3. If only one {rafsi} has been identified in the {lujvo}, it is invalid.
+ 4. If when the hyphen at location τ (if any) is ignored, one of the following
+    is true:
+  a. The {lujvo} consists of one or more CVC {rafsi} followed by a CVCCV
+     {rafsi}, there are no hyphens in the {lujvo}, and all consonant pairs in
+     the {lujvo} are initial consonant pairs.
+  b. The {lujvo} consists of two or more non-hyphenated CVC {rafsi} followed by
+     a 'y' hyphen & an arbitrary string of {rafsi}, and all consonant pairs
+     within the concatenated string of CVC {rafsi} are initial.
+    then τ must have had a value assigned to it during the execution of step 2,
+    and the hyphen at τ is located immediately after the first {rafsi} in the
+    {lujvo}.  Otherwise, a value must not have been assigned to τ.
