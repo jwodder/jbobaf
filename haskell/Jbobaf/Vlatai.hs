@@ -280,19 +280,18 @@ module Jbobaf.Vlatai (
       || length mulrafsi < 2
      then return []
      else return $ case span (\r -> raftai r == CVC || null r) rolrafsi of
-      (cvcs, "y":_) ->
-       if has_C_C (concat cvcs)  -- no need for a tosmabru hyphen
-       then if null (filter null rolrafsi) then mulrafsi else []
-       else if length cvcs > 1 && null (cvcs !! 1) then mulrafsi else []
+      (cvcs@(_:tsb:_), "y":_) ->
+       if has_C_C (concat cvcs)  -- has_C_C ⇒ no need for a tosmabru hyphen
+	?: null (filter null rolrafsi) :? null tsb then mulrafsi else []
       (cvcs, [[_,_,c1,c2,_]]) | isCC [c1, c2] ->
-       if has_C_C (concat rolrafsi)  -- no need for a tosmabru hyphen
-       then if null (filter null rolrafsi) then mulrafsi else []
-       else if length cvcs > 1 && null (cvcs !! 1) then mulrafsi else []
+       if has_C_C (concat rolrafsi)  -- has_C_C ⇒ no need for a tosmabru hyphen
+	 ?: null (filter null rolrafsi) :? length cvcs > 1 && null (cvcs !! 1)
+	then mulrafsi else []
       _ -> if null (filter null rolrafsi) then mulrafsi else []
 
  data Raftai = CVV | CCV | CVC | CCVC | CVC_C | CCVCV | CVC_CV | Srerafsi
   deriving (Eq, Ord, Read, Show, Enum, Bounded, Ix)
- 
+
  raftai :: String -> Raftai
  -- assumes its argument is normalized; should this use a Tamcux monad?
  raftai [c, v1, v2] | isC c && isV v1 && isV v2 && notElem v1 "iuIU" = CVV

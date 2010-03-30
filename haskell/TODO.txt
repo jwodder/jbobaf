@@ -27,3 +27,5 @@
 - Add a function for joining {rafsi} into {lujvo}
 - Implement the remaining features for fadgau (including support for
   Allow_triphthongs and Split_bad_diphthongs)
+- Add a new Tamcux option Ignore_bad_ZOI_delims that causes a ZOI followed by a
+  non-word string to (effectively) only quote that string

@@ -41,6 +41,11 @@ module Jbobaf.Lerfendi (lerfendi) where
  mafygau :: Flezvalei -> String -> [Either String Valsi]
   -> Tamcux [Either String Valsi]
 
+ -- Possible way to search for ending ZOI delimiters: While the end has not
+ -- been found, get the next chunk from the stream and split it into words.  If
+ -- the first word equals the delimiter, the end has been found.  Otherwise,
+ -- consume the raw chunk from the stream and keep searching.
+
  mafygau (After_ZOI (Just d) trail) ba [] = ???
  mafygau (After_ZOI_error (Just d) trail) ba [] = ???
  mafygau makfa ba [] = lerfendi' makfa ba
