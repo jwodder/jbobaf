@@ -29,3 +29,8 @@
   Allow_triphthongs and Split_bad_diphthongs)
 - Add a new Tamcux option Ignore_bad_ZOI_delims that causes a ZOI followed by a
   non-word string to (effectively) only quote that string
+- Rethink how the Valsi type is structured & used
+- Possibly make Tamcux into an Error monad as well as a Reader so that the user
+  can receive information about exactly *why* something (e.g., jvokatna) failed
+ - An option could then be added to Tamcux for specifying whether error
+   messages should be in English or Lojban.

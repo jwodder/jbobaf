@@ -117,7 +117,7 @@ module Jbobaf.Vlatai (
  xucmavo str = fadgau str >>= maybe (return False) xucmavo'
  xucmavo' [] = return False
  xucmavo' str@(c:xs) = do
-  commas <- isOpt Allow_commas_in_cmavo
+  commas <- isNopt No_commas_in_cmavo
   let maho = if isC c then xs else str
   return $ not (null maho) && null (filter (\c -> isSpace c || isC c) maho)
    && (commas || notElem ',' maho)
@@ -172,9 +172,11 @@ module Jbobaf.Vlatai (
   accents <- isOpt Allow_accents
   ignoring <- isOpt Ignore_naljbo_chars
   hasH <- isOpt Allow_H
+  digits <- isOpt Translate_digits
   let goodchr c = elem (toLower c) "',.abcdefgijklmnoprstuvxyz"
 		   || accents && elem (toLower c) "áéíóúý"
 		   || hasH && toLower c == 'h'
+		   || digits && isDigit c
       lerfad "'" = Nothing
       lerfad ('\'':',':xs) = lerfad ('\'':xs)
       lerfad "," = Just []
@@ -205,6 +207,16 @@ module Jbobaf.Vlatai (
       lerfad ('Y':xs) = 'y' ~: lerfad xs
       lerfad ('ý':xs) = 'y' ~: lerfad xs
       lerfad ('Ý':xs) = 'y' ~: lerfad xs
+      lerfad ('0':xs) = lerfad $ 'n':'o':xs
+      lerfad ('1':xs) = lerfad $ 'p':'a':xs
+      lerfad ('2':xs) = lerfad $ 'r':'e':xs
+      lerfad ('3':xs) = lerfad $ 'c':'i':xs
+      lerfad ('4':xs) = lerfad $ 'v':'o':xs
+      lerfad ('5':xs) = lerfad $ 'm':'u':xs
+      lerfad ('6':xs) = lerfad $ 'x':'a':xs
+      lerfad ('7':xs) = lerfad $ 'z':'e':xs
+      lerfad ('8':xs) = lerfad $ 'b':'i':xs
+      lerfad ('9':xs) = lerfad $ 's':'o':xs
       lerfad (c:xs) = (if isC c then toLower c else c) ~: lerfad xs
       lerfad [] = Just []
   return $ lerfad $ dropWhile (\c -> isSpace c || c == '.' || c == ',') str

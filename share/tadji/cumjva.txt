@@ -50,3 +50,9 @@ Morphological rules which may or may not be in effect:
   - which magic words are nullified by being on the left and/or right of a ZEI
   - precedences of magic words
   - whether to recognize LAhOI
+
+Grammatical rules which may or may not be in effect:
+ - xorxes' proposed change to the grammar of tags:
+   <http://www.lojban.org/tiki/Internal+grammar+of+tags>
+ - requiring explicitly terminating a {sumti} followed by a non-logical
+   connective
