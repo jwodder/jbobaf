@@ -11,6 +11,25 @@ module Jbobaf.Lerfendi (lerfendi) where
 
 {- Miscellaneous features of lerfendi:
   - If the text after a FAhO is nonempty, it is returned as a Left String.
+  - If an active ZOI is followed by an invalid word (i.e., a Left String), it
+    will be used as the delimiter, and the ZOI will only be terminated by an
+    identical non-word or by end-of-text.
+  - A ZOI quote always consists of four parts: the ZOI, the delimiter, the
+    contents (as a Left String, possibly empty), and the delimiter again.
+    However, if the end of the text is reached while searching for the closing
+    delimiter, the contents of the ZOI will be everything in the text after the
+    opening delimiter, and no closing delimiter will be present in the returned
+    list.
+  - The contents of a ZOI quote are preserved character-for-character, except
+    that leading & trailing whitespace & periods are removed.
+  - Exception to the above: If the opening delimiter of a ZOI quote has text
+    after it in its "chunk" (which it shouldn't), that text has already been
+    normalized & split into words by the time @lerfendi@ realizes this, and so
+    the concatenated string representations of the items in the rest of the
+    chunk (@valsi@ for Right Valsi, the string itself for Left String) will
+    form the beginning of the ZOI text (unless the ending delimiter is also in
+    the chunk, in which case only the items up to the delimiter will be made
+    into ZOI text).
 -}
 
 ----------------------------------------
@@ -41,19 +60,56 @@ module Jbobaf.Lerfendi (lerfendi) where
  mafygau :: Flezvalei -> String -> [Either String Valsi]
   -> Tamcux [Either String Valsi]
 
- -- Possible way to search for ending ZOI delimiters: While the end has not
- -- been found, get the next chunk from the stream and split it into words.  If
- -- the first word equals the delimiter, the end has been found.  Otherwise,
- -- consume the raw chunk from the stream and keep searching.
+ -- How to search for ending ZOI delimiters: While the end has not been found,
+ -- get the next chunk from the stream and split it into words.  If the first
+ -- word equals the delimiter, the end has been found.  Otherwise, consume the
+ -- raw chunk from the stream and keep searching.
 
- mafygau (After_ZOI (Just d) trail) ba [] = ???
- mafygau (After_ZOI_error (Just d) trail) ba [] = ???
+ mafygau (After_ZOI (Just d) trail) ba [] = do
+  let (ca, ba') = spicpa ba
+  if null ca
+  then return (null trail ?: [] :? [Left trail])
+  else do
+   ca' <- fadgau ca
+   vals <- maybe (return []) fendi ca'
+   case (ca', vals) of
+    (Just x@(_:_), v:alsi)
+     | esv2str v == d = Left trail ~: v ~: mafygau Fadni ba' alsi
+    _ -> let (a, a') = span (\c -> isSpace c || c == '.') ba
+	     (b, b') = break (\c -> isSpace c || c == '.') a'
+	 in mafygau (After_ZOI (Just d) (trail ++ a ++ b)) b' []
+
+ mafygau (After_ZOI_error (Just d) trail) ba [] = do
+  let (ca, ba') = spicpa ba
+  if null ca
+  then return (null trail ?: [] :? [Left trail])
+  else do
+   ca' <- fadgau ca
+   vals <- maybe (return []) fendi ca'
+   case (ca', vals) of
+    (Just x@(_:_), v:alsi)
+     | esv2str v == d = Left trail ~: v ~: mafygau ErrorQuote ba' alsi
+    _ -> let (a, a') = span (\c -> isSpace c || c == '.') ba
+	     (b, b') = break (\c -> isSpace c || c == '.') a'
+	 in mafygau (After_ZOI_error (Just d) (trail ++ a ++ b)) b' []
+
  mafygau makfa ba [] = lerfendi' makfa ba
 
- mafygau (After_ZOI Nothing trail) ba (v:alsi) = ???
- mafygau (After_ZOI_error Nothing trail) ba (v:alsi) = ???
- mafygau (After_ZOI (Just d) trail) ba (v:alsi) = ???
- mafygau (After_ZOI_error (Just d) trail) ba (v:alsi) = ???
+ mafygau (After_ZOI Nothing []) ba (v:alsi)
+  = v ~: mafygau (After_ZOI (Just $ esv2str v) []) ba alsi
+
+ mafygau (After_ZOI_error Nothing []) ba (v:alsi)
+  = v ~: mafygau (After_ZOI_error (Just $ esv2str v) []) ba alsi
+
+ mafygau (After_ZOI (Just d) trail) ba (v:alsi) =
+  let v' = esv2str v
+  in if v' == d then Left trail ~: v ~: mafygau Fadni ba alsi
+     else mafygau (After_ZOI (Just d) (trail ++ v')) ba alsi
+
+ mafygau (After_ZOI_error (Just d) trail) ba (v:alsi) =
+  let v' = esv2str v
+  in if v' == d then Left trail ~: v ~: mafygau ErrorQuote ba alsi
+     else mafygau (After_ZOI_error (Just d) (trail ++ v')) ba alsi
 
  mafygau After_ZO_ZEI ba (v:alsi) = v ~: mafygau Fadni ba alsi
 
@@ -101,6 +157,8 @@ module Jbobaf.Lerfendi (lerfendi) where
  fendi :: String -> Tamcux [Either String Valsi]
  fendi [] = []
  fendi (',':xs) = fendi xs
+  -- This ^^ was at one point possible due to some other bit of code.  Given
+  -- the implementation of fadgau, can this still occur?
 
  fendi str | isC (last str) = do
   dotty <- isOpt Use_dotside
@@ -108,10 +166,9 @@ module Jbobaf.Lerfendi (lerfendi) where
    (False, Just n) -> fendi (take n str) ~~ mkCmevla (drop n str)
    _ -> mkCmevla str
 
- fendi str | toLower (last str) == 'y' =
-  case finalMa'osmi str of
-   Just n -> fendi (take n str) ~~ mkCmavo (drop n str)
-   Nothing -> return [Left str]
+ fendi str | toLower (last str) == 'y' = case finalMa'osmi str of
+  Just n -> fendi (take n str) ~~ mkCmavo (drop n str)
+  Nothing -> return [Left str]
 
  fendi str = case findCC str of
   Nothing -> ma'ocpa str
@@ -121,15 +178,15 @@ module Jbobaf.Lerfendi (lerfendi) where
 	     (_, []) -> brivlate alpha omsyls
 	     (_, [_]) -> [Left str]  -- only last syllable emphasized; error?
 	     (_, [_, _]) -> brivlate alpha omsyls
-	      -- make sure the last syllable isn't capitalized
+	      -- TO DO: Make sure the last syllable isn't capitalized!
 	     (a, b:xs) -> case break voc xs of
 	      (_, []) -> [Left str]  -- This is never supposed to happen.
 	      (_, [_]) -> brivlate alpha omsyls
 	      (c, d:ys) -> 
-	       -- Make sure `d' isn't capitalized!
+	       -- TO DO: Make sure `d' isn't capitalized!
 	       if head (head ys) == '\'' then [Left str]
-		-- It is also an error if `head ys' begins with a non-initial
-		-- consonant cluster.
+		-- TO DO: It is also an error if `head ys' begins with a
+		-- non-initial consonant cluster.
 	       else brivlate alpha (a ++ b:c ++ [d]) ~~ fendi (concat ys)
 
 ----------------------------------------
@@ -180,7 +237,11 @@ module Jbobaf.Lerfendi (lerfendi) where
 	     then mkCmavo b ~~ mkCmavo b1 ~~ fendi (concat bxs)
 	     else return [Left beta]
 
+ esv2str :: Either String Valsi -> String
+ esv2str (Left str) = str
+ esv2str (Right v) = valsi v
+
  mkCmevla, mkCmavo, mkBrivla :: String -> Tamcux [Either String Valsi]
  mkCmevla str = toCmevla str >>= return . (: []) . maybe (Left str) Right
- mkCmavo  str = toCmavo str >>= return . (: []) . maybe (Left str) Right
+ mkCmavo  str = toCmavo  str >>= return . (: []) . maybe (Left str) Right
  mkBrivla str = toBrivla str >>= return . (: []) . maybe (Left str) Right
