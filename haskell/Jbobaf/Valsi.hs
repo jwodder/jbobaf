@@ -8,7 +8,9 @@ module Jbobaf.Valsi (
  ) where
  import Char (toLower)
  import Ix
- import Jbobaf.Internals (findCC)
+ import Jbobaf.Internals
+ import Jbobaf.Tamcux (Tamcux)
+ import Jbobaf.Vlatai
 
  data Vlalei = Gismu | Lujvo | Fu'ivla | Cmavo {- | Lujma'o -} | Cmevla
   deriving (Eq, Ord, Read, Show, Bounded, Enum, Ix)
@@ -25,7 +27,7 @@ module Jbobaf.Valsi (
    ck_valsi :: String,
    ck_klesi :: Vlalei,
    ck_selma'o, ck_ralvla, ck_djuvla, ck_selvla, ck_notci :: Maybe String,
-   ck_rafsi :: [String],
+   ck_rafsi :: [String]
   } deriving (Eq, Ord, Read, Show)
 
  valsi :: Valsi -> String
@@ -50,51 +52,45 @@ module Jbobaf.Valsi (
  rafsi (Vla1 {}) = []
  rafsi (Vla2 {ck_rafsi = r}) = r
 
- toValsi :: String -> Tamcux (Maybe Valsi)
+ toValsi, toCmavo, toCmevla, toBrivla, toGismu, toLujvo, toFu'ivla
+  :: String -> Tamcux (Maybe Valsi)
+
  toValsi [] = return Nothing
  toValsi str = if isC (last str) then toCmevla str
 	       else maybe (toCmavo str) (const $ toBrivla str) (findCC str)
 
- toCmavo, toCmevla, toBrivla :: String -> Tamcux (Maybe Valsi)
- toGismu, toLujvo, toFu'ivla :: String -> Tamcux (Maybe Valsi)
+ toCmevla str = fadgau str >>= \fadni -> case fadni of
+  Just f -> xucmevla' f >>= return . (?: Just (miniMake f Cmevla) :? Nothing)
+  Nothing -> return Nothing
 
- toCmevla str = do
-  fadni <- fadgau str
-  drani <- xucmevla' fadni
-  return if drani then Just (miniMake fadni Cmevla) else Nothing
+ toCmavo str = fadgau str >>= \fadni -> case fadni of
+  Just f -> xucmavo' f >>= return . (?: Just (miniMake (map toLower f) Cmavo)
+   :? Nothing)
+  Nothing -> return Nothing
 
- toCmavo str = do
-  fadni <- fadgau str
-  drani <- xucmavo' fadni
-  return if drani then Just $ miniMake (map toLower fadni) Cmavo
-	 else Nothing
+ toBrivla str = fadgau str >>= \fadni -> case fadni of
+  Just f -> do gim <- xugismu' f
+	       luj <- xulujvo' f
+	       fui <- xufu'ivla' f
+	       return $ if gim then Just $ miniMake (map toLower f) Gismu
+			else if luj then Just $ miniMake (map toLower f) Lujvo
+			else if fui then Just $ miniMake (map toLower f) Fu'ivla
+			else Nothing
+  Nothing -> return Nothing
 
- toBrivla str = do
-  fadni <- fadgau str
-  gim <- xugismu' fadni
-  luj <- xulujvo' fadni
-  fu'i <- xufu'ivla' fadni
-  return if gim then Just $ miniMake (map toLower fadni) Gismu
-	 else if luj then Just $ miniMake (map toLower fadni) Lujvo
-	 else if fu'i then Just $ miniMake (map toLower fadni) Fu'ivla
-	 else Nothing
+ toGismu str = fadgau str >>= \fadni -> case fadni of
+  Just f -> xugismu' f >>= return . (?: Just (miniMake (map toLower f) Gismu)
+   :? Nothing)
+  Nothing -> return Nothing
 
- toGismu str = do
-  fadni <- fadgau str
-  drani <- xugismu' fadni
-  return if drani then Just $ miniMake (map toLower fadni) Gismu
-	 else Nothing
+ toLujvo str = fadgau str >>= \fadni -> case fadni of
+  Just f -> xulujvo' f >>= return . (?: Just (miniMake (map toLower f) Lujvo)
+   :? Nothing)
+  Nothing -> return Nothing
 
- toLujvo str = do
-  fadni <- fadgau str
-  drani <- xulujvo' fadni
-  return if drani then Just $ miniMake (map toLower fadni) Lujvo
-	 else Nothing
+ toFu'ivla str = fadgau str >>= \fadni -> case fadni of
+  Just f -> xufu'ivla' f >>=
+   return . (?: Just (miniMake (map toLower f) Fu'ivla) :? Nothing)
+  Nothing -> return Nothing
 
- toFu'ivla str = do
-  fadni <- fadgau str
-  drani <- xufu'ivla' fadni
-  return if drani then Just $ miniMake (map toLower fadni) Fu'ivla
-	 else Nothing
-
- miniMake str type = Vla1 {ck_valsi = str, ck_klesi = type}  -- not exported
+ miniMake str kle = Vla1 {ck_valsi = str, ck_klesi = kle}  -- not exported

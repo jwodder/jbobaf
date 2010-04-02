@@ -68,30 +68,30 @@ module Jbobaf.Lerfendi (lerfendi) where
  mafygau (After_ZOI (Just d) trail) ba [] = do
   let (ca, ba') = spicpa ba
   if null ca
-  then return (null trail ?: [] :? [Left trail])
-  else do
-   ca' <- fadgau ca
-   vals <- maybe (return []) fendi ca'
-   case (ca', vals) of
-    (Just x@(_:_), v:alsi)
-     | esv2str v == d = Left trail ~: v ~: mafygau Fadni ba' alsi
-    _ -> let (a, a') = span (\c -> isSpace c || c == '.') ba
-	     (b, b') = break (\c -> isSpace c || c == '.') a'
-	 in mafygau (After_ZOI (Just d) (trail ++ a ++ b)) b' []
+   then return (null trail ?: [] :? [Left trail])
+   else do
+    ca' <- fadgau ca
+    vals <- maybe (return []) fendi ca'
+    case (ca', vals) of
+     (Just x@(_:_), v:alsi)
+      | esv2str v == d -> Left trail ~: v ~: mafygau Fadni ba' alsi
+     _ -> let (a, a') = span (\c -> isSpace c || c == '.') ba
+	      (b, b') = break (\c -> isSpace c || c == '.') a'
+	  in mafygau (After_ZOI (Just d) (trail ++ a ++ b)) b' []
 
  mafygau (After_ZOI_error (Just d) trail) ba [] = do
   let (ca, ba') = spicpa ba
   if null ca
-  then return (null trail ?: [] :? [Left trail])
-  else do
-   ca' <- fadgau ca
-   vals <- maybe (return []) fendi ca'
-   case (ca', vals) of
-    (Just x@(_:_), v:alsi)
-     | esv2str v == d = Left trail ~: v ~: mafygau ErrorQuote ba' alsi
-    _ -> let (a, a') = span (\c -> isSpace c || c == '.') ba
-	     (b, b') = break (\c -> isSpace c || c == '.') a'
-	 in mafygau (After_ZOI_error (Just d) (trail ++ a ++ b)) b' []
+   then return (null trail ?: [] :? [Left trail])
+   else do
+    ca' <- fadgau ca
+    vals <- maybe (return []) fendi ca'
+    case (ca', vals) of
+     (Just x@(_:_), v:alsi)
+      | esv2str v == d -> Left trail ~: v ~: mafygau ErrorQuote ba' alsi
+     _ -> let (a, a') = span (\c -> isSpace c || c == '.') ba
+	      (b, b') = break (\c -> isSpace c || c == '.') a'
+	  in mafygau (After_ZOI_error (Just d) (trail ++ a ++ b)) b' []
 
  mafygau makfa ba [] = lerfendi' makfa ba
 
@@ -126,8 +126,8 @@ module Jbobaf.Lerfendi (lerfendi) where
   "fa'o" -> do
    ignore <- isOpt Ignore_FAhO
    if ignore then mafygau Fadni ba alsi
-   else let trail = concatMap (either id valsi) alsi ++ ba
-	in return (null trail ?: [] :? [Left trail])
+    else let trail = concatMap (either id valsi) alsi ++ ba
+	 in return (null trail ?: [] :? [Left trail])
   _ -> mafygau Fadni ba alsi
 
  mafygau ErrorQuote ba (Right v : alsi) = Right v ~: case valsi v of
@@ -146,23 +146,23 @@ module Jbobaf.Lerfendi (lerfendi) where
   "le'u" -> mafygau Fadni ba alsi
   "fa'o" -> do
    disabled <- isOpt LOhU_disables_FAhO
-   ignored <- Ignore_FAhO
+   ignored <- isOpt Ignore_FAhO
    if disabled || ignored then mafygau ErrorQuote ba alsi
-   else let trail = concatMap (either id valsi) alsi ++ ba
-	in return (null trail ?: [] :? [Left trail])
+    else let trail = concatMap (either id valsi) alsi ++ ba
+	 in return (null trail ?: [] :? [Left trail])
   _ -> mafygau ErrorQuote ba alsi
 
 ----------------------------------------
 
  fendi :: String -> Tamcux [Either String Valsi]
- fendi [] = []
+ fendi [] = return []
  fendi (',':xs) = fendi xs
   -- This ^^ was at one point possible due to some other bit of code.  Given
   -- the implementation of fadgau, can this still occur?
 
  fendi str | isC (last str) = do
   dotty <- isOpt Use_dotside
-  case (dotty, findLa ca) of
+  case (dotty, findLa str) of
    (False, Just n) -> fendi (take n str) ~~ mkCmevla (drop n str)
    _ -> mkCmevla str
 
@@ -176,15 +176,16 @@ module Jbobaf.Lerfendi (lerfendi) where
 		omsyls = syllabicate omega
 	    in case span (null . filter isUpper) omsyls of
 	     (_, []) -> brivlate alpha omsyls
-	     (_, [_]) -> [Left str]  -- only last syllable emphasized; error?
+	     (_, [_]) -> return [Left str]
+	      -- only last syllable emphasized; error?
 	     (_, [_, _]) -> brivlate alpha omsyls
 	      -- TO DO: Make sure the last syllable isn't capitalized!
 	     (a, b:xs) -> case break voc xs of
-	      (_, []) -> [Left str]  -- This is never supposed to happen.
+	      (_, []) -> return [Left str]  -- This is never supposed to happen.
 	      (_, [_]) -> brivlate alpha omsyls
 	      (c, d:ys) -> 
 	       -- TO DO: Make sure `d' isn't capitalized!
-	       if head (head ys) == '\'' then [Left str]
+	       if head (head ys) == '\'' then return [Left str]
 		-- TO DO: It is also an error if `head ys' begins with a
 		-- non-initial consonant cluster.
 	       else brivlate alpha (a ++ b:c ++ [d]) ~~ fendi (concat ys)
@@ -192,8 +193,8 @@ module Jbobaf.Lerfendi (lerfendi) where
 ----------------------------------------
 
  spicpa :: String -> (String, String)  -- gets the next "word" from the string
- spicpa str = break (\c -> isSpace c || c == '.')
-  $ dropWhile (\c -> isSpace c || c == '.')
+ spicpa = break (\c -> isSpace c || c == '.')
+  . dropWhile (\c -> isSpace c || c == '.')
 
  finalMa'osmi :: String -> Maybe Int
  -- How should this handle commas?
@@ -206,7 +207,7 @@ module Jbobaf.Lerfendi (lerfendi) where
 	fmas _     pos tf _     (c:xs) | isC c = fmas pos (pos+1) True tf xs
 	fmas start pos _  tf    (_:xs) = fmas start (pos+1) False tf xs
 
- ma'ocpa :: String -> [Either String Valsi]
+ ma'ocpa :: String -> Tamcux [Either String Valsi]
  ma'ocpa str = mp $ 0 : findIndices isC str
   where mp [] = mkCmavo str
 	mp (0:0:xs) = mp (0:xs)
@@ -226,7 +227,7 @@ module Jbobaf.Lerfendi (lerfendi) where
 		   then (pre, [], True)
 		   else case finalMa'osmi pre of
 		    Just i -> let (pa, pb) = splitAt i pre
-			      in if filter (\c -> isC c || isV c) pb <= 3
+			      in if length (filter (\c -> isC c || isV c) pb)<4
 				 then (pa, pb, True)
 				 else (pre, [], False)
 		    Nothing -> (pre, [], False)

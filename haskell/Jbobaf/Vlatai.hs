@@ -4,7 +4,7 @@ module Jbobaf.Vlatai (
   -- * Word classification & validity
   xubrivla, xugismu, xulujvo, xufu'ivla, xucmevla, xucmavo,
   -- ** Pre-normalized
-  xugismu', xulujvo', xufu'ivla', xucmevla', xucmavo',
+  xubrivla', xugismu', xulujvo', xufu'ivla', xucmevla', xucmavo',
   -- * Normalization
   fadgau,
   -- * /Lujvo/ manipulation
@@ -46,14 +46,16 @@ module Jbobaf.Vlatai (
   "xs", "xt", "zl", "zn", "zr"]
 
  xubrivla, xugismu, xulujvo, xufu'ivla, xucmevla, xucmavo,
-  xugismu', xulujvo', xufu'ivla', xucmevla', xucmavo' :: String -> Tamcux Bool
- -- The "prime" forms of the xu* functions assume that their arguments are
- -- already normalized.  The non-prime functions do not.
+  xubrivla', xugismu', xulujvo', xufu'ivla', xucmevla', xucmavo'
+   :: String -> Tamcux Bool
+  -- The "prime" forms of the xu* functions assume that their arguments are
+  -- already normalized.  The non-prime functions do not.
 
- xubrivla str = do
-  gismu <- xugismu str
-  lujvo <- xulujvo str
-  fu'ivla <- xufu'ivla str
+ xubrivla str = fadgau str >>= maybe (return False) xubrivla'
+ xubrivla' str = do
+  gismu <- xugismu' str
+  lujvo <- xulujvo' str
+  fu'ivla <- xufu'ivla' str
   return $ gismu || lujvo || fu'ivla
  
  xugismu str = fadgau str >>= maybe (return False) xugismu'
