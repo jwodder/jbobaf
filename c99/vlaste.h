@@ -1,8 +1,6 @@
 #ifndef JBOBAF_VLASTE
 #define JBOBAF_VLASTE
 
-struct kvpair {char* key; int val; };
-
 struct stecmi {
  char *valsi, *selmaho, *rafsi[3], *ralvla, *djuvla, *selvla, *notci;
  /* Unused/empty fields (other than `valsi') are NULL. */

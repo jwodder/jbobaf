@@ -4,6 +4,8 @@
    Lojban::Vlaste).  Calling these functions as class methods should cause them
    to operate on a global Vlatid/Vlaste object (which is publicly accessible)
    instead.
+ - Document the fact that failure to open the word list causes the functions to
+   croak.
 - Rewrite sisku.pl to use the new Vlasisku functions
 - Lojban::Vlatai:
  - Handle passing of Valsi objects

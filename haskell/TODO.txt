@@ -8,6 +8,7 @@
 - Rename Tamcux to Jvacux?
 - Rethink how the Valsi type is structured & used
 - Deal with {lujma'o} somehow
+- Improve the list of {lujvo} & pseudo-{lujvo} in jvokatna.txt
 
 NEW FEATURES
 - Add functions to Valsi.hs for computing the component {rafsi}, source

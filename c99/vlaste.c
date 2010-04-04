@@ -13,7 +13,7 @@
 
 static FILE* vlaste = NULL;
 
-int binsearch(const struct kvpair* porsi, const char* key, int qty) {
+int kvbinsearch(const struct kvpair* porsi, const char* key, int qty) {
  int low = 0, high = qty;  /* low {ga'o bi'o ke'i} high */
  while (low < high) {
   int i = (low+high) / 2;
@@ -33,12 +33,12 @@ void freeStecmi(struct stecmi* cmima) {
 }
 
 const char* getSelrafsi(const char* rafsi) {
- int i = binsearch(selrafsi, rafsi, SELRAFSI_QTY);
+ int i = kvbinsearch(selrafsi, rafsi, SELRAFSI_QTY);
  return i == -1 ? NULL : vlastecmi[i].key;
 }
 
 int vlajudri(const char* valsi) {
- return binsearch(vlastecmi, valsi, VLASTECMI_QTY);
+ return kvbinsearch(vlastecmi, valsi, VLASTECMI_QTY);
 }
 
 struct stecmi* vlacpa(const char* valsi) {

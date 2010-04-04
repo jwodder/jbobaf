@@ -27,3 +27,4 @@
 ("keljí'a", ["kel", "jI'a"])
 ("keljia", [])
 ("keljea", [])
+("vlastesti", ["vla", "ste", "sti"])

@@ -27,11 +27,9 @@ while (<$in>) {
  $maxlen = length if length > $maxlen;
 }
 print "};\n\n";
-
 print "const struct kvpair selrafsi[] = {\n";
 print " {\"$_\", $rafsi{$_}},\n" for sort keys %rafsi;
 print "};\n";
-
 close $out1;
 
 open my $out2, '>', 'stejudri.h' or die "$0: stejudri.h: $!";
@@ -44,9 +42,8 @@ print $out2 <<EOT;
 #define CMIMA_LEN  $maxlen
 #define SELRAFSI_QTY  @{[scalar keys %rafsi]}
 
-#include "vlaste.h"
+struct kvpair {char* key; int val; };
 extern const struct kvpair vlastecmi[];
 extern const struct kvpair selrafsi[];
-
 #endif
 EOT

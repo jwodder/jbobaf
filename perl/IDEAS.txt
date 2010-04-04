@@ -38,8 +38,6 @@ Lojban/Vlasisku.pm:
  - Write a function for getting words by both keyword and definition
  - Lojbanize all of the function names (rewrite getValsiByRafsi() to contain
    the term 'selraf'?)
- - Document the fact that failure to open the word list causes the functions to
-   croak.
  - Add a getValsiByKlesi() function?
  - Add a getValsiByAny() function that checks all fields for matches?
  - Add a wrapper around grep that checks for matches using a closure?
