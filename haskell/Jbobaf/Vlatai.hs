@@ -325,13 +325,13 @@ module Jbobaf.Vlatai (
 -- Unexported functions: ------------------------------------------------------
 
  hasNDJ :: String -> Bool
- hasNDJ [] = False
  hasNDJ str = case dropWhile (/= 'n') str of
   'n':'d':'j':_ -> True
   'n':'d':'z':_ -> True
   'n':'t':'c':_ -> True
   'n':'t':'s':_ -> True
   'n':xs -> hasNDJ xs
+  [] -> False
 
  noBadCC :: String -> Bool
  noBadCC str = null $ filter (\i -> let cc = take 2 (drop i str)
