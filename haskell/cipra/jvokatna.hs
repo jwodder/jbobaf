@@ -9,5 +9,5 @@ main = do
    in if rafs /= rafs'
       then putStrLn $ "Failure splitting " ++ jvo ++ ": expected " ++ show rafs
        ++ ", got " ++ show rafs'
-      else return ()
-  ) $ map read (lines input)
+      else return ())
+  $ map read (lines input)

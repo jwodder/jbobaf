@@ -1,0 +1,28 @@
+A string φ is a valid Lojban {fu'ivla} if & only if it satisfies all of the
+following conditions:
+ - φ is non-empty.
+ - φ contains no invalid consonant pairs, invalid vowel sequences, non-Lojbanic
+   characters, or other character sequences globally prohibited by the more
+   general rules of Lojban morphology.
+ - Any & all spaces and periods occur at the beginning or end of φ; all such
+   characters are to be ignored for the remainder of these tests.
+ - The letteral 'y' (case insensitive) does not appear in φ.
+ - The last letteral in φ is a Lojban vowel (excluding 'y').
+ - φ has the form of neither a {gismu} nor a {lujvo}.
+ - If φ begins with a consonant, then prefixing a string of the form CV to it
+   cannot result in a morphologically valid {lujvo}.
+ - If such a rule is in effect, φ does not contain any of the strings "ndj",
+   "ndz", "ntc", & "nts" (case insensitive).
+ - φ contains two or more syllables whose nuclei are not syllabic consonants.
+ - φ contains a substring consisting of two or more adjacent consonants; denote
+   this substring by χ and the substring after it by ψ.
+ - If χ is composed entirely of (overlapping, if more than one) initial
+   consonant pairs, ψ contains more than one syllable whose nucleus is not a
+   syllabic consonant, and prepending a string of the form CV to the
+   concatenation of χ and ψ cannot result in a morphologically valid {lujvo},
+   then χ is at the beginning of φ; otherwise, the substring of φ preceding χ
+   has the form of a {cmavo} and contains no more than three non-apostrophe
+   characters.
+ - If information on emphasis is present, then the penultimate syllable in φ
+   whose nucleus is not a syllabic consonant is the only syllable to bear
+   primary emphasis.

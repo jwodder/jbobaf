@@ -84,10 +84,10 @@ module Jbobaf.Vlatai (
   toluj <- xulujvo' $ 't':'o':str
   let vocSyls = filter voc $ syllabicate str
       emphQty = length $ filter (not . null . filter isUpper) vocSyls
-  if not (null str) && notElem ' ' str && isV (last str)
+  if not (null str) && notElem ' ' str && isV (last str) && noBadCC str
+   && (ndj || not (hasNDJ str)) && (canY || notElem 'y' str)
    && length vocSyls >= 2 && (noemph || emphQty == 0
     || emphQty == 1 && not (null $ filter isUpper $ last $ init vocSyls))
-   && (ndj || not (hasNDJ str)) && (canY || notElem 'y' str)
    && not xugim && not xuluj && not (isC (head str) && toluj)
    then case findCC str of
 	 Just ccLoc -> do

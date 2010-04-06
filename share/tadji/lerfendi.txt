@@ -1,7 +1,6 @@
 A generalized form of the Lojban word-splitting algorithm, as I understand it:
- - Let FENDI be a function (described below) that maps a nonempty string of
-   characters that contains neither spaces nor periods to a nonempty string of
-   Lojban {valsi}.
+ - Let FENDI be a function (described below) that maps a string of characters
+   containing neither spaces nor periods to a string of Lojban {valsi}.
  - Let CMAVO, CMEVLA, and BRIVLA be functions that convert a string of
    characters into the corresponding Lojban {cmavo}, {cmevla}, or {brivla},
    respectively, assuming total morphological validity of the input.  If their
@@ -65,7 +64,7 @@ A generalized form of the Lojban word-splitting algorithm, as I understand it:
       first consonant cluster onwards.  If all of the following conditions
       hold:
     i.   The consonant cluster at the beginning of the body consists entirely
-	 of initial (overlapping, if more than one) consonant clusters.
+	 of initial (overlapping, if more than one) consonant pairs.
     ii.  The body has more than one accentable syllable.
     iii. Prepending a string of the form CV to the body cannot result in a
 	 morphologically valid {lujvo}.
