@@ -75,8 +75,8 @@ module Jbobaf.Lerfendi (lerfendi) where
     case (ca', vals) of
      (Just x@(_:_), v:alsi)
       | esv2str v == d -> Left trail ~: v ~: mafygau Fadni ba' alsi
-     _ -> let (a, a') = span (\c -> isSpace c || c == '.') ba
-	      (b, b') = break (\c -> isSpace c || c == '.') a'
+     _ -> let (a, a') = span xudenpa ba
+	      (b, b') = break xudenpa a'
 	  in mafygau (After_ZOI (Just d) (trail ++ a ++ b)) b' []
 
  mafygau (After_ZOI_error (Just d) trail) ba [] = do
@@ -89,17 +89,19 @@ module Jbobaf.Lerfendi (lerfendi) where
     case (ca', vals) of
      (Just x@(_:_), v:alsi)
       | esv2str v == d -> Left trail ~: v ~: mafygau ErrorQuote ba' alsi
-     _ -> let (a, a') = span (\c -> isSpace c || c == '.') ba
-	      (b, b') = break (\c -> isSpace c || c == '.') a'
+     _ -> let (a, a') = span xudenpa ba
+	      (b, b') = break xudenpa a'
 	  in mafygau (After_ZOI_error (Just d) (trail ++ a ++ b)) b' []
 
  mafygau makfa ba [] = lerfendi' makfa ba
 
- mafygau (After_ZOI Nothing []) ba (v:alsi)
-  = v ~: mafygau (After_ZOI (Just $ esv2str v) []) ba alsi
+ mafygau (After_ZOI Nothing []) ba (v:alsi) = v ~:
+  mafygau (After_ZOI (Just $ esv2str v) [])
+   (null alsi ?: dropWhile xudenpa ba :? ba) alsi
 
- mafygau (After_ZOI_error Nothing []) ba (v:alsi)
-  = v ~: mafygau (After_ZOI_error (Just $ esv2str v) []) ba alsi
+ mafygau (After_ZOI_error Nothing []) ba (v:alsi) = v ~:
+  mafygau (After_ZOI_error (Just $ esv2str v) [])
+   (null alsi ?: dropWhile xudenpa ba :? ba) alsi
 
  mafygau (After_ZOI (Just d) trail) ba (v:alsi) =
   let v' = esv2str v
@@ -173,28 +175,31 @@ module Jbobaf.Lerfendi (lerfendi) where
  fendi str = case findCC str of
   Nothing -> ma'ocpa str
   Just n -> let (alpha, omega) = splitAt n str
+  		alvocs = filter voc $ syllabicate alpha
 		omsyls = syllabicate omega
-	    in case span (null . filter isUpper) omsyls of
-	     (_, []) -> brivlate alpha omsyls
-	     (_, [_]) -> return [Left str]
-	      -- only last syllable emphasized; error?
-	     (_, [_, _]) -> brivlate alpha omsyls
-	      -- TO DO: Make sure the last syllable isn't capitalized!
-	     (a, b:xs) -> case break voc xs of
-	      (_, []) -> return [Left str]  -- This is never supposed to happen.
-	      (_, [_]) -> brivlate alpha omsyls
-	      (c, d:ys) -> 
-	       -- TO DO: Make sure `d' isn't capitalized!
-	       if head (head ys) == '\'' then return [Left str]
-		-- TO DO: It is also an error if `head ys' begins with a
-		-- non-initial consonant cluster.
-	       else brivlate alpha (a ++ b:c ++ [d]) ~~ fendi (concat ys)
+		findUltima pre s = case break voc s of
+		 (_, []) -> return [Left str]  -- This should never happen.
+		 (_, [_]) -> brivlate alpha omsyls
+		 (c, d:ys) ->
+		  if head (head ys) == '\'' then return [Left str]
+		   -- TO DO: Make sure `d' isn't capitalized!  It is also an
+		   -- error if `head ys' begins with a non-initial consonant
+		   -- cluster.
+		  else brivlate alpha (pre ++ c ++ [d]) ~~ fendi (concat ys)
+	    in if null alvocs || null (filter isUpper $ last alvocs)
+	       then case span (null . filter isUpper) omsyls of
+		     (_, []) -> brivlate alpha omsyls
+		     (_, [_]) -> return [Left str]
+		      -- only last syllable emphasized; error?
+		     (_, [_, _]) -> brivlate alpha omsyls
+		      -- TO DO: Make sure the last syllable isn't capitalized!
+		     (a, b:xs) -> findUltima (a ++ [b]) xs
+	       else findUltima [] omsyls
 
 ----------------------------------------
 
  spicpa :: String -> (String, String)  -- gets the next "word" from the string
- spicpa = break (\c -> isSpace c || c == '.')
-  . dropWhile (\c -> isSpace c || c == '.')
+ spicpa = break xudenpa . dropWhile xudenpa
 
  finalMa'osmi :: String -> Maybe Int
  -- How should this handle commas?
@@ -241,6 +246,9 @@ module Jbobaf.Lerfendi (lerfendi) where
  esv2str :: Either String Valsi -> String
  esv2str (Left str) = str
  esv2str (Right v) = valsi v
+
+ xudenpa :: Char -> Bool
+ xudenpa c = isSpace c || c == '.'
 
  mkCmevla, mkCmavo, mkBrivla :: String -> Tamcux [Either String Valsi]
  mkCmevla str = toCmevla str >>= return . (: []) . maybe (Left str) Right

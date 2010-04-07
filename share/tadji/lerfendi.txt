@@ -49,7 +49,9 @@ A generalized form of the Lojban word-splitting algorithm, as I understand it:
      of γ preceding ω.  (If α ends with a consonant, γ is invalid.)
   4. If γ contains two or more adjacent consonants, each possibly separated by
      a single 'y' (hereafter referred to as a "consonant cluster"):
-   a. If the portion of γ after the consonant cluster contains an accentable
+   a. If the portion of γ starting at the beginning of the last accentable
+      syllable before the consonant cluster, or at the consonant cluster itself
+      if there are no accentable syllables before it, contains an accentable
       syllable with a capitalized or accented nucleus and followed (not
       necessarily immediately) by two or more accentable syllables (the first
       of which is hereafter called the "ultima"; if this syllable is terminated
@@ -57,9 +59,11 @@ A generalized form of the Lojban word-splitting algorithm, as I understand it:
       let α be the substring of γ up to and including the end of the ultima,
       and let ω be the substring of γ after the ultima.  Otherwise, let α equal
       γ and let ω be the empty string (ε).
-    i. Note that, due to steps 2 and 3, it is impossible at this point for the
-       ultima to be followed by a non-empty non-punctuation string that does
-       not contain an accentable syllable.
+    i.  If α contains two or more accentable syllables with capitalized or
+	accented nuclei, γ is invalid.
+    ii. Note that, due to steps 2 and 3, it is impossible at this point for the
+	ultima to be followed by a non-empty non-punctuation string that does
+	not contain an accentable syllable.
    b. Let the "body" consist of the contents of α from the beginning of the
       first consonant cluster onwards.  If all of the following conditions
       hold:

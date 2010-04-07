@@ -1,4 +1,4 @@
-import System (getArgs, exitFailure)
+import System (getArgs)
 import Jbobaf.Tamcux
 import Jbobaf.Vlatai
 

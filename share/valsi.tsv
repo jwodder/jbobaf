@@ -332,7 +332,6 @@ cu'e	CUhE		modal ?		tense/modal question
 cu'i	CAI		neutral emotion		attitudinal: neutral scalar attitude modifier
 cu'o	MOI		probability selbri		convert number to probability selbri; event x1 has probability (n) of occurring under cond. x2
 cu'u	BAI		as said by		cusku modal, 1st place (attribution/quotation)    as said by source ...; used for quotation
-cu'u ko'a	BAI*		as said by it-1		tagged sumti: can be used for embedded: it-1 said, "...", with editorial unquote and insert
 cukla		cuk	round	'circular'	x1 is round/circular [2-dimensional shape/form]; x1 is a disk/circle/ring	[normally used for a filled-in circle/disk, but emphasis on roundness means that the concept may include 'ring']; (cf. djine, ranji, bolci, tarmi)
 cukta		cku	book		x1 is a book containing work x2 by author x3 for audience x4 preserved in medium x5	[x1 is a manifestation/container [a physical object or its analogue] of a work/content, not necessarily using paper (= selpapri)]; (cf. cfika, prina, prosa, tcidu, papri)
 culno		clu	full		x1 is full/completely filled with x2	(cf. tisna, kunti, mulno, setca, tisna)
@@ -1342,7 +1341,6 @@ no'u	GOI		incidental identity		non-restrictive appositive phrase marker: which i
 nobli		nol no'i	noble		x1 is noble/aristocratic/elite/high-born/titled in/under culture/society/standard x2	[also upper-class; high/low, upper/lower are poor Lojban metaphors; note x2 standard applies when the title/nobility is not recognized culture/society wide; this would include self-assumed titles]; (cf. banli)
 noda	KOhA*		nothing at all		logically quantified sumti: nothing at all (unless restricted)
 noi	NOI		incidental clause		non-restrictive relative clause; attaches subordinate bridi with incidental information
-nomo'o	MAI*		section 0		discursive utterance ordinal: zeroth section/chapter ordinal; foreword
 noroi	ROI*		never		tense interval modifier: never; objectively quantified tense; defaults as time tense
 notci		not noi	message	'note'	x1 is a message/notice/memorandum about subject x2 from author x3 to intended audience x4	[emphasis on brevity, single or identifiable subject (contrast with xatra: the emphasis in notci is on the single or cohesively focused subject, while the audience is less defined - indeed only an 'intended' audience.  xatra need not have a single or focussed subject - its corresponding place is for 'content'); reminder/memo/note (= mojnoi)]; (cf. xatra, nuzba, mrilu, morji)
 nu	NU	nun	event abstract		abstractor: generalized event abstractor; x1 is state/process/achievement/activity of [bridi]	(cf. fasnu)
