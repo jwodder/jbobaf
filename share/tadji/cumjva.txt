@@ -35,7 +35,7 @@ Morphological rules which may or may not be in effect:
   - If they cannot, and assuming that the dotside is not in effect, is "{la
     lan.}" valid?
  - whether {cmene} may contain more than one capitalized/emphasized syllable
- - whether a {cmene} can be emphasized on a syllabic consonant or 'y'?
+ - whether a {cmene} can be emphasized on a syllabic consonant or 'y'
  - whether {rafsi} can contain syllables with an empty onset (i.e., beginning
    with a comma)
  - whether {rafsi} can be of the form C[iu]V
@@ -44,6 +44,12 @@ Morphological rules which may or may not be in effect:
  - whether rising diphthongs containing 'y' count towards a {brivla}'s
    polysyllabicity requirement
  - whether {brivla} should obey the five-letter rule or a {ma'osmi} rule
+ - whether uppercase consonants have any significance
+ - whether uppercase Y's have any significance or are to be treated as
+   erroneous
+ - whether adjacent vowels with differing stress markings (i.e., one uppercase
+   & the other lowercase or one accented & the other not) should be split into
+   separate syllables
  - Magic words:
   - which magic words take effect inside LOhU ... LEhU quotes
   - whether an erasure can re-open a ZO, ZOI, or error quote

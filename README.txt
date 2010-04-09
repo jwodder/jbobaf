@@ -13,4 +13,4 @@ Lojban has now been embraced, and its goal is to do anything with Lojban that I
 can code, ideally with equal support in C, Perl, Haskell, et (fortasse) alii.
 We'll see how that works out.
 
-fe'omi'e .djan.uodr. me'e ji'a la .kamymecraijun.
+fe'omi'e .djan.uodr. pe me'e ji'a la .kamymecraijun.

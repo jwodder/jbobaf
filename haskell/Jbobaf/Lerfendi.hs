@@ -6,31 +6,61 @@ module Jbobaf.Lerfendi (lerfendi) where
  import Jbobaf.Valsi
  import Jbobaf.Vlatai
 
+ -- |@lerfendi@ takes a string of Lojban text and splits it into a mixture of
+ -- /valsi/s and invalid character sequences.  The string is processed one
+ -- "chunk" at a time, where a chunk is a nonempty maximal string of non-space,
+ -- non-period characters.  Each chunk is normalized with @fadgau@ and split up
+ -- into words, which are then made into 'Valsi' objects.  Anything that can't
+ -- be split is left as a 'String'.  In general, if a chunk contains anything
+ -- invalid, how the rest of the chunk gets split up should be considered
+ -- undefined, undocumented, and subject to random change.
+ --
+ -- After splitting, the contents of a chunk are checked for magic words that
+ -- impact lexing (ZOI and FAhO) and magic words that impact magic words that
+ -- impact lexing (ZO, ZEI, and LOhU).  Whether LOhU cancels anything inside it
+ -- and whether lexing should stop after a FAhO or not can be configured via
+ -- the 'Tamcux' options 'LOhU_disables_ZO', 'LOhU_disables_ZEI',
+ -- 'LOhU_disables_ZOI', 'LOhU_disables_FAhO', and 'Ignore_FAhO'; by default,
+ -- none of these are in effect.
+ --
+ -- Miscellaneous features and things to watch out for:
+ --
+ -- * If the text after a FAhO is nonempty (after stripping leading -- but not
+ --   trailing -- whitespace & periods), it is returned as a @Left String@.
+ --
+ -- * The end of a ZOI quote is searched for by reading a chunk at a time and
+ --   performing normal word splitting on it.  If the first word in the chunk
+ --   equals the delimiter, the end has been found; otherwise, the raw text of
+ --   the chunk (unnormalized, with leading spaces & periods) is absorbed into
+ --   the ZOI-text buffer and processing moves on to the next chunk.
+ --
+ -- * If a ZOI is followed by an invalid word (i.e., a @Left String@), this
+ --   invalid string will be used as the delimiter, and the ZOI will only be
+ --   terminated by an identical non-word or by end-of-text.
+ --
+ -- * A ZOI quote always consists of four parts: the ZOI, the delimiter, the
+ --   contents (as a @Left String@, possibly empty), and the delimiter again.
+ --   However, if the end of the text is reached while searching for the
+ --   closing delimiter, the contents of the ZOI will be everything in the text
+ --   after the opening delimiter, and no closing delimiter will be present in
+ --   the returned list.
+ --
+ -- * The contents of a ZOI quote are preserved character-for-character, except
+ --   that leading & trailing whitespace & periods are removed.  EXCEPTION: If
+ --   the opening delimiter of a ZOI quote has text after it in its chunk
+ --   (which it shouldn't anyway), that text has already been normalized &
+ --   split into words by the time @lerfendi@ realizes this, and so the
+ --   concatenated string representations of the items in the rest of the chunk
+ --   (@valsi@ for @Right Valsi@, the string itself for @Left String@) will
+ --   form the beginning of the ZOI text (unless the ending delimiter is also
+ --   in the chunk, in which case only the items up to the delimiter will be
+ --   made into ZOI text).
+ --
+ -- * As far as @lerfendi@ is concerned, ZO and ZEI differ only in spelling.
+ --   Whether this actually leads to any problems has yet to be determined.
+
  lerfendi :: String -> Tamcux [Either String Valsi]
  lerfendi = lerfendi' Fadni
-
-{- Miscellaneous features of lerfendi:
-  - If the text after a FAhO is nonempty, it is returned as a Left String.
-  - If an active ZOI is followed by an invalid word (i.e., a Left String), it
-    will be used as the delimiter, and the ZOI will only be terminated by an
-    identical non-word or by end-of-text.
-  - A ZOI quote always consists of four parts: the ZOI, the delimiter, the
-    contents (as a Left String, possibly empty), and the delimiter again.
-    However, if the end of the text is reached while searching for the closing
-    delimiter, the contents of the ZOI will be everything in the text after the
-    opening delimiter, and no closing delimiter will be present in the returned
-    list.
-  - The contents of a ZOI quote are preserved character-for-character, except
-    that leading & trailing whitespace & periods are removed.
-  - Exception to the above: If the opening delimiter of a ZOI quote has text
-    after it in its "chunk" (which it shouldn't), that text has already been
-    normalized & split into words by the time @lerfendi@ realizes this, and so
-    the concatenated string representations of the items in the rest of the
-    chunk (@valsi@ for Right Valsi, the string itself for Left String) will
-    form the beginning of the ZOI text (unless the ending delimiter is also in
-    the chunk, in which case only the items up to the delimiter will be made
-    into ZOI text).
--}
 
 ----------------------------------------
 
@@ -128,7 +158,7 @@ module Jbobaf.Lerfendi (lerfendi) where
   "fa'o" -> do
    ignore <- isOpt Ignore_FAhO
    if ignore then mafygau Fadni ba alsi
-    else let trail = concatMap (either id valsi) alsi ++ ba
+    else let trail = concatMap esv2str alsi ++ dropWhile xudenpa ba
 	 in return (null trail ?: [] :? [Left trail])
   _ -> mafygau Fadni ba alsi
 

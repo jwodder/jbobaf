@@ -24,5 +24,9 @@ Jbobaf/Valsi.o : Jbobaf/Vlatai.hi
 Jbobaf/Lerfendi.o : Jbobaf/Valsi.hi Jbobaf/Vlatai.hi
 Jbobaf/Selmaho.o : Jbobaf/Valsi.hi
 
+doc : Jbobaf/*.hs
+	haddock -ho doc -t Jbobaf Jbobaf/*.hs
+
 clean :
 	( cd Jbobaf; rm -f *.o *.hi *.o-boot *.hi-boot )
+	rm -rf doc

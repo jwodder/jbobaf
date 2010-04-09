@@ -17,6 +17,11 @@ NEW FEATURES
 - Add a function for joining {rafsi} into {lujvo}
 - Add a new Tamcux option Ignore_bad_ZOI_delims that causes a ZOI followed by a
   non-word string to (effectively) only quote that string
+- Add a Tamcux option for treating an opening ZOI delimiter not followed by a
+  space or period as invalid
+- fadgau should convert ’ to ' (Should this be controlled by a Tamcux option?)
+- Add a function for recognizing type-3 {fu'ivla} and splitting them into
+  {rafsi} & non-{rafsi}
 - Add & implement Tamcux options for:
  - LAhOI ("{la'oi}" and "{zo'oi}"?)
  - allowing commas between consonants

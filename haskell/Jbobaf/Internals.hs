@@ -1,3 +1,5 @@
+{-# OPTIONS_HADDOCK hide #-}
+
 module Jbobaf.Internals where
  import Char (toLower)
  import List (find, findIndices)

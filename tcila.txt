@@ -14,6 +14,7 @@ tasks:
   - determining the morphological type of a word ({gismu}, {cmavo}, etc.)
   - converting a word into a regular "normalized" form free of variant
     orthographies and superfluous characters
+  - recognizing type-3 {fu'ivla} and extracting their {rafsi}
  - Word lists:
   - searching for one or more items in valsi.tsv by any of the fields present
     (strict substring search only; regexes sold separately)
