@@ -249,10 +249,10 @@ my @namcu = qw< no pa re ci vo mu xa ze bi so >;
 sub fadgau($) {
  (my $valsi = shift) =~ s/^[\s.,]+|[\s.,]+$//g;
  $valsi =~ s/(\d)/$namcu[$1]/g;
- $valsi =~ tr/áéíóúýÁÉÍÓÚÝHh/AEIOUyAEIOUy''/;
+ $valsi =~ tr/áéíóúýÁÉÍÓÚÝHh’/AEIOUyAEIOUy'''/;
  $valsi =~ s/,*[\s.][\s.,]*/ /g;
  $valsi =~ tr/,//s;
- $valsi =~ s/($C)/\l$1/g;
+ $valsi =~ s/($C|Y)/\l$1/g;
  # Delete commas not between vowels; is this correct?
  $valsi =~ s/(?<!$Vy),|,(?!$Vy)//g;
  return $valsi !~ tr/AEIOUa-gi-pr-vx-z',. //c && $valsi !~ $CyC

@@ -15,7 +15,7 @@ module Jbobaf.Vlatai (
  import List (findIndices)
  import qualified Data.Set as Set
  import Jbobaf.Internals
- import Jbobaf.Tamcux
+ import Jbobaf.Jvacux
 
  isV, isVy, isC :: Char -> Bool
  isV = (`elem` "aeiou") . toLower
@@ -47,7 +47,7 @@ module Jbobaf.Vlatai (
 
  xubrivla, xugismu, xulujvo, xufu'ivla, xucmevla, xucmavo,
   xubrivla', xugismu', xulujvo', xufu'ivla', xucmevla', xucmavo'
-   :: String -> Tamcux Bool
+   :: String -> Jvacux Bool
   -- The "prime" forms of the xu* functions assume that their arguments are
   -- already normalized.  The non-prime functions do not.
 
@@ -149,6 +149,9 @@ module Jbobaf.Vlatai (
  --
  -- * All consonants and Y's are converted to lowercase.
  --
+ -- * Any occurrences of the right single quotation mark (\'’\', U+2019) are
+ --   converted to apostrophes.
+ --
  -- TO IMPLEMENT:
  --
  -- * Commas not between two vowels are removed.  (Currently, only commas next
@@ -168,14 +171,17 @@ module Jbobaf.Vlatai (
  --   detected.)
  --
  -- * If an invalid consonant pair is detected, 'Nothing' is returned?
+ --
+ -- * H's and ’'s need to have the same effects on their surroundings as
+ --   apostrophes.
 
- fadgau :: String -> Tamcux (Maybe String)
+ fadgau :: String -> Jvacux (Maybe String)
  fadgau str = do
   accents <- isOpt Allow_accents
   ignoring <- isOpt Ignore_naljbo_chars
   hasH <- isOpt Allow_H
   digits <- isOpt Translate_digits
-  let goodchr c = elem (toLower c) "',.abcdefgijklmnoprstuvxyz"
+  let goodchr c = elem (toLower c) "',.abcdefgijklmnoprstuvxyz’"
 		   || accents && elem (toLower c) "áéíóúý"
 		   || hasH && toLower c == 'h'
 		   || digits && isDigit c
@@ -198,8 +204,9 @@ module Jbobaf.Vlatai (
       lerfad ('Á':xs) = 'A' ~: lerfad xs
       lerfad ('é':xs) = 'E' ~: lerfad xs
       lerfad ('É':xs) = 'E' ~: lerfad xs
-      lerfad ('h':xs) = '\'' ~: lerfad xs
-      lerfad ('H':xs) = '\'' ~: lerfad xs
+      lerfad ('h':xs) = lerfad $ '\'':xs
+      lerfad ('H':xs) = lerfad $ '\'':xs
+      lerfad ('’':xs) = lerfad $ '\'':xs
       lerfad ('í':xs) = 'I' ~: lerfad xs
       lerfad ('Í':xs) = 'I' ~: lerfad xs
       lerfad ('ó':xs) = 'O' ~: lerfad xs
@@ -223,9 +230,9 @@ module Jbobaf.Vlatai (
       lerfad [] = Just []
   return $ lerfad $ dropWhile (\c -> isSpace c || c == '.' || c == ',') str
 
- jvokatna, jvokatna' :: String -> Tamcux [String]
-  -- Although jvokatna' currently doesn't use any Tamcux options, it is still
-  -- wrapped in the Tamcux monad in preparation for the day that it does.
+ jvokatna, jvokatna' :: String -> Jvacux [String]
+  -- Although jvokatna' currently doesn't use any Jvacux options, it is still
+  -- wrapped in the Jvacux monad in preparation for the day that it does.
  jvokatna str = fadgau str >>= maybe (return []) jvokatna'
  jvokatna' str =
   -- As part of the assumption that str is normalized, all vowel pairs are
@@ -307,7 +314,7 @@ module Jbobaf.Vlatai (
   deriving (Eq, Ord, Read, Show, Enum, Bounded, Ix)
 
  raftai :: String -> Raftai
- -- assumes its argument is normalized; should this use a Tamcux monad?
+ -- assumes its argument is normalized; should this use a Jvacux monad?
  raftai [c, v1, v2] | isC c && isV v1 && isV v2 && notElem v1 "iuIU" = CVV
  raftai [c, v1, '\'', v2] | isC c && isV v1 && isV v2 = CVV
  raftai [c1, c2, v] | isCC [c1, c2] && isV v = CCV

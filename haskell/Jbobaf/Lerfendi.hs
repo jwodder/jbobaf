@@ -2,7 +2,7 @@ module Jbobaf.Lerfendi (lerfendi) where
  import Char
  import List
  import Jbobaf.Internals
- import Jbobaf.Tamcux
+ import Jbobaf.Jvacux
  import Jbobaf.Valsi
  import Jbobaf.Vlatai
 
@@ -19,7 +19,7 @@ module Jbobaf.Lerfendi (lerfendi) where
  -- impact lexing (ZOI and FAhO) and magic words that impact magic words that
  -- impact lexing (ZO, ZEI, and LOhU).  Whether LOhU cancels anything inside it
  -- and whether lexing should stop after a FAhO or not can be configured via
- -- the 'Tamcux' options 'LOhU_disables_ZO', 'LOhU_disables_ZEI',
+ -- the 'Jvacux' options 'LOhU_disables_ZO', 'LOhU_disables_ZEI',
  -- 'LOhU_disables_ZOI', 'LOhU_disables_FAhO', and 'Ignore_FAhO'; by default,
  -- none of these are in effect.
  --
@@ -59,7 +59,7 @@ module Jbobaf.Lerfendi (lerfendi) where
  -- * As far as @lerfendi@ is concerned, ZO and ZEI differ only in spelling.
  --   Whether this actually leads to any problems has yet to be determined.
 
- lerfendi :: String -> Tamcux [Either String Valsi]
+ lerfendi :: String -> Jvacux [Either String Valsi]
  lerfendi = lerfendi' Fadni
 
 ----------------------------------------
@@ -77,7 +77,7 @@ module Jbobaf.Lerfendi (lerfendi) where
 
 ----------------------------------------
 
- lerfendi' :: Flezvalei -> String -> Tamcux [Either String Valsi]
+ lerfendi' :: Flezvalei -> String -> Jvacux [Either String Valsi]
  lerfendi' makfa str =
   let (ca, ba) = spicpa str
   in if null ca then return [] else fadgau ca >>= \ca' -> case ca' of
@@ -88,7 +88,7 @@ module Jbobaf.Lerfendi (lerfendi) where
 ----------------------------------------
 
  mafygau :: Flezvalei -> String -> [Either String Valsi]
-  -> Tamcux [Either String Valsi]
+  -> Jvacux [Either String Valsi]
 
  -- How to search for ending ZOI delimiters: While the end has not been found,
  -- get the next chunk from the stream and split it into words.  If the first
@@ -186,7 +186,7 @@ module Jbobaf.Lerfendi (lerfendi) where
 
 ----------------------------------------
 
- fendi :: String -> Tamcux [Either String Valsi]
+ fendi :: String -> Jvacux [Either String Valsi]
  fendi [] = return []
  fendi (',':xs) = fendi xs
   -- This ^^ was at one point possible due to some other bit of code.  Given
@@ -242,14 +242,14 @@ module Jbobaf.Lerfendi (lerfendi) where
 	fmas _     pos tf _     (c:xs) | isC c = fmas pos (pos+1) True tf xs
 	fmas start pos _  tf    (_:xs) = fmas start (pos+1) False tf xs
 
- ma'ocpa :: String -> Tamcux [Either String Valsi]
+ ma'ocpa :: String -> Jvacux [Either String Valsi]
  ma'ocpa str = mp $ 0 : findIndices isC str
   where mp [] = mkCmavo str
 	mp (0:0:xs) = mp (0:xs)
 	mp (a:b:xs) = mkCmavo (take (b-a) $ drop a str) ~~ mp (b:xs)
 	mp [a] = mkCmavo $ drop a str
 
- brivlate :: String -> [String] -> Tamcux [Either String Valsi]
+ brivlate :: String -> [String] -> Jvacux [Either String Valsi]
  brivlate pre body@(b1:bxs) = do
   tosmabru <- xulujvo' $ 't':'o':concat body
   let allInit (c1:c2:xs) = if isV c2 then True
@@ -280,7 +280,7 @@ module Jbobaf.Lerfendi (lerfendi) where
  xudenpa :: Char -> Bool
  xudenpa c = isSpace c || c == '.'
 
- mkCmevla, mkCmavo, mkBrivla :: String -> Tamcux [Either String Valsi]
+ mkCmevla, mkCmavo, mkBrivla :: String -> Jvacux [Either String Valsi]
  mkCmevla str = toCmevla str >>= return . (: []) . maybe (Left str) Right
  mkCmavo  str = toCmavo  str >>= return . (: []) . maybe (Left str) Right
  mkBrivla str = toBrivla str >>= return . (: []) . maybe (Left str) Right

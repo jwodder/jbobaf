@@ -9,7 +9,7 @@ module Jbobaf.Valsi (
  import Char (toLower)
  import Ix
  import Jbobaf.Internals
- import Jbobaf.Tamcux (Tamcux)
+ import Jbobaf.Jvacux (Jvacux)
  import Jbobaf.Vlatai
 
  data Vlalei = Gismu | Lujvo | Fu'ivla | Cmavo {- | Lujma'o -} | Cmevla
@@ -53,7 +53,7 @@ module Jbobaf.Valsi (
  rafsi (Vla2 {ck_rafsi = r}) = r
 
  toValsi, toCmavo, toCmevla, toBrivla, toGismu, toLujvo, toFu'ivla
-  :: String -> Tamcux (Maybe Valsi)
+  :: String -> Jvacux (Maybe Valsi)
 
  toValsi [] = return Nothing
  toValsi str = if isC (last str) then toCmevla str

@@ -1,7 +1,7 @@
 -- |Options for the morphology functions and a Reader monad used to keep track
 -- of them
 
-module Jbobaf.Tamcux where
+module Jbobaf.Jvacux where
  import Ix
  import Data.Set (Set)
  import qualified Data.Set as Set
@@ -71,12 +71,12 @@ module Jbobaf.Tamcux where
   Allow_triphthongs, Allow_H, Allow_ndj_in_fu'ivla, Allow_ndj_in_cmevla,
   No_commas_in_cmavo, Translate_digits]
 
- newtype Tamcux a = Tamcux {tamcuxna :: Set Tercuxna -> a}
+ newtype Jvacux a = Jvacux {jvacuxna :: Set Tercuxna -> a}
 
- instance Monad Tamcux where
-  return = Tamcux . const
-  Tamcux f >>= g = Tamcux $ \opt -> tamcuxna (g $ f opt) opt
+ instance Monad Jvacux where
+  return = Jvacux . const
+  Jvacux f >>= g = Jvacux $ \opt -> jvacuxna (g $ f opt) opt
 
- isOpt, isNopt :: Tercuxna -> Tamcux Bool
- isOpt = Tamcux . Set.member
- isNopt = Tamcux . Set.notMember
+ isOpt, isNopt :: Tercuxna -> Jvacux Bool
+ isOpt = Jvacux . Set.member
+ isNopt = Jvacux . Set.notMember

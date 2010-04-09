@@ -5,24 +5,26 @@
 - Implement the remaining features for fadgau (including support for
   Allow_triphthongs and Split_bad_diphthongs)
 - Add Haddock documentation for all of the exported functions, values, & types
-- Rename Tamcux to Jvacux?
 - Rethink how the Valsi type is structured & used
 - Deal with {lujma'o} somehow
-- Improve the list of {lujvo} & pseudo-{lujvo} in jvokatna.txt
+- Improve the test list of {lujvo} & pseudo-{lujvo} in jvokatna.txt
+- Make toCmevla handle emphasis by:
+ - Converting all letters to lowercase when the stress is normal
+ - Uppercasing everything in the nucleus of an abnormally-stressed {cmevla}
+ - Somehow handling {cmevla} with more than one emphasized syllable
 
 NEW FEATURES
 - Add functions to Valsi.hs for computing the component {rafsi}, source
   {tanru}, and {lujvo} score for {lujvo} & {lujvo cmene}.
 - Make jvokatna able to split {lujvo cmene}
 - Add a function for joining {rafsi} into {lujvo}
-- Add a new Tamcux option Ignore_bad_ZOI_delims that causes a ZOI followed by a
+- Add a new Jvacux option Ignore_bad_ZOI_delims that causes a ZOI followed by a
   non-word string to (effectively) only quote that string
-- Add a Tamcux option for treating an opening ZOI delimiter not followed by a
+- Add a Jvacux option for treating an opening ZOI delimiter not followed by a
   space or period as invalid
-- fadgau should convert ’ to ' (Should this be controlled by a Tamcux option?)
 - Add a function for recognizing type-3 {fu'ivla} and splitting them into
   {rafsi} & non-{rafsi}
-- Add & implement Tamcux options for:
+- Add & implement Jvacux options for:
  - LAhOI ("{la'oi}" and "{zo'oi}"?)
  - allowing commas between consonants
  - allowing commas between a consonant and a vowel
@@ -40,9 +42,9 @@ NEW FEATURES
  - replacing the 5-letter rule with a "{ma'osmi} rule"
  - recognizing {fu'ivla rafsi}
  - prohibiting a 'y' within the first consonant cluster of a {fu'ivla}?
-- Possibly make Tamcux into an Error monad as well as a Reader so that the user
+- Possibly make Jvacux into an Error monad as well as a Reader so that the user
   can receive information about exactly *why* something (e.g., jvokatna) failed
- - An option could then be added to Tamcux for specifying whether error
+ - An option could then be added to Jvacux for specifying whether error
    messages should be in English or Lojban.
  - Add in a way for the xu* functions to return a reason why a word is invalid
  - This can be used to replace Maybes for denoting errors in certain functions
