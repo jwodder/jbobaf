@@ -50,21 +50,27 @@ A generalized form of the Lojban word-splitting algorithm, as I understand it:
   4. If γ contains two or more adjacent consonants, each possibly separated by
      a single 'y' (hereafter referred to as a "consonant cluster"):
    a. If the portion of γ starting at the beginning of the last accentable
-      syllable before the consonant cluster, or at the consonant cluster itself
-      if there are no accentable syllables before it, contains an accentable
-      syllable with a capitalized or accented nucleus and followed (not
-      necessarily immediately) by two or more accentable syllables (the first
-      of which is hereafter called the "ultima"; if this syllable is terminated
-      by an apostrophe or non-initial consonant cluster, γ is invalid), then
-      let α be the substring of γ up to and including the end of the ultima,
-      and let ω be the substring of γ after the ultima.  Otherwise, let α equal
-      γ and let ω be the empty string (ε).
-    i.  If α contains two or more accentable syllables with capitalized or
-	accented nuclei, γ is invalid.
-    ii. Note that, due to steps 2 and 3, it is impossible at this point for the
-	ultima to be followed by a non-empty non-punctuation string that does
-	not contain an accentable syllable.
-   b. Let the "body" consist of the contents of α from the beginning of the
+      syllable before the first consonant cluster, or at the first consonant
+      cluster itself if there are no accentable syllables before it, contains
+      an accentable syllable with a capitalized or accented nucleus and
+      followed (not necessarily immediately) by one or more accentable
+      syllables (the first of which is hereafter called the "ultima"), then let
+      α be the substring of γ up to and including the end of the ultima, and
+      let ω be the substring of γ after the ultima.  Otherwise, let α equal γ
+      and let ω be the empty string (ε).
+    i. Note that, due to steps 2 and 3, it is impossible at this point for the
+       ultima to be followed by a non-empty non-punctuation string that does
+       not contain an accentable syllable.
+   b. If the last accentable syllable in α is capitalized or accented (either
+      because the first emphasis falls at the end of γ or because the ultima is
+      also emphasized), or if the nucleus of the ultima is terminated by an
+      apostrophe or a consonant cluster containing a non-initial consonant
+      pair, then the first consonant cluster in γ must have a 'y' between its
+      first two consonants (If it does not, γ is invalid), and FENDI(γ) :=
+      FENDI(φ) ++ FENDI(ψ), where φ is the portion of γ up to & including this
+      'y' and ψ is the remaining portion of γ.  Otherwise, continue the
+      computation of FENDI.
+   c. Let the "body" consist of the contents of α from the beginning of the
       first consonant cluster onwards.  If all of the following conditions
       hold:
     i.   The consonant cluster at the beginning of the body consists entirely
@@ -78,7 +84,7 @@ A generalized form of the Lojban word-splitting algorithm, as I understand it:
       non-Y characters, then let β be this {ma'osmi} prepended to the body and
       let β′ be true.  Otherwise, let β be the body and let β′ be false.  For
       all cases, let δ be the portion of α not in β.
-   c. FENDI(γ) := FENDI(δ) ++ χ ++ FENDI(ω), where χ is defined as follows:
+   d. FENDI(γ) := FENDI(δ) ++ χ ++ FENDI(ω), where χ is defined as follows:
     i.   If β′ is true and β is a valid {brivla}, χ := BRIVLA(β).
     ii.  Otherwise, if the first consonant cluster in β has a 'y' between its
 	 first two consonants, χ := FENDI(φ) ++ FENDI(ψ), where φ is the
@@ -86,8 +92,7 @@ A generalized form of the Lojban word-splitting algorithm, as I understand it:
 	 of β.
     iii. Otherwise, β is invalid.
   5. Otherwise, FENDI(γ) is the string formed by applying CMAVO to each maximal
-     non-overlapping {ma'osmi} substring of γ, starting from the beginning of
-     γ.
+     non-overlapping {ma'osmi} substring of γ, starting at the beginning of γ.
  - Observation: In a non-{cmene} string containing a consonant cluster, all
    {ma'osmi} before the one immediately before the cluster will always be
    converted into {cmavo}.

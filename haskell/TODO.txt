@@ -7,7 +7,8 @@
 - Add Haddock documentation for all of the exported functions, values, & types
 - Rethink how the Valsi type is structured & used
 - Deal with {lujma'o} somehow
-- Improve the test list of {lujvo} & pseudo-{lujvo} in jvokatna.txt
+- Improve the test words in jvokatna01.txt and fendi01.txt (especially by
+  making them all semantically valid)
 - Make toCmevla handle emphasis by:
  - Converting all letters to lowercase when the stress is normal
  - Uppercasing everything in the nucleus of an abnormally-stressed {cmevla}

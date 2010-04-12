@@ -55,7 +55,7 @@ How to split a {lujvo} into its component {rafsi} and check it for validity:
      {rafsi}, there are no hyphens in the {lujvo}, and all consonant pairs in
      the {lujvo} are initial consonant pairs.
   b. The {lujvo} consists of two or more non-hyphenated CVC {rafsi} followed by
-     a 'y' hyphen & an arbitrary string of {rafsi}, and all consonant pairs
+     a 'y' hyphen and an arbitrary string of {rafsi}, and all consonant pairs
      within the concatenated string of CVC {rafsi} are initial.
     then τ must have had a value assigned to it during the execution of step 2,
     and the hyphen at τ is located immediately after the first {rafsi} in the

@@ -198,31 +198,28 @@ module Jbobaf.Lerfendi (lerfendi) where
    (False, Just n) -> fendi (take n str) ~~ mkCmevla (drop n str)
    _ -> mkCmevla str
 
- fendi str | toLower (last str) == 'y' = case finalMa'osmi str of
+ fendi str | last str == 'y' = case finalMa'osmi str of
   Just n -> fendi (take n str) ~~ mkCmavo (drop n str)
   Nothing -> return [Left str]
 
  fendi str = case findCC str of
   Nothing -> ma'ocpa str
   Just n -> let (alpha, omega) = splitAt n str
-  		alvocs = filter voc $ syllabicate alpha
+		alvocs = filter voc $ syllabicate alpha
 		omsyls = syllabicate omega
 		findUltima pre s = case break voc s of
 		 (_, []) -> return [Left str]  -- This should never happen.
 		 (_, [_]) -> brivlate alpha omsyls
-		 (c, d:ys) ->
-		  if head (head ys) == '\'' then return [Left str]
-		   -- TO DO: Make sure `d' isn't capitalized!  It is also an
-		   -- error if `head ys' begins with a non-initial consonant
-		   -- cluster.
-		  else brivlate alpha (pre ++ c ++ [d]) ~~ fendi (concat ys)
-	    in if null alvocs || null (filter isUpper $ last alvocs)
-	       then case span (null . filter isUpper) omsyls of
-		     (_, []) -> brivlate alpha omsyls
-		     (_, [_]) -> return [Left str]
-		      -- only last syllable emphasized; error?
-		     (_, [_, _]) -> brivlate alpha omsyls
-		      -- TO DO: Make sure the last syllable isn't capitalized!
+		 (c, d:e:ys) -> if emphed d || head e == '\'' || has_C_C e
+				then shiftCy alpha omsyls
+				else brivlate alpha (pre ++ c ++ [d])
+				      ~~ fendi (concat $ e:ys)
+	    in if null alvocs || not (emphed $ last alvocs)
+	       then case break emphed omsyls of
+		     (_, [])       -> brivlate alpha omsyls
+		     (_, [_])      -> shiftCy alpha omsyls
+		     (_, [_, ult]) -> (emphed ult ?: shiftCy :? brivlate)
+				       alpha omsyls
 		     (a, b:xs) -> findUltima (a ++ [b]) xs
 	       else findUltima [] omsyls
 
@@ -268,10 +265,7 @@ module Jbobaf.Lerfendi (lerfendi) where
 		    Nothing -> (pre, [], False)
   let beta = b ++ concat body
   xubriv <- xubrivla' beta
-  fendi a ~~ if b' && xubriv then mkBrivla beta
-	     else if toLower (b1 !! 1) == 'y'
-	     then mkCmavo b ~~ mkCmavo b1 ~~ fendi (concat bxs)
-	     else return [Left beta]
+  fendi a ~~ if b' && xubriv then mkBrivla beta else shiftCy b body
 
  esv2str :: Either String Valsi -> String
  esv2str (Left str) = str
@@ -280,7 +274,20 @@ module Jbobaf.Lerfendi (lerfendi) where
  xudenpa :: Char -> Bool
  xudenpa c = isSpace c || c == '.'
 
+ shiftCy :: String -> [String] -> Jvacux [Either String Valsi]
+ shiftCy pre (cy@[_,'y']:rest) = fendi pre ~~ mkCmavo cy ~~ fendi (concat rest)
+ shiftCy pre blob = return [Left $ pre ++ concat blob]
+ -- The `pre' argument exists so that it can be prepended to an invalid string
+ -- so that the output doesn't look like invalid words were split up
+ -- excessively.
+
+ emphed :: String -> Bool
+ emphed = not . null . filter isUpper
+
  mkCmevla, mkCmavo, mkBrivla :: String -> Jvacux [Either String Valsi]
+ mkCmevla [] = return []
  mkCmevla str = toCmevla str >>= return . (: []) . maybe (Left str) Right
+ mkCmavo  [] = return []
  mkCmavo  str = toCmavo  str >>= return . (: []) . maybe (Left str) Right
+ mkBrivla [] = return []
  mkBrivla str = toBrivla str >>= return . (: []) . maybe (Left str) Right

@@ -358,8 +358,3 @@ module Jbobaf.Vlatai (
   | isC c = C c : lertype xs
   | isV c = V c : lertype xs
   | otherwise = BadCh : lertype xs
-
- has_C_C :: String -> Bool
- -- checks for the presence of a non-initial valid consonant pair
- has_C_C str = not $ null $ filter (\i -> Set.member (take 2 $ drop i str)
-  fadni) (findIndices isC str)
