@@ -1,9 +1,10 @@
-- Make sure that everything complies with (or at least is compatible with) the
-  "BPFK Section: Formal Morphology" and "BPFK Section: PEG Morphology
-  Algorithm" pages on the tiki!!!
-- Test everything to make sure it works as it's intended!
+- Make sure that everything complies with (or at least is compatible with)
+  everything listed on the "BPFK Section: Formal Morphology" page of the
+  tiki!!!
 - Implement the remaining features for fadgau (including support for
   Allow_triphthongs and Split_bad_diphthongs)
+- Test everything to make sure it works as it's intended!
+ - Test performing word splitting with variant sets of options
 - Add Haddock documentation for all of the exported functions, values, & types
 - Rethink how the Valsi type is structured & used
 - Deal with {lujma'o} somehow
@@ -13,6 +14,7 @@
  - Converting all letters to lowercase when the stress is normal
  - Uppercasing everything in the nucleus of an abnormally-stressed {cmevla}
  - Somehow handling {cmevla} with more than one emphasized syllable
+- Should lerfendi split "yyyy" into four separate "y"s?
 
 NEW FEATURES
 - Add functions to Valsi.hs for computing the component {rafsi}, source
@@ -43,6 +45,7 @@ NEW FEATURES
  - replacing the 5-letter rule with a "{ma'osmi} rule"
  - recognizing {fu'ivla rafsi}
  - prohibiting a 'y' within the first consonant cluster of a {fu'ivla}?
+ - allowing superfluous hyphens in {lujvo}
 - Possibly make Jvacux into an Error monad as well as a Reader so that the user
   can receive information about exactly *why* something (e.g., jvokatna) failed
  - An option could then be added to Jvacux for specifying whether error
@@ -50,3 +53,8 @@ NEW FEATURES
  - Add in a way for the xu* functions to return a reason why a word is invalid
  - This can be used to replace Maybes for denoting errors in certain functions
    (i.e., fadgau, toValsi et alii).
+ - Problem: This would cause the result of a Jvacux computation to be dependent
+   on whether an error occurred anywhere in the code, and so lerfendi could no
+   longer return anything without processing the entirety of its input.  Could
+   this possibly be solved using a ReaderT monad wrapped variously around an
+   Identity and Error monad?

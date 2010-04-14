@@ -39,10 +39,11 @@ A generalized form of the Lojban word-splitting algorithm, as I understand it:
      vowels), then γ is invalid.
   2. If the last character in γ is a consonant:
    a. If the dotside is not in effect and γ contains one or more occurrences of
-      the strings "la", "lai", "la'i", or "doi" that are neither preceded by a
-      consonant nor followed by an apostrophe or vowel, then FENDI(γ) :=
-      FENDI(α) ++ CMEVLA(ω), where α is the substring before the last such
-      string in γ and ω is the remaining substring in γ.
+      the strings "la", "lai", "la'i", or "doi" (case insensitive) that are
+      neither preceded by a consonant nor followed by an apostrophe, vowel, or
+      comma, then FENDI(γ) := FENDI(α) ++ CMAVO(β) ++ CMEVLA(ω), where β is the
+      last such substring in γ, α is the substring before it, and ω is the
+      substring after it.
    b. Otherwise, FENDI(γ) := CMEVLA(γ).
   3. If the last character in γ is a 'y', then FENDI(γ) := FENDI(α) ++
      CMAVO(ω), where ω is the {ma'osmi} at the end of γ and α is the substring

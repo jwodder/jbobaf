@@ -1,11 +1,16 @@
 import System (getArgs)
+import Data.Set (fromList)
 import Jbobaf.Lerfendi
 import Jbobaf.Jvacux
 import Jbobaf.Valsi
 
 main = do
  argv <- getArgs
- input <- if null argv then getContents else readFile (head argv)
+ (opts, argv') <- case argv of
+   "-c":rc:xs      -> readFile rc >>= readIO >>= \o -> return (fromList o, xs)
+   ('-':'c':rc):xs -> readFile rc >>= readIO >>= \o -> return (fromList o, xs)
+   _               -> return (defaults, argv)
+ input <- if null argv' then getContents else readFile (head argv')
  let jarco (Left str) = putStrLn $ "Naljbo: " ++ str
      jarco (Right vla) = putStrLn $ show (klesi vla) ++ ": " ++ valsi vla
- mapM_ jarco $ jvacuxna (lerfendi input) defaults
+ mapM_ jarco $ jvacuxna (lerfendi input) opts

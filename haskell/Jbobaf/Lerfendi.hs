@@ -195,7 +195,7 @@ module Jbobaf.Lerfendi (lerfendi) where
  fendi str | isC (last str) = do
   dotty <- isOpt Use_dotside
   case (dotty, findLa str) of
-   (False, Just n) -> fendi (take n str) ~~ mkCmevla (drop n str)
+   (False, Just (a, b, z)) -> fendi a ~~ mkCmavo b ~~ mkCmevla z
    _ -> mkCmevla str
 
  fendi str | last str == 'y' = case finalMa'osmi str of

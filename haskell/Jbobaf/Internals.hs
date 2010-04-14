@@ -30,21 +30,24 @@ module Jbobaf.Internals where
  findCC str = find (\i -> isC (str !! (i+1)) || toLower (str !! (i+1)) == 'y'
   && isC (str !! (i+2))) $ findIndices isC str
 
- findLa :: String -> Maybe Int
- -- How should this handle commas after "la" et alii?
- findLa = fla 0 False . map toLower
+ findLa :: String -> Maybe (String, String, String)
+ findLa str = fla 0 False $ map toLower str
   where fla _ _ [] = Nothing
 	fla pos False ('l':'a':'\'':'i':c:xs) =
-	 if not (isV c) && c /= '\'' then Just (pos+4)
+	 if notElem c "',aeiouy"
+	 then Just (take pos str, "la'i", drop (pos+4) str)
 	 else fla (pos+5) False xs
 	fla pos False ('l':'a':'i':c:xs) =
-	 if not (isV c) && c /= '\'' then Just (pos+3)
+	 if notElem c "',aeiouy"
+	 then Just (take pos str, "lai", drop (pos+3) str)
 	 else fla (pos+4) False xs
 	fla pos False ('l':'a':c:xs) =
-	 if not (isV c) && c /= '\'' then Just (pos+2)
+	 if notElem c "',aeiouy"
+	 then Just (take pos str, "la", drop (pos+2) str)
 	 else fla (pos+3) False xs
 	fla pos False ('d':'o':'i':c:xs) =
-	 if not (isV c) && c /= '\'' then Just (pos+3)
+	 if notElem c "',aeiouy"
+	 then Just (take pos str, "doi", drop (pos+3) str)
 	 else fla (pos+4) False xs
 	fla pos _ (c:xs) = fla (pos+1) (isC c) xs
 
