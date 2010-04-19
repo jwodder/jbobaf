@@ -10,10 +10,11 @@ module Jbobaf.Lerfendi (lerfendi) where
  -- /valsi/s and invalid character sequences.  The string is processed one
  -- "chunk" at a time, where a chunk is a nonempty maximal string of non-space,
  -- non-period characters.  Each chunk is normalized with @fadgau@ and split up
- -- into words, which are then made into 'Valsi' objects.  Anything that can't
- -- be split is left as a 'String'.  In general, if a chunk contains anything
- -- invalid, how the rest of the chunk gets split up should be considered
- -- undefined, undocumented, and subject to random change.
+ -- into words, which are then made into 'Valsi' objects.  Anything that
+ -- returns 'Nothing' from normalization or that just can't be split up is left
+ -- as a 'String'.  In general, if a chunk contains anything invalid, how the
+ -- chunk gets handled & split up should be considered undefined, undocumented,
+ -- and subject to random change.
  --
  -- After splitting, the contents of a chunk are checked for magic words that
  -- impact lexing (ZOI and FAhO) and magic words that impact magic words that
@@ -25,21 +26,22 @@ module Jbobaf.Lerfendi (lerfendi) where
  --
  -- Miscellaneous features and things to watch out for:
  --
- -- * If the text after a FAhO is nonempty (after stripping leading -- but not
- --   trailing -- whitespace & periods), it is returned as a @Left String@.
+ -- * If the text after a FAhO is nonempty after stripping leading whitespace &
+ --   periods, it is returned as a @Left String@.
  --
  -- * The end of a ZOI quote is searched for by reading a chunk at a time and
  --   performing normal word splitting on it.  If the first word in the chunk
  --   equals the delimiter, the end has been found; otherwise, the raw text of
- --   the chunk (unnormalized, with leading spaces & periods) is absorbed into
- --   the ZOI-text buffer and processing moves on to the next chunk.
+ --   the chunk (unnormalized, with leading spaces & periods preserved) is
+ --   absorbed into the ZOI text buffer and processing moves on to the next
+ --   chunk.
  --
  -- * If a ZOI is followed by an invalid word (i.e., a @Left String@), this
  --   invalid string will be used as the delimiter, and the ZOI will only be
  --   terminated by an identical non-word or by end-of-text.
  --
- -- * A ZOI quote always consists of four parts: the ZOI, the delimiter, the
- --   contents (as a @Left String@, possibly empty), and the delimiter again.
+ -- * A ZOI quote is always returned in four parts: the ZOI, the delimiter, the
+ --   contents (a @Left String@, possibly empty), and the delimiter again.
  --   However, if the end of the text is reached while searching for the
  --   closing delimiter, the contents of the ZOI will be everything in the text
  --   after the opening delimiter, and no closing delimiter will be present in

@@ -124,9 +124,9 @@ module Jbobaf.Vlatai (
   return $ not (null maho) && null (filter (\c -> isSpace c || isC c) maho)
    && (commas || notElem ',' maho)
 
- -- |@fadgau@ is a basic "cleanup" routine used by various functions in Jbobaf
- -- for converting Lojban strings into a more regular, "normalized" form.  It
- -- performs the following operations:
+ -- |@fadgau@ is a basic \"cleanup\" routine used by various functions in
+ -- Jbobaf for converting Lojban text into a more regular, \"normalized\" form.
+ -- It performs the following operations:
  --
  -- * Leading & trailing whitespace, periods, and commas are removed.
  --
@@ -143,66 +143,44 @@ module Jbobaf.Vlatai (
  --   to uppercase ASCII letters (except for accented Y's, which are converted
  --   to lowercase).
  --
- -- * If 'Allow_H' is in effect, H's are converted to apostrophes.
+ -- * If 'Translate_digits' is in effect, decimal digits are converted to their
+ --   corresponding /cmavo/.
  --
- -- * Consecutive commas are merged together.
+ -- * If 'Allow_H' is in effect, H's are converted to apostrophes.
  --
  -- * All consonants and Y's are converted to lowercase.
  --
- -- * Any occurrences of the right single quotation mark (\'’\', U+2019) are
- --   converted to apostrophes.
+ -- * Any occurrences of the right single quotation mark (\'&#x2019;\', U+2019)
+ --   are converted to apostrophes.
  --
- -- * If 'Translate_digits' is in effect, decimal digits are converted to their
- --   corresponding /cmavo/.
+ -- * Consecutive apostrophes are merged together.
+ --
+ -- * If an apostrophe is found in an invalid location (i.e., next to a
+ --   non-vowel or at the the beginning or end of the string), 'Nothing' is
+ --   returned.
+ --
+ -- * Consecutive commas are merged together, and commas not between two vowels
+ --   are removed.
  --
  -- * Commas are inserted in invalid vowel clusters if 'Split_bad_diphthongs'
  --   is in effect; otherwise, an invalid vowel cluster causes 'Nothing' to be
  --   returned.
- --
- -- TO IMPLEMENT:
- --
- -- * Commas not between two vowels are removed.  (Currently, only commas next
- --   to apostrophes are removed.)
- --
- -- * Consecutive apostrophes are merged together?
- --
- -- * If an apostrophe is found in an invalid location (i.e., next to a
- --   consonant or at the the beginning or end of the string), 'Nothing' is
- --   returned.  (Currently, only apostrophes at the end of the string are
- --   detected.)
- --
- -- * If an invalid consonant pair is detected, 'Nothing' is returned?
- --
- -- * H's and ’'s need to have the same effects on their surroundings as
- --   apostrophes.
 
  fadgau :: String -> Jvacux (Maybe String)
  fadgau str = do
-  accents <- isOpt Allow_accents
-  ignoring <- isOpt Ignore_naljbo_chars
-  hasH <- isOpt Allow_H
-  digits <- isOpt Translate_digits
+  accents     <- isOpt Allow_accents
+  ignoring    <- isOpt Ignore_naljbo_chars
+  hasH        <- isOpt Allow_H
+  digits      <- isOpt Translate_digits
   splitDiphth <- isOpt Split_bad_diphthongs
-  triphth <- isOpt Allow_triphthongs
+  triphth     <- isOpt Allow_triphthongs
   let goodchr c = elem (toLower c) "',.abcdefgijklmnoprstuvxyz’"
 		   || accents && elem (toLower c) "áéíóúý"
 		   || hasH && toLower c == 'h'
 		   || digits && isDigit c
-      lerfad "'" = Nothing
-      lerfad ('\'':',':xs) = lerfad ('\'':xs)
-      lerfad "," = Just []
-      lerfad (',':'\'':xs) = lerfad ('\'':xs)
-      lerfad (',':',':xs) = lerfad (',':xs)
-      lerfad (',':'.':xs) = lerfad (' ':xs)
-      lerfad (',':c:xs) | isSpace c = lerfad (c:xs)
-      lerfad (' ':'.':xs) = lerfad (' ':xs)
-      lerfad (' ':',':xs) = lerfad (' ':xs)
-      lerfad (' ':c:xs) | isSpace c = lerfad (' ':xs)
-      lerfad "." = Just []
-      lerfad ('.':xs) = lerfad (' ':xs)
-      lerfad [c] | isSpace c = Just []
-      lerfad (c:xs) | isSpace c = lerfad (' ':xs)
+      lerfad (c:xs) | isSpace c = ' ' ~: lerfad xs
       lerfad (c:xs) | not (goodchr c) = if ignoring then lerfad xs else Nothing
+      lerfad ('.':xs) = ' ' ~: lerfad xs
       lerfad ('á':xs) = 'A' ~: lerfad xs
       lerfad ('Á':xs) = 'A' ~: lerfad xs
       lerfad ('é':xs) = 'E' ~: lerfad xs
@@ -231,6 +209,23 @@ module Jbobaf.Vlatai (
       lerfad ('9':xs) = lerfad $ 's':'o':xs
       lerfad (c:xs) = (if isC c then toLower c else c) ~: lerfad xs
       lerfad [] = Just []
+      -- All of the tests for adjacent characters and characters at the
+      -- beginning or end of the string rely on first removing all non-Lojbanic
+      -- characters and normalizing the remaining individuals.  Thus, input to
+      -- fadgau must be run through lerfad first and then through porfad and
+      -- slakate (which could possibly be merged into porfad, but the code is
+      -- ugly enough already).
+      porfad (c:',':xs) | not (isVy c) = porfad (c:xs)
+      porfad (',':c:xs) | not (isVy c) = porfad (c:xs)
+      porfad ('\'':'\'':xs) = porfad ('\'':xs)
+      porfad (c:'\'':xs) | not (isVy c) = Nothing
+      porfad ('\'':c:xs) | not (isVy c) = Nothing
+      porfad "'" = Nothing
+      porfad "," = Just []
+      porfad " " = Just []
+      porfad (' ':' ':xs) = porfad (' ':xs)
+      porfad (c:xs) = c ~: porfad xs
+      porfad [] = Just []
       isDiphth v1 v2 = v1 `elem` "iuIU"
        || v1 `elem` "aeoAEO" && toLower v2 == 'i'
        || toLower v1 == 'a' && toLower v2 == 'u'
@@ -250,8 +245,9 @@ module Jbobaf.Vlatai (
       slakate str = Just cs ~~ vokfed vs ~~ slakate rest
        where (cs, r) = break isVy str
 	     (vs, rest) = span isVy r
-  return $ (lerfad $ dropWhile (\c -> isSpace c || c == '.' || c == ',') str)
-   >>= slakate
+  return $ do
+   str' <- lerfad str >>= return . dropWhile (\c -> isSpace c || c == ',')
+   if take 1 str' == "'" then Nothing else porfad str' >>= slakate
 
  jvokatna, jvokatna' :: String -> Jvacux [String]
   -- Although jvokatna' currently doesn't use any Jvacux options, it is still
