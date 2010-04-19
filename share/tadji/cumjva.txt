@@ -60,5 +60,5 @@ Morphological rules which may or may not be in effect:
 Grammatical rules which may or may not be in effect:
  - xorxes' proposed change to the grammar of tags:
    <http://www.lojban.org/tiki/Internal+grammar+of+tags>
- - requiring explicitly terminating a {sumti} followed by a non-logical
-   connective
+ - requiring explicitly terminating any descriptor {sumti} that is followed by
+   a non-logical connective

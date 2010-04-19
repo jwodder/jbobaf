@@ -152,16 +152,17 @@ module Jbobaf.Vlatai (
  -- * Any occurrences of the right single quotation mark (\'’\', U+2019) are
  --   converted to apostrophes.
  --
- -- TO IMPLEMENT:
- --
- -- * Commas not between two vowels are removed.  (Currently, only commas next
- --   to apostrophes are removed.)
+ -- * If 'Translate_digits' is in effect, decimal digits are converted to their
+ --   corresponding /cmavo/.
  --
  -- * Commas are inserted in invalid vowel clusters if 'Split_bad_diphthongs'
  --   is in effect; otherwise, an invalid vowel cluster causes 'Nothing' to be
  --   returned.
  --
- -- * Digits are converted to their corresponding /cmavo/.
+ -- TO IMPLEMENT:
+ --
+ -- * Commas not between two vowels are removed.  (Currently, only commas next
+ --   to apostrophes are removed.)
  --
  -- * Consecutive apostrophes are merged together?
  --
@@ -181,6 +182,8 @@ module Jbobaf.Vlatai (
   ignoring <- isOpt Ignore_naljbo_chars
   hasH <- isOpt Allow_H
   digits <- isOpt Translate_digits
+  splitDiphth <- isOpt Split_bad_diphthongs
+  triphth <- isOpt Allow_triphthongs
   let goodchr c = elem (toLower c) "',.abcdefgijklmnoprstuvxyz’"
 		   || accents && elem (toLower c) "áéíóúý"
 		   || hasH && toLower c == 'h'
@@ -228,16 +231,33 @@ module Jbobaf.Vlatai (
       lerfad ('9':xs) = lerfad $ 's':'o':xs
       lerfad (c:xs) = (if isC c then toLower c else c) ~: lerfad xs
       lerfad [] = Just []
-  return $ lerfad $ dropWhile (\c -> isSpace c || c == '.' || c == ',') str
+      isDiphth v1 v2 = v1 `elem` "iuIU"
+       || v1 `elem` "aeoAEO" && toLower v2 == 'i'
+       || toLower v1 == 'a' && toLower v2 == 'u'
+      vokfed [] = Just []
+      vokfed [v] = Just [v]
+      vokfed [v1, v2] = if isDiphth v1 v2 then Just [v1, v2]
+			else if splitDiphth then Just [v1, ',', v2]
+			else Nothing
+      vokfed (v1:v2:v3:xs) =
+       if triphth && v1 `elem` "iuIU" && isDiphth v2 v3
+       then Just [v1, v2, v3] ~~ (null xs ?: Just [] :? splitDiphth
+	?: ',' ~: vokfed xs :? Nothing)
+       else if isDiphth v1 v2
+       then splitDiphth ?: Just [v1, v2, ','] ~~ vokfed (v3:xs) :? Nothing
+       else splitDiphth ?: Just [v1, ','] ~~ vokfed (v2:v3:xs) :? Nothing
+      slakate [] = Just []
+      slakate str = Just cs ~~ vokfed vs ~~ slakate rest
+       where (cs, r) = break isVy str
+	     (vs, rest) = span isVy r
+  return $ (lerfad $ dropWhile (\c -> isSpace c || c == '.' || c == ',') str)
+   >>= slakate
 
  jvokatna, jvokatna' :: String -> Jvacux [String]
   -- Although jvokatna' currently doesn't use any Jvacux options, it is still
   -- wrapped in the Jvacux monad in preparation for the day that it does.
  jvokatna str = fadgau str >>= maybe (return []) jvokatna'
  jvokatna' str =
-  -- As part of the assumption that str is normalized, all vowel pairs are
-  -- assumed to be valid diphthongs and all consonants & Y's are assumed to be
-  -- lowercase.
   let (pre, fanmo) = case lertype (reverse str) of
 	V v2 : Apos : V v1 : C c1 : xs -> (xs, [[c1, v1, '\'', v2]])
 	V v2 : V v1 : C c1 : xs | notElem v1 "iuIU" -> (xs, [[c1, v1, v2]])

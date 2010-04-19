@@ -1,8 +1,7 @@
 - Make sure that everything complies with (or at least is compatible with)
   everything listed on the "BPFK Section: Formal Morphology" page of the
   tiki!!!
-- Implement the remaining features for fadgau (including support for
-  Allow_triphthongs and Split_bad_diphthongs)
+- Implement the remaining features for fadgau
 - Test everything to make sure it works as it's intended!
  - Test performing word splitting with variant sets of options
 - Add Haddock documentation for all of the exported functions, values, & types
@@ -44,7 +43,7 @@ NEW FEATURES
  - allowing {rafsi} containing syllables with empty onsets? (e.g., "ka,e")
  - replacing the 5-letter rule with a "{ma'osmi} rule"
  - recognizing {fu'ivla rafsi}
- - prohibiting a 'y' within the first consonant cluster of a {fu'ivla}?
+ - prohibiting a 'y' within the first consonant cluster of a {fu'ivla}
  - allowing superfluous hyphens in {lujvo}
 - Possibly make Jvacux into an Error monad as well as a Reader so that the user
   can receive information about exactly *why* something (e.g., jvokatna) failed
