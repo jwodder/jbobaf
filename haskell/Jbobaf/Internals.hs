@@ -26,8 +26,8 @@ module Jbobaf.Internals where
  True ?: (y :? _) = y
  False ?: (_ :? z) = z
 
- findCC :: String -> Maybe Int
- findCC str = find (\i -> isC (str !! (i+1)) || toLower (str !! (i+1)) == 'y'
+ findC_C :: String -> Maybe Int
+ findC_C str = find (\i -> isC (str !! (i+1)) || str !! (i+1) == 'y'
   && isC (str !! (i+2))) $ findIndices isC str
 
  findLa :: String -> Maybe (String, String, String)

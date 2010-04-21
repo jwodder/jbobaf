@@ -191,8 +191,8 @@ module Jbobaf.Lerfendi (lerfendi) where
  fendi :: String -> Jvacux [Either String Valsi]
  fendi [] = return []
  fendi (',':xs) = fendi xs
-  -- This ^^ was at one point possible due to some other bit of code.  Given
-  -- the implementation of fadgau, can this still occur?
+  -- This ^^ was at one point possible due to some other bit of code.  Can this
+  -- still occur?
 
  fendi str | isC (last str) = do
   dotty <- isOpt Use_dotside
@@ -201,18 +201,17 @@ module Jbobaf.Lerfendi (lerfendi) where
    _ -> mkCmevla str
 
  fendi str | last str == 'y' = case finalMa'osmi str of
-  Just n -> fendi (take n str) ~~ mkCmavo (drop n str)
+  Just (pre, post) -> fendi pre ~~ mkCmavo post
   Nothing -> return [Left str]
 
- fendi str = case findCC str of
-  Nothing -> ma'ocpa str
+ fendi str = case findC_C str of
   Just n -> let (alpha, omega) = splitAt n str
 		alvocs = filter voc $ syllabicate alpha
 		omsyls = syllabicate omega
 		findUltima pre s = case break voc s of
 		 (_, []) -> return [Left str]  -- This should never happen.
 		 (_, [_]) -> brivlate alpha omsyls
-		 (c, d:e:ys) -> if emphed d || head e == '\'' || has_C_C e
+		 (c, d:e:ys) -> if emphed d || head e `elem` "'," || has_C_C e
 				then shiftCy alpha omsyls
 				else brivlate alpha (pre ++ c ++ [d])
 				      ~~ fendi (concat $ e:ys)
@@ -224,29 +223,24 @@ module Jbobaf.Lerfendi (lerfendi) where
 				       alpha omsyls
 		     (a, b:xs) -> findUltima (a ++ [b]) xs
 	       else findUltima [] omsyls
+  Nothing -> ma'ocpa str
+   where ma'ocpa [] = return []
+	 ma'ocpa str@(c:xs)
+	  | isC c     = let (a, b) = break isC xs in mkCmavo (c:a) ~~ ma'ocpa b
+	  | otherwise = let (a, b) = break isC str in mkCmavo a ~~ ma'ocpa b
 
 ----------------------------------------
 
  spicpa :: String -> (String, String)  -- gets the next "word" from the string
  spicpa = break xudenpa . dropWhile xudenpa
 
- finalMa'osmi :: String -> Maybe Int
- -- How should this handle commas?
- finalMa'osmi = fmas 0 0 False False
-  -- first boolean: whether the previous character was a consonant
-  -- second boolean: whether the most recent consonant was preceded by a
-  --  consonant
-  where fmas _     _   _  True  []     = Nothing
-	fmas start _   _  False []     = Just start
-	fmas _     pos tf _     (c:xs) | isC c = fmas pos (pos+1) True tf xs
-	fmas start pos _  tf    (_:xs) = fmas start (pos+1) False tf xs
-
- ma'ocpa :: String -> Jvacux [Either String Valsi]
- ma'ocpa str = mp $ 0 : findIndices isC str
-  where mp [] = mkCmavo str
-	mp (0:0:xs) = mp (0:xs)
-	mp (a:b:xs) = mkCmavo (take (b-a) $ drop a str) ~~ mp (b:xs)
-	mp [a] = mkCmavo $ drop a str
+ finalMa'osmi :: String -> Maybe (String, String)
+ finalMa'osmi str = case break isC (reverse str) of
+  ([], _) -> Nothing
+  (xs, []) -> Just ([], str)
+  (xs, [a]) -> Just ([], str)
+  (xs, a:b:ys) | not (isC b) -> Just (reverse (b:ys), reverse (xs ++ [a]))
+	       | otherwise -> Nothing
 
  brivlate :: String -> [String] -> Jvacux [Either String Valsi]
  brivlate pre body@(b1:bxs) = do
@@ -260,10 +254,8 @@ module Jbobaf.Lerfendi (lerfendi) where
    -- b' = whether `pre' met our needs
 		   then (pre, [], True)
 		   else case finalMa'osmi pre of
-		    Just i -> let (pa, pb) = splitAt i pre
-			      in if length (filter (\c -> isC c || isV c) pb)<4
-				 then (pa, pb, True)
-				 else (pre, [], False)
+		    Just (pa, pb) -> length (filter (\c -> isC c || isV c) pb)<4
+				      ?: (pa, pb, True) :? (pre, [], False)
 		    Nothing -> (pre, [], False)
   let beta = b ++ concat body
   xubriv <- xubrivla' beta

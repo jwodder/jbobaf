@@ -16,6 +16,7 @@ tasks:
     orthographies and superfluous characters
   - recognizing type-3 {fu'ivla} and extracting their {rafsi}
  - Word lists:
+  - retrieving all entries in valsi.tsv
   - searching for one or more items in valsi.tsv by any of the fields present
     (strict substring search only; regexes sold separately)
   - being able to retrieve the individual fields (including individual {rafsi})

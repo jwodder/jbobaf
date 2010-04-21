@@ -1,7 +1,6 @@
 - Make sure that everything complies with (or at least is compatible with)
   everything listed on the "BPFK Section: Formal Morphology" page of the
   tiki!!!
-- Implement the remaining features for fadgau
 - Test everything to make sure it works as it's intended!
  - Test performing word splitting with variant sets of options
 - Add Haddock documentation for all of the exported functions, values, & types
@@ -46,6 +45,9 @@ NEW FEATURES
  - recognizing {fu'ivla rafsi}
  - prohibiting a 'y' within the first consonant cluster of a {fu'ivla}
  - allowing superfluous hyphens in {lujvo}
+ - allowing a word break at a comma that is after an ultima or non-dotside
+   "la", before a {ma'osmi} at the head of a {brivla}, or between two {ma'osmi}
+   in a {cmavo} string when No_commas_in_cmavo is in effect
 - Possibly make Jvacux into an Error monad as well as a Reader so that the user
   can receive information about exactly *why* something (e.g., jvokatna) failed
  - An option could then be added to Jvacux for specifying whether error
@@ -58,3 +60,4 @@ NEW FEATURES
    longer return anything without processing the entirety of its input.  Could
    this possibly be solved using a ReaderT monad wrapped variously around an
    Identity and Error monad?
+- Write a CGI frontend to lerfendi?

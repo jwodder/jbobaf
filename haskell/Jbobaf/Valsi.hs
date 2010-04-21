@@ -56,8 +56,11 @@ module Jbobaf.Valsi (
   :: String -> Jvacux (Maybe Valsi)
 
  toValsi [] = return Nothing
- toValsi str = if isC (last str) then toCmevla str
-	       else maybe (toCmavo str) (const $ toBrivla str) (findCC str)
+ toValsi str = fadgau str >>= \fadni' -> case fadni' of
+  Just fadni -> if isC (last fadni) then toCmevla fadni
+		else maybe (toCmavo fadni) (const $ toBrivla fadni)
+		      (findC_C fadni)
+  Nothing -> return Nothing
 
  toCmevla str = fadgau str >>= \fadni -> case fadni of
   Just f -> xucmevla' f >>= return . (?: Just (miniMake f Cmevla) :? Nothing)

@@ -89,7 +89,7 @@ module Jbobaf.Vlatai (
    && length vocSyls >= 2 && (noemph || emphQty == 0
     || emphQty == 1 && not (null $ filter isUpper $ last $ init vocSyls))
    && not xugim && not xuluj && not (isC (head str) && toluj)
-   then case findCC str of
+   then case findC_C str of
 	 Just ccLoc -> do
 	  let (clust, rest) = span (\c -> isC c || c == 'y') (drop ccLoc str)
 	      preclust = take ccLoc str
