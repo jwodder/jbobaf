@@ -1,6 +1,5 @@
-The current general goal is to implement various functions, values, types, et
-cetera in C99, Haskell, & Perl for performing, among others, the following
-tasks:
+The current general goal is to implement various functions, types, values, et
+cetera in C/C++, Haskell, and Perl for performing the following tasks:
  - Lojban morphology:
   - determining whether a given string is a valid {gismu}, {lujvo}, {fu'ivla},
     {cmavo}, or {cmene}
@@ -12,16 +11,20 @@ tasks:
     (including or excluding Y), Lojban consonant, initial consonant pair, or
     valid consonant pair
   - determining the morphological type of a word ({gismu}, {cmavo}, etc.)
-  - converting a word into a regular "normalized" form free of variant
+  - converting a word into a regular, "normalized" form that is free of variant
     orthographies and superfluous characters
   - recognizing type-3 {fu'ivla} and extracting their {rafsi}
+  - splitting a word into syllables?
  - Word lists:
   - retrieving all entries in valsi.tsv
   - searching for one or more items in valsi.tsv by any of the fields present
     (strict substring search only; regexes sold separately)
-  - being able to retrieve the individual fields (including individual {rafsi})
-    of an entry in valsi.tsv
+  - retrieving individual fields (including individual {rafsi}) from an entry
+    in valsi.tsv
   - getting an entry from valsi.tsv at random
   - doing the above with one of the official Lojban word lists (gismu.txt or
     cmavo.txt) in place of valsi.tsv
   - printing out a {valsi} entry in an arguably pretty format
+ - Long-term goals:
+  - parsing & producing a syntax tree for Lojban text
+  - translating Lojban text into English

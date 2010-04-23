@@ -17,12 +17,8 @@
 NEW FEATURES
 - Add functions to Valsi.hs for computing the component {rafsi}, source
   {tanru}, and {lujvo} score for {lujvo} & {lujvo cmene}.
-- Make jvokatna able to split {lujvo cmene}
 - Add a function for joining {rafsi} into {lujvo}
-- Add a new Jvacux option Ignore_bad_ZOI_delims that causes a ZOI followed by a
-  non-word string to (effectively) only quote that string
-- Add a Jvacux option for treating an opening ZOI delimiter not followed by a
-  space or period as invalid
+- Make jvokatna able to split {lujvo cmene}
 - Add a function for recognizing type-3 {fu'ivla} and splitting them into
   {rafsi} & non-{rafsi}
 - If fadgau detects an invalid consonant pair, should it return 'Nothing'?
@@ -48,6 +44,10 @@ NEW FEATURES
  - allowing a word break at a comma that is after an ultima or non-dotside
    "la", before a {ma'osmi} at the head of a {brivla}, or between two {ma'osmi}
    in a {cmavo} string when No_commas_in_cmavo is in effect
+ - Ignore_bad_ZOI_delims - causes a ZOI followed by a non-word string to
+   (effectively) only quote that string
+ - treating an opening ZOI delimiter not followed by a space or period as
+   invalid
 - Possibly make Jvacux into an Error monad as well as a Reader so that the user
   can receive information about exactly *why* something (e.g., jvokatna) failed
  - An option could then be added to Jvacux for specifying whether error
@@ -61,3 +61,5 @@ NEW FEATURES
    this possibly be solved using a ReaderT monad wrapped variously around an
    Identity and Error monad?
 - Write a CGI frontend to lerfendi?
+- Add a function for testing whether a string is a valid diphthong or
+  triphthong?

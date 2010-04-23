@@ -1,4 +1,7 @@
-const enum {srera, fadni, lidne} consPairs[17][17] = {
+#include <string.h>
+#include "morpho.h"
+
+const enum {srera, fadni, lidne} ccpairs[17][17] = {
  {srera, srera, fadni, srera, fadni, fadni, srera, lidne, fadni, fadni, srera, lidne, srera, srera, fadni, srera, fadni},
  {srera, srera, srera, lidne, srera, srera, lidne, lidne, lidne, lidne, lidne, lidne, srera, lidne, srera, srera, srera},
  {fadni, srera, srera, srera, fadni, lidne, srera, fadni, fadni, fadni, srera, lidne, srera, srera, fadni, srera, lidne},
@@ -66,12 +69,16 @@ char i2c(int i) {
 
 _Bool isCC(char c1, char c2) {
  int i1 = c2i(c1), i2 = c2i(c2);
- return i1 != -1 && i2 != -1 && consPairs[i1][i2] == lidne;
+ return i1 != -1 && i2 != -1 && ccpairs[i1][i2] == lidne;
 }
 
 _Bool isC_C(char c1, char c2) {
  int i1 = c2i(c1), i2 = c2i(c2);
- return i1 != -1 && i2 != -1 && consPairs[i1][i2] != srera;
+ return i1 != -1 && i2 != -1 && ccpairs[i1][i2] != srera;
 }
+
+_Bool isC(char c) {return c2i(c) != -1; }
+_Bool isV(char v) {return strchr("aeiouAEIOU", v) != NULL; }
+_Bool isVy(char v) {return strchr("aeiouyAEIOUY", v) != NULL; }
 
 /* vim:set nowrap: */

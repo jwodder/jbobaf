@@ -62,3 +62,4 @@ Grammatical rules which may or may not be in effect:
    <http://www.lojban.org/tiki/Internal+grammar+of+tags>
  - requiring explicitly terminating any descriptor {sumti} that is followed by
    a non-logical connective
+ - allowing LE KU and LA KU

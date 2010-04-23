@@ -6,7 +6,6 @@
    instead.
  - Document the fact that failure to open the word list causes the functions to
    croak.
-- Rewrite sisku.pl to use the new Vlasisku functions
 - Lojban::Vlatai:
  - Handle passing of Valsi objects
  - Mention in the documentation that jvozba() may produce {lujvo cmene} that
@@ -18,4 +17,4 @@
   - $CyC - $CxC? $badCC?
 - Update all of the documentation for the modified files (see CHANGES.txt)
 - Write documentation for Lojban::Vlatid
-- Rewrite vlasisku.cgi & jvozba.cgi to support the new code
+- Rewrite sisku.pl, vlasisku.cgi, and jvozba.cgi to use the new code

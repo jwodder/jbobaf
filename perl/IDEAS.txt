@@ -48,8 +48,8 @@ Lojban/Vlatai.pm:
     hyphens
   - Make the xu{brivla}() functions test for the correct location of emphasis
   - Make &xufuhivla (and &xucmavo/&xulujmaho?) able to handle commas correctly
-  - Bring everything in line with the "BPFK Section: PEG Morphology Algorithm"
-    page of the tiki
+  - Bring everything in line with the "BPFK Section: Formal Morphology" page of
+    the tiki
  - Add a $VV regex?
  - Handle all currently undefined situations
  - Further optimize the C*C regexes

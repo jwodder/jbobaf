@@ -1,5 +1,4 @@
--- |Options for the morphology functions and a Reader monad used to keep track
--- of them
+-- |Run-time configuration options and a Reader monad for keeping track of them
 
 module Jbobaf.Jvacux (Jvacux(..), Tercuxna(..), defaults, isOpt, isNopt) where
  import Ix

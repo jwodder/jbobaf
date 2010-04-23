@@ -133,7 +133,7 @@ sub cmuselmaho {
  return $selmaho;
 }
 
-sub fadni { Lojban::Vlatai::fadygau $_[0]->valsi }
+sub fadni { Lojban::Vlatai::fadgau $_[0]->valsi }
 
 sub xugismu { defined $_[0]->klesi && $_[0]->klesi eq 'gismu' }
 sub xucmavo { defined $_[0]->klesi && $_[0]->klesi eq 'cmavo' }
@@ -156,7 +156,7 @@ sub fukpi {
 sub karbi {
  shift unless ref $_[0];  # in case of ``karbi Lojban::Valsi $pa, $re''
  my($pa, $re) = ($_[0]->fadni, (ref $_[1] ? $_[1]->fadni :
-  Lojban::Vlatai::fadygau $_[1]));
+  Lojban::Vlatai::fadgau $_[1]));
  return $_[2] ? $re cmp $pa : $pa cmp $re;
 }
 
