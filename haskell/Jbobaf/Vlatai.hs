@@ -92,9 +92,9 @@ module Jbobaf.Vlatai (
  lujvo_xusra str = fadgau str >>= lujvo_xusra'
  lujvo_xusra' str = do
   noemph <- isOpt Ignore_brivla_emphasis
-  rafsi <- jvokatna' str
   let sylls = syllabicate str
       emphQty = length $ filter (not . null . filter isUpper) sylls
+  jvokatna' str
   xusra (noemph || emphQty == 0 || emphQty == 1
    && not (null $ filter isUpper $ last $ init $ filter voc sylls))
    "Invalid {brivla} emphasis"
@@ -303,23 +303,27 @@ module Jbobaf.Vlatai (
 
  jvokatna, jvokatna' :: String -> Jvacuxtoi [String]
  jvokatna str = fadgau str >>= jvokatna'
- jvokatna' str =
-  let (pre, fanmo) = case lertype (reverse str) of
-	V v2 : Apos : V v1 : C c1 : xs -> (xs, [[c1, v1, '\'', v2]])
-	V v2 : V v1 : C c1 : xs | notElem v1 "iuIU" -> (xs, [[c1, v1, v2]])
-	V v2 : C c3 : V v1 : C c2 : C c1 : xs
-	 | isCC [c1, c2] -> (xs, [[c1, c2, v1, c3, v2]])
-	V v2 : C c3 : C c2 : V v1 : C c1 : xs
-	 | Set.member [c2, c3] fadni -> (xs, [[c1, v1, c2, c3, v2]])
-	V v1 : C c2 : C c1 : xs | isCC [c1, c2] -> ccv' xs [[c1, c2, v1]]
-	 where ccv' (V v1' : C c2' : C c1' : xs') ccvs | isCC [c1', c2']
-		= ccv' xs' ([c1', c2', v1'] : ccvs)
-	       ccv' (V _:C _: _) _ = case xs of
-		 V v' : C c' : xs' -> (xs', [[c', v', c1, c2, v1]])
-		 _ -> ([], [])  -- This shouldn't happen, but just in case...
-	       ccv' xs' ccvs = (xs', ccvs)
-	_ -> ([], [])  -- invalid {lujvo}
-      katna [] rafs = rafs
+ jvokatna' str = do
+  xusra (not $ hasNDJ str) "Invalid consonant triple in {lujvo}"
+  xusra (noBadCC str) "Invalid consonant pair in {lujvo}"
+  (pre, fanmo) <- case lertype (reverse str) of
+    V v2 : Apos : V v1 : C c1 : xs -> return (xs, [[c1, v1, '\'', v2]])
+    V v2 : V v1 : C c1 : xs | notElem v1 "iuIU" -> return (xs, [[c1, v1, v2]])
+    V v2 : C c3 : V v1 : C c2 : C c1 : xs
+     | isCC [c1, c2] -> return (xs, [[c1, c2, v1, c3, v2]])
+    V v2 : C c3 : C c2 : V v1 : C c1 : xs
+     | Set.member [c2, c3] fadni -> return (xs, [[c1, v1, c2, c3, v2]])
+    V v1 : C c2 : C c1 : xs | isCC [c1, c2] -> ccv' xs [[c1, c2, v1]]
+      where ccv' (V v1' : C c2' : C c1' : xs') ccvs | isCC [c1', c2']
+	     = ccv' xs' ([c1', c2', v1'] : ccvs)
+	    ccv' (V _:C _: _) _ = case xs of
+	      V v' : C c' : xs' -> return (xs', [[c', v', c1, c2, v1]])
+	      _ -> throwError "jvokatna': Internal error #1: Don't panic"
+	    ccv' xs' ccvs = return (xs', ccvs)
+    _ -> throwError "Invalid final {rafsi}"
+  xusra (not (null pre) || length fanmo >= 2)
+   "{lujvo} must contain at least two {rafsi}."
+  let katna [] rafs = return rafs
       katna (V v : C c2 : C c1 : xs) rafs | isCC [c1, c2]
        = katna xs ([c1, c2, v] : rafs)
       katna (V v2 : V v1 : C c : xs@(_:_)) rafs | notElem v1 "iuIU"
@@ -338,43 +342,43 @@ module Jbobaf.Vlatai (
 	_ -> if isC_C [c2, head (head rafs)] && not (hasNDJ $ c2 : head rafs)
 	     then if isCC [c2, head (head rafs)]
 		  then katna xs ([c1, v, c2] : [] : rafs)
-		  else []
+		  else throwError "Superfluous Y-hyphen in {lujvo}"
 	     else katna xs ([c1, v, c2] : "y" : rafs)
       katna [rn, V v2, V v1, C c] rafs =
        if rn == C (head (head rafs) == 'r' ?: 'n' :? 'r')
 	&& (length rafs > 1 || raftai (head rafs) /= CCV) && notElem v1 "iuIU"
-       then [c, v1, v2] : rafs
-       else []
+       then return $ [c, v1, v2] : rafs
+       else throwError "Invalid r/n-hyphen in {lujvo}"
       katna [rn, V v2, Apos, V v1, C c] rafs =
        if rn == C (head (head rafs) == 'r' ?: 'n' :? 'r')
 	&& (length rafs > 1 || raftai (head rafs) /= CCV)
-       then [c, v1, '\'', v2] : rafs
-       else []
+       then return $ [c, v1, '\'', v2] : rafs
+       else throwError "Invalid r/n-hyphen in {lujvo}"
       katna [V v2, V v1, C c] rafs =
        if length rafs == 1 && raftai (head rafs) == CCV && notElem v1 "iuIU"
-       then [c, v1, v2] : rafs
-       else []
+       then return $ [c, v1, v2] : rafs
+       else throwError "R/n-hyphen missing from {lujvo}"
       katna [V v2, Apos, V v1, C c] rafs =
        if length rafs == 1 && raftai (head rafs) == CCV
-       then [c, v1, '\'', v2] : rafs
-       else []
-      katna _ _ = []
-      rolrafsi = katna pre fanmo
-      mulrafsi = filter (\r -> not (null r) && r /= "y") rolrafsi
-  in if hasNDJ str || not (noBadCC str) || null fanmo
-      || (null pre && length fanmo < 2)
-      || length (filter null rolrafsi) > 1
-      || length mulrafsi < 2
-     then return []
-     else return $ case span (\r -> raftai r == CVC || null r) rolrafsi of
-      (cvcs@(_:tsb:_), "y":_) ->
-       if has_C_C (concat cvcs)  -- has_C_C ⇒ no need for a tosmabru hyphen
-	?: null (filter null rolrafsi) :? null tsb then mulrafsi else []
-      (cvcs, [[_,_,c1,c2,_]]) | isCC [c1, c2] ->
-       if has_C_C (concat rolrafsi)  -- has_C_C ⇒ no need for a tosmabru hyphen
-	 ?: null (filter null rolrafsi) :? length cvcs > 1 && null (cvcs !! 1)
-	then mulrafsi else []
-      _ -> if null (filter null rolrafsi) then mulrafsi else []
+       then return $ [c, v1, '\'', v2] : rafs
+       else throwError "R/n-hyphen missing from {lujvo}"
+      katna _ _ = throwError "Invalid {rafsi} form"
+  rolrafsi <- katna pre fanmo
+  let mulrafsi = filter (\r -> not (null r) && r /= "y") rolrafsi
+  xusra (length (filter null rolrafsi) <= 1) "Superfluous Y-hyphen in {lujvo}"
+  xusra (length mulrafsi >= 2) "{lujvo} must contain at least two {rafsi}."
+  case span (\r -> raftai r == CVC || null r) rolrafsi of
+   (cvcs@(_:tsb:_), "y":_) ->
+    if has_C_C (concat cvcs)  -- has_C_C ⇒ no need for a tosmabru hyphen
+    then xusra (null $ filter null rolrafsi) "Superfluous Y-hyphen in {lujvo}"
+    else xusra (null tsb) "{lujvo} missing tosmabru hyphen"
+   (cvcs, [[_,_,c1,c2,_]]) | isCC [c1, c2] ->
+    if has_C_C (concat rolrafsi)  -- has_C_C ⇒ no need for a tosmabru hyphen
+    then xusra (null $ filter null rolrafsi) "Superfluous Y-hyphen in {lujvo}"
+    else xusra (length cvcs > 1 && null (cvcs !! 1))
+     "{lujvo} missing tosmabru hyphen"
+   _ -> xusra (null $ filter null rolrafsi) "Superfluous Y-hyphen in {lujvo}"
+  return mulrafsi
 
  data Raftai = CVV | CCV | CVC | CCVC | CVC_C | CCVCV | CVC_CV | Srerafsi
   deriving (Eq, Ord, Read, Show, Enum, Bounded, Ix)
