@@ -1,9 +1,40 @@
 -- |Run-time configuration options and a Reader monad for keeping track of them
 
-module Jbobaf.Jvacux (Jvacux(..), Tercuxna(..), defaults, isOpt, isNopt) where
+module Jbobaf.Jvacux where
  import Ix
  import Data.Set (Set)
+ import Control.Monad.Error
+ import Control.Monad.Identity
+ import Control.Monad.Reader
  import qualified Data.Set as Set
+
+ defaults :: Set Tercuxna
+ defaults = Set.fromList [Use_dotside, Allow_accents, Ignore_naljbo_chars,
+  Allow_triphthongs, Allow_H, Allow_ndj_in_fu'ivla, Allow_ndj_in_cmevla,
+  No_commas_in_cmavo, Translate_digits, Split_bad_diphthongs]
+
+ type JvacuxT m a = ReaderT (Set Tercuxna) m a
+ type Jvacux a = ReaderT (Set Tercuxna) Identity a
+ type Jvacuxtoi a = ReaderT (Set Tercuxna) (Either String) a
+
+ isOpt, isNopt :: Monad m => Tercuxna -> JvacuxT m Bool
+ isOpt = asks . Set.member
+ isNopt = asks . Set.notMember
+
+ nupre :: Jvacuxtoi a -> Jvacux a
+ nupre = mapReaderT (\(Right a) -> return a)
+
+ troci :: Jvacuxtoi a -> Jvacux (Either String a)
+ troci = mapReaderT (return . id)
+
+ kavbu :: Jvacuxtoi a -> (String -> Jvacux a) -> Jvacux a
+ kavbu jct f = ask >>= either f return . runReaderT jct
+
+ snada :: Jvacux a -> Jvacuxtoi a
+ snada = mapReaderT (return . runIdentity)
+
+ -- fliba :: String -> Jvacuxtoi a  -- Is this function necessary/useful?
+ -- fliba = throwError
 
  data Tercuxna =
   Use_dotside
@@ -69,18 +100,3 @@ module Jbobaf.Jvacux (Jvacux(..), Tercuxna(..), defaults, isOpt, isNopt) where
     -- When this option is not in effect, any text coming after a /fa'o/ will
     -- be returned as a 'String' at the end of the word list.
   deriving (Eq, Ord, Read, Show, Bounded, Enum, Ix)
-
- defaults :: Set Tercuxna
- defaults = Set.fromList [Use_dotside, Allow_accents, Ignore_naljbo_chars,
-  Allow_triphthongs, Allow_H, Allow_ndj_in_fu'ivla, Allow_ndj_in_cmevla,
-  No_commas_in_cmavo, Translate_digits, Split_bad_diphthongs]
-
- newtype Jvacux a = Jvacux {jvacuxna :: Set Tercuxna -> a}
-
- instance Monad Jvacux where
-  return = Jvacux . const
-  Jvacux f >>= g = Jvacux $ \opt -> jvacuxna (g $ f opt) opt
-
- isOpt, isNopt :: Tercuxna -> Jvacux Bool
- isOpt = Jvacux . Set.member
- isNopt = Jvacux . Set.notMember
