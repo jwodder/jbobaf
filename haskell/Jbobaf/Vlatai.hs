@@ -1,6 +1,6 @@
 module Jbobaf.Vlatai (
   -- * Basic character sequences
-  isV, isVy, isC, isCC, isC_C, lidne, fadni,
+  isV, isVy, isVV, isVVV, isC, isCC, isC_C, lidne, fadni,
   -- * Word classification & validity
   xubrivla, xugismu, xulujvo, xufu'ivla, xucmevla, xucmavo,
   -- ** Pre-normalized
@@ -21,6 +21,16 @@ module Jbobaf.Vlatai (
  isV = (`elem` "aeiou") . toLower
  isVy = (`elem` "aeiouy") . toLower
  isC = (`elem` "bcdfgjklmnprstvxz") . toLower
+
+ isVV :: String -> Bool
+ isVV [v1, v2] = v1 `elem` "iuIU" && isVy v2
+  || v1 `elem` "aeoAEO" && toLower v2 == 'i'
+  || toLower v1 == 'a' && toLower v2 == 'u'
+ isVV _ = False
+
+ isVVV :: String -> Bool
+ isVVV [v1, v2, v3] = v1 `elem` "iuIU" && isVV [v2, v3]
+ isVVV _ = False
 
  isCC, isC_C :: String -> Bool
  isCC = (`Set.member` lidne) . map toLower
@@ -226,19 +236,16 @@ module Jbobaf.Vlatai (
       porfad (' ':' ':xs) = porfad (' ':xs)
       porfad (c:xs) = c ~: porfad xs
       porfad [] = Just []
-      isDiphth v1 v2 = v1 `elem` "iuIU"
-       || v1 `elem` "aeoAEO" && toLower v2 == 'i'
-       || toLower v1 == 'a' && toLower v2 == 'u'
       vokfed [] = Just []
       vokfed [v] = Just [v]
-      vokfed [v1, v2] = if isDiphth v1 v2 then Just [v1, v2]
+      vokfed [v1, v2] = if isVV [v1, v2] then Just [v1, v2]
 			else if splitDiphth then Just [v1, ',', v2]
 			else Nothing
       vokfed (v1:v2:v3:xs) =
-       if triphth && v1 `elem` "iuIU" && isDiphth v2 v3
+       if triphth && isVVV [v1, v2, v3]
        then Just [v1, v2, v3] ~~ (null xs ?: Just [] :? splitDiphth
 	?: ',' ~: vokfed xs :? Nothing)
-       else if isDiphth v1 v2
+       else if isVV [v1, v2]
        then splitDiphth ?: Just [v1, v2, ','] ~~ vokfed (v3:xs) :? Nothing
        else splitDiphth ?: Just [v1, ','] ~~ vokfed (v2:v3:xs) :? Nothing
       slakate [] = Just []

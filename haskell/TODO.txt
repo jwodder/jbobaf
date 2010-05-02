@@ -62,11 +62,9 @@ NEW FEATURES
    this possibly be solved using a ReaderT monad wrapped variously around an
    Identity and Error monad?
 - Write a CGI frontend to lerfendi?
-- Add a function for testing whether a string is a valid diphthong or
-  triphthong?
 - Add a function for determining the {vlalei} of a word without having to make
   it into a Valsi object?
-- Should isV and isVy support accented vowels?
+- Should the isV* functions support accented vowels?
 - When Translate_digits (or a different option?) is in effect, fadgau should
   perform the following conversions:
  - 'π' to "pai"
