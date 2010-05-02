@@ -1,17 +1,12 @@
 -- |Run-time configuration options and a Reader monad for keeping track of them
 
-module Jbobaf.Jvacux (module Jbobaf.Jvacux, runReaderT) where
+module Jbobaf.Jvacux (module Jbobaf.Jvacux, runReaderT, throwError) where
  import Ix
  import Data.Set (Set)
  import Control.Monad.Error
  import Control.Monad.Identity
  import Control.Monad.Reader
  import qualified Data.Set as Set
-
- defaults :: Set Tercuxna
- defaults = Set.fromList [Use_dotside, Allow_accents, Ignore_naljbo_chars,
-  Allow_triphthongs, Allow_H, Allow_ndj_in_fu'ivla, Allow_ndj_in_cmevla,
-  No_commas_in_cmavo, Translate_digits, Split_bad_diphthongs]
 
  type JvacuxT m a = ReaderT (Set Tercuxna) m a
  type Jvacux a = ReaderT (Set Tercuxna) Identity a
@@ -100,3 +95,8 @@ module Jbobaf.Jvacux (module Jbobaf.Jvacux, runReaderT) where
     -- When this option is not in effect, any text coming after a /fa'o/ will
     -- be returned as a 'String' at the end of the word list.
   deriving (Eq, Ord, Read, Show, Bounded, Enum, Ix)
+
+ defaults :: Set Tercuxna
+ defaults = Set.fromList [Use_dotside, Allow_accents, Ignore_naljbo_chars,
+  Allow_triphthongs, Allow_H, Allow_ndj_in_fu'ivla, Allow_ndj_in_cmevla,
+  No_commas_in_cmavo, Translate_digits, Split_bad_diphthongs]

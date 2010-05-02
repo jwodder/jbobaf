@@ -20,7 +20,6 @@ module Jbobaf.Vlatai (
  import Ix
  import List (findIndices)
  import Monad (mplus)
- import Control.Monad.Error.Class (throwError)
  import qualified Data.Set as Set
  import Jbobaf.Internals
  import Jbobaf.Jvacux
