@@ -5,6 +5,12 @@ module Jbobaf.Vlatai (
   xubrivla, xugismu, xulujvo, xufu'ivla, xucmevla, xucmavo,
   -- ** Pre-normalized
   xubrivla', xugismu', xulujvo', xufu'ivla', xucmevla', xucmavo',
+  -- ** Asserting validity
+  brivla_xusra, gismu_xusra, lujvo_xusra, fu'ivla_xusra, cmevla_xusra,
+  cmavo_xusra,
+  -- ** Asserting validity (pre-normalized)
+  brivla_xusra', gismu_xusra', lujvo_xusra', fu'ivla_xusra', cmevla_xusra',
+  cmavo_xusra',
   -- * Normalization
   fadgau,
   -- * /Lujvo/ manipulation
@@ -13,6 +19,8 @@ module Jbobaf.Vlatai (
  import Char
  import Ix
  import List (findIndices)
+ import Monad (mplus)
+ import Control.Monad.Error.Class (throwError)
  import qualified Data.Set as Set
  import Jbobaf.Internals
  import Jbobaf.Jvacux
@@ -45,84 +53,122 @@ module Jbobaf.Vlatai (
   "tp", "tx", "vb", "vd", "vg", "vj", "vm", "vn", "vz", "xf", "xm", "xn", "xp",
   "xs", "xt", "zl", "zn", "zr"]
 
+ -- The "prime" forms of the xu* and *_xusra functions assume that their
+ -- arguments are already normalized.  The non-prime functions do not.
+
  xubrivla, xugismu, xulujvo, xufu'ivla, xucmevla, xucmavo,
   xubrivla', xugismu', xulujvo', xufu'ivla', xucmevla', xucmavo'
-   :: String -> Jvacux Bool
-  -- The "prime" forms of the xu* functions assume that their arguments are
-  -- already normalized.  The non-prime functions do not.
+  :: String -> Jvacux Bool
+ xugismu str = kavbu (gismu_xusra str >> return True) (\_ -> return False)
+ xugismu' str = kavbu (gismu_xusra' str >> return True) (\_ -> return False)
+ xulujvo str = kavbu (lujvo_xusra str >> return True) (\_ -> return False)
+ xulujvo' str = kavbu (lujvo_xusra' str >> return True) (\_ -> return False)
+ xufu'ivla str = kavbu (fu'ivla_xusra str >> return True) (\_ -> return False)
+ xufu'ivla' str = kavbu (fu'ivla_xusra' str >> return True) (\_ -> return False)
+ xucmevla str = kavbu (cmevla_xusra str >> return True) (\_ -> return False)
+ xucmevla' str = kavbu (cmevla_xusra' str >> return True) (\_ -> return False)
+ xucmavo str = kavbu (cmavo_xusra str >> return True) (\_ -> return False)
+ xucmavo' str = kavbu (cmavo_xusra' str >> return True) (\_ -> return False)
+ xubrivla str = kavbu (brivla_xusra str >> return True) (\_ -> return False)
+ xubrivla' str = kavbu (brivla_xusra' str >> return True) (\_ -> return False)
 
- xubrivla str = fadgau str >>= maybe (return False) xubrivla'
- xubrivla' str = do
-  gismu <- xugismu' str
-  lujvo <- xulujvo' str
-  fu'ivla <- xufu'ivla' str
-  return $ gismu || lujvo || fu'ivla
+ brivla_xusra, brivla_xusra' :: String -> Jvacuxtoi ()
+ brivla_xusra str = fadgau str >>= brivla_xusra'
+ brivla_xusra' str = gismu_xusra' str
+  `mplus` lujvo_xusra' str
+  `mplus` fu'ivla_xusra' str
+  `mplus` throwError "This string is not a {brivla}."
  
- xugismu str = fadgau str >>= maybe (return False) xugismu'
- xugismu' [a, b, c, d, e] = do
+ gismu_xusra, gismu_xusra' :: String -> Jvacuxtoi ()
+ gismu_xusra str = fadgau str >>= gismu_xusra'
+ gismu_xusra' [a, b, c, d, e] = do
   noemph <- isOpt Ignore_brivla_emphasis
-  return $ isC a && isC d && isV e && (isV b && isC c && isC_C [c, d]
-   || isC b && isV c && isCC [a, b]) && (noemph || not (isUpper e))
- xugismu' _ = return False
+  xusra (isC a && isC d && isV e && (isV b && isC c && isC_C [c, d]
+   || isC b && isV c && isCC [a, b])) "Invalid {gismu} form"
+  xusra (noemph || not (isUpper e)) "Invalid {brivla} emphasis"
+ gismu_xusra' _ = throwError "{gismu} must be five letterals long."
 
- xulujvo str = fadgau str >>= maybe (return False) xulujvo'
- xulujvo' str = do
+ lujvo_xusra, lujvo_xusra' :: String -> Jvacuxtoi ()
+ lujvo_xusra str = fadgau str >>= lujvo_xusra'
+ lujvo_xusra' str = do
   noemph <- isOpt Ignore_brivla_emphasis
   rafsi <- jvokatna' str
   let sylls = syllabicate str
       emphQty = length $ filter (not . null . filter isUpper) sylls
-  return $ not (null rafsi) && (noemph || emphQty == 0 || emphQty == 1
+  xusra (noemph || emphQty == 0 || emphQty == 1
    && not (null $ filter isUpper $ last $ init $ filter voc sylls))
+   "Invalid {brivla} emphasis"
 
- xufu'ivla str = fadgau str >>= maybe (return False) xufu'ivla'
- xufu'ivla' str = do
+ fu'ivla_xusra, fu'ivla_xusra' :: String -> Jvacuxtoi ()
+ fu'ivla_xusra str = fadgau str >>= fu'ivla_xusra'
+ fu'ivla_xusra' str = do
   noemph <- isOpt Ignore_brivla_emphasis
-  canY <- isOpt Allow_Y_in_fu'ivla
-  ndj <- isOpt Allow_ndj_in_fu'ivla
-  xugim <- xugismu' str
-  xuluj <- xulujvo' str
-  toluj <- xulujvo' $ 't':'o':str
+  canY   <- isOpt Allow_Y_in_fu'ivla
+  ndj    <- isOpt Allow_ndj_in_fu'ivla
   let vocSyls = filter voc $ syllabicate str
       emphQty = length $ filter (not . null . filter isUpper) vocSyls
-  if not (null str) && notElem ' ' str && isV (last str) && noBadCC str
-   && (ndj || not (hasNDJ str)) && (canY || notElem 'y' str)
-   && length vocSyls >= 2 && (noemph || emphQty == 0
-    || emphQty == 1 && not (null $ filter isUpper $ last $ init vocSyls))
-   && not xugim && not xuluj && not (isC (head str) && toluj)
-   then case findC_C str of
-	 Just ccLoc -> do
-	  let (clust, rest) = span (\c -> isC c || c == 'y') (drop ccLoc str)
-	      preclust = take ccLoc str
-	      preCs = length $ filter isC preclust
-	  slinky <- xulujvo' $ 't':'o':drop ccLoc str
-	  if elem 'y' clust || has_C_C clust
-	      || length (filter voc $ syllabicate rest) == 1
-	      || ccLoc /= 0 && slinky
-	   then return $ ccLoc /= 0
-		 && length (filter (`notElem` "',y") preclust) <= 3
-		 && (preCs == 1 && isC (head preclust) || preCs == 0)
-	   else return (ccLoc == 0)
-	 Nothing -> return False
-   else return False
+  xusra (not $ null str) "{fu'ivla} must be non-empty."
+  snada (xugismu' str) >>= flip xusra "{fu'ivla} may not be {gismu}." . not
+  snada (xulujvo' str) >>= flip xusra "{fu'ivla} may not be {lujvo}." . not
+  if isC (head str) then snada (xulujvo' $ 't':'o':str)
+    >>= flip xusra "{fu'ivla} may not fail the tosmabru test" . not
+   else return ()
+  xusra (notElem ' ' str) "{fu'ivla} may not have internal spaces or periods."
+  xusra (isV $ last str) "{fu'ivla} must end with a vowel."
+  xusra (noBadCC str) "{fu'ivla} may not contain any invalid consonant pairs."
+  xusra (ndj || not (hasNDJ str)) "{fu'ivla} may not contain the strings\
+   \ \"ndj\", \"ndz\", \"ntc\", or \"nts\"."
+  xusra (canY || notElem 'y' str) "{fu'ivla} may not contain Y's."
+  xusra (length vocSyls >= 2)
+   "{fu'ivla} must contain two or more vocalic syllables."
+  xusra (noemph || emphQty == 0 || emphQty == 1
+   && not (null $ filter isUpper $ last $ init vocSyls))
+   "Invalid {brivla} emphasis"
+  case findC_C str of
+   Just ccLoc -> do
+    let (clust, rest) = span (\c -> isC c || c == 'y') (drop ccLoc str)
+	preclust = take ccLoc str
+	preCs = length $ filter isC preclust
+    slinky <- snada $ xulujvo' $ 't':'o':drop ccLoc str
+    if elem 'y' clust || has_C_C clust
+	|| length (filter voc $ syllabicate rest) == 1
+	|| ccLoc /= 0 && slinky
+     then do
+      xusra (ccLoc /= 0) "Non-initial consonant clusters may not occur at the\
+       \ start of a {fu'ivla}."
+      xusra (length (filter (`notElem` "',y") preclust) <= 3) "The consonant\
+       \ cluster in a {fu'ivla} may be preceded by no more than three letters."
+      xusra (preCs == 1 && isC (head preclust) || preCs == 0) "A consonant\
+       \ cluster in a {fu'ivla} must be preceded by no more than one {ma'osmi}."
+     else xusra (ccLoc == 0) "{fu'ivla} may not break apart into smaller words."
+   Nothing -> throwError "{fu'ivla} must contain a consonant cluster."
 
- xucmevla str = fadgau str >>= maybe (return False) xucmevla'
- xucmevla' [] = return False
- xucmevla' str = do
+ cmevla_xusra, cmevla_xusra' :: String -> Jvacuxtoi ()
+ cmevla_xusra str = fadgau str >>= cmevla_xusra'
+ cmevla_xusra' [] = throwError "{cmevla} must be non-empty."
+ cmevla_xusra' str = do
   dotty <- isOpt Use_dotside
-  ndj <- isOpt Allow_ndj_in_cmevla
-  return $ isC (last str) && notElem ' ' str && noBadCC str
-	   && case (dotty, findLa str, ndj, hasNDJ str) of
-	       (False, Just _, _, _) -> False
-	       (_, _, False, True) -> False
-	       _ -> True
+  ndj   <- isOpt Allow_ndj_in_cmevla
+  xusra (isC $ last str) "{cmevla} must end with a consonant."
+  xusra (notElem ' ' str) "{cmevla} may not have internal spaces or periods."
+  xusra (noBadCC str) "{cmevla} may not contain any invalid consonant pairs."
+  case (dotty, findLa str, ndj, hasNDJ str) of
+   (False, Just _, _, _) -> throwError "{cmevla} may not contain the strings\
+    \ \"la\", \"lai\", \"la'i\", or \"doi\"."
+   (_, _, False, True) -> throwError "{cmevla} may not contain the strings\
+    \ \"ndj\", \"ndz\", \"ntc\", or \"nts\"."
+   _ -> return ()
 
- xucmavo str = fadgau str >>= maybe (return False) xucmavo'
- xucmavo' [] = return False
- xucmavo' str@(c:xs) = do
+ cmavo_xusra, cmavo_xusra' :: String -> Jvacuxtoi ()
+ cmavo_xusra str = fadgau str >>= cmavo_xusra'
+ cmavo_xusra' [] = throwError "{cmavo} must be non-empty."
+ cmavo_xusra' str@(c:xs) = do
   commas <- isNopt No_commas_in_cmavo
   let maho = if isC c then xs else str
-  return $ not (null maho) && null (filter (\c -> isSpace c || isC c) maho)
-   && (commas || notElem ',' maho)
+  xusra (not $ null maho) "A single consonant is not a {cmavo}."
+  xusra (null $ filter (\c -> isSpace c || isC c) maho)
+   "{cmavo} may not have internal spaces, periods, or consonants."
+  xusra (commas || notElem ',' maho) "{cmavo} may not contain commas."
 
  -- |@fadgau@ is a basic \"cleanup\" routine used by various functions in
  -- Jbobaf for converting Lojban text into a more regular, \"normalized\" form.
@@ -136,8 +182,7 @@ module Jbobaf.Vlatai (
  -- * If 'Ignore_naljbo_chars' is in effect, any non-Lojbanic characters
  --   (including accented vowels and H's if 'Allow_accents' and 'Allow_H',
  --   respectively, are not in effect) are removed.  Otherwise, if the string
- --   does contain any non-Lojban characters, 'Nothing' is returned, indicating
- --   invalid input.
+ --   does contain any non-Lojban characters, an error is thrown.
  --
  -- * If 'Allow_accents' is in effect, vowels with acute accents are converted
  --   to uppercase ASCII letters (except for accented Y's, which are converted
@@ -156,17 +201,17 @@ module Jbobaf.Vlatai (
  -- * Consecutive apostrophes are merged together.
  --
  -- * If an apostrophe is found in an invalid location (i.e., next to a
- --   non-vowel or at the the beginning or end of the string), 'Nothing' is
- --   returned.
+ --   non-vowel or at the the beginning or end of the string), an error is
+ --   thrown.
  --
  -- * Consecutive commas are merged together, and commas not between two vowels
  --   are removed.
  --
  -- * Commas are inserted in invalid vowel clusters if 'Split_bad_diphthongs'
- --   is in effect; otherwise, an invalid vowel cluster causes 'Nothing' to be
- --   returned.
+ --   is in effect; otherwise, an invalid vowel cluster causes an error to be
+ --   thrown
 
- fadgau :: String -> Jvacux (Maybe String)
+ fadgau :: String -> Jvacuxtoi String
  fadgau str = do
   accents     <- isOpt Allow_accents
   ignoring    <- isOpt Ignore_naljbo_chars
@@ -179,7 +224,9 @@ module Jbobaf.Vlatai (
 		   || hasH && toLower c == 'h'
 		   || digits && isDigit c
       lerfad (c:xs) | isSpace c = ' ' ~: lerfad xs
-      lerfad (c:xs) | not (goodchr c) = if ignoring then lerfad xs else Nothing
+      lerfad (c:xs) | not (goodchr c) =
+       if ignoring then lerfad xs
+       else throwError "Non-Lojbanic character in string"
       lerfad ('.':xs) = ' ' ~: lerfad xs
       lerfad ('á':xs) = 'A' ~: lerfad xs
       lerfad ('Á':xs) = 'A' ~: lerfad xs
@@ -208,7 +255,7 @@ module Jbobaf.Vlatai (
       lerfad ('8':xs) = lerfad $ 'b':'i':xs
       lerfad ('9':xs) = lerfad $ 's':'o':xs
       lerfad (c:xs) = (if isC c then toLower c else c) ~: lerfad xs
-      lerfad [] = Just []
+      lerfad [] = return []
       -- All of the tests for adjacent characters and characters at the
       -- beginning or end of the string rely on first removing all non-Lojbanic
       -- characters and normalizing the remaining individuals.  Thus, input to
@@ -218,41 +265,44 @@ module Jbobaf.Vlatai (
       porfad (c:',':xs) | not (isVy c) = porfad (c:xs)
       porfad (',':c:xs) | not (isVy c) = porfad (c:xs)
       porfad ('\'':'\'':xs) = porfad ('\'':xs)
-      porfad (c:'\'':xs) | not (isVy c) = Nothing
-      porfad ('\'':c:xs) | not (isVy c) = Nothing
-      porfad "'" = Nothing
-      porfad "," = Just []
-      porfad " " = Just []
+      porfad (c:'\'':xs)
+       | not (isVy c) = throwError "Apostrophe next to a non-vowel detected."
+      porfad ('\'':c:xs)
+       | not (isVy c) = throwError "Apostrophe next to a non-vowel detected."
+      porfad "'"= throwError "Apostrophes may not occur at the end of a string."
+      porfad "," = return []
+      porfad " " = return []
       porfad (' ':' ':xs) = porfad (' ':xs)
       porfad (c:xs) = c ~: porfad xs
-      porfad [] = Just []
+      porfad [] = return []
       isDiphth v1 v2 = v1 `elem` "iuIU"
        || v1 `elem` "aeoAEO" && toLower v2 == 'i'
        || toLower v1 == 'a' && toLower v2 == 'u'
-      vokfed [] = Just []
-      vokfed [v] = Just [v]
-      vokfed [v1, v2] = if isDiphth v1 v2 then Just [v1, v2]
-			else if splitDiphth then Just [v1, ',', v2]
-			else Nothing
+      vokfed [] = return []
+      vokfed [v] = return [v]
+      vokfed [v1, v2] = if isDiphth v1 v2 then return [v1, v2]
+			else if splitDiphth then return [v1, ',', v2]
+			else throwError "Invalid diphthong detected"
       vokfed (v1:v2:v3:xs) =
        if triphth && v1 `elem` "iuIU" && isDiphth v2 v3
-       then Just [v1, v2, v3] ~~ (null xs ?: Just [] :? splitDiphth
-	?: ',' ~: vokfed xs :? Nothing)
-       else if isDiphth v1 v2
-       then splitDiphth ?: Just [v1, v2, ','] ~~ vokfed (v3:xs) :? Nothing
-       else splitDiphth ?: Just [v1, ','] ~~ vokfed (v2:v3:xs) :? Nothing
-      slakate [] = Just []
-      slakate str = Just cs ~~ vokfed vs ~~ slakate rest
+       then return [v1, v2, v3] ~~ (null xs ?: return [] :? splitDiphth
+	?: ',' ~: vokfed xs :? throwError "Invalid 4-vowel sequence detected")
+       else if splitDiphth then
+	if isDiphth v1 v2
+	then return [v1, v2, ','] ~~ vokfed (v3:xs)
+	else return [v1, ','] ~~ vokfed (v2:v3:xs)
+       else throwError "Invalid triphthong detected"
+      slakate [] = return []
+      slakate str = return cs ~~ vokfed vs ~~ slakate rest
        where (cs, r) = break isVy str
 	     (vs, rest) = span isVy r
-  return $ do
-   str' <- lerfad str >>= return . dropWhile (\c -> isSpace c || c == ',')
-   if take 1 str' == "'" then Nothing else porfad str' >>= slakate
+  str' <- lerfad str >>= return . dropWhile (\c -> isSpace c || c == ',')
+  if take 1 str' == "'"
+     then throwError "Apostrophes may not occur at the beginning of a string."
+     else porfad str' >>= slakate
 
- jvokatna, jvokatna' :: String -> Jvacux [String]
-  -- Although jvokatna' currently doesn't use any Jvacux options, it is still
-  -- wrapped in the Jvacux monad in preparation for the day that it does.
- jvokatna str = fadgau str >>= maybe (return []) jvokatna'
+ jvokatna, jvokatna' :: String -> Jvacuxtoi [String]
+ jvokatna str = fadgau str >>= jvokatna'
  jvokatna' str =
   let (pre, fanmo) = case lertype (reverse str) of
 	V v2 : Apos : V v1 : C c1 : xs -> (xs, [[c1, v1, '\'', v2]])
@@ -359,10 +409,10 @@ module Jbobaf.Vlatai (
  noBadCC :: String -> Bool
  noBadCC str = null $ filter (\i -> let cc = take 2 (drop i str)
   in length cc /= 1 && (isC $ cc !! 1) && not (isC_C cc)) (findIndices isC str)
- 
+
  data Lertype = C Char | V Char | Y | Apos | BadCh
   deriving (Eq, Ord, Read, Show)
- 
+
  lertype :: String -> [Lertype]
  -- Pre-classifying letterals as consonants & vowels cuts down on obsessive
  -- checking later.
@@ -374,3 +424,7 @@ module Jbobaf.Vlatai (
   | isC c = C c : lertype xs
   | isV c = V c : lertype xs
   | otherwise = BadCh : lertype xs
+
+ xusra :: Bool -> String -> Jvacuxtoi ()
+ xusra True _ = return ()
+ xusra False s = throwError s
