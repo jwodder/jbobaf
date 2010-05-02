@@ -81,4 +81,11 @@ _Bool isC(char c) {return c2i(c) != -1; }
 _Bool isV(char v) {return strchr("aeiouAEIOU", v) != NULL; }
 _Bool isVy(char v) {return strchr("aeiouyAEIOUY", v) != NULL; }
 
+_Bool xugismu(char* str) { /* `str' must already be normalized. */
+ return isC(str[0])
+  && (isC(str[1]) ? isCC(str[0], str[1]) && isV(str[2]) && isC(str[3])
+   : isV(str[1]) && isC_C(str[2], str[3]))
+  && isV(str[4]) && str[5] == '\0';
+}
+
 /* vim:set nowrap: */

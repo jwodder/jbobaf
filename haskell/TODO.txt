@@ -48,6 +48,7 @@ NEW FEATURES
    (effectively) only quote that string
  - treating an opening ZOI delimiter not followed by a space or period as
    invalid
+ - converting uppercase letters to {lerfu} words
 - Possibly make Jvacux into an Error monad as well as a Reader so that the user
   can receive information about exactly *why* something (e.g., jvokatna) failed
  - An option could then be added to Jvacux for specifying whether error
@@ -63,3 +64,17 @@ NEW FEATURES
 - Write a CGI frontend to lerfendi?
 - Add a function for testing whether a string is a valid diphthong or
   triphthong?
+- Add a function for determining the {vlalei} of a word without having to make
+  it into a Valsi object?
+- Should isV and isVy support accented vowels?
+- When Translate_digits (or a different option?) is in effect, fadgau should
+  perform the following conversions:
+ - 'π' to "pai"
+ - '∞' to "ci'i"
+ - '/' to "fi'u"
+ - '%' to "ce'i"
+ - in a numeric sequence - ',' to "ki'o"
+ - in a numeric sequence - '.' to "pi"
+ - in a numeric sequence - ':' and ';' to "pi'e"
+ - before a number - '-' to "ni'u"?
+ - before a number - '+' to "ma'u"?

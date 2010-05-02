@@ -27,26 +27,26 @@ module Jbobaf.Jvacux (Jvacux(..), Tercuxna(..), defaults, isOpt, isNopt) where
     -- permitted within /cmevla/.
 
   | Allow_accents
-    -- ^@fadgau@ will implicitly convert vowels with acute accent marks into
+    -- ^'fadgau' will implicitly convert vowels with acute accent marks into
     -- uppercase unaccented vowels (except for an accented \'y\', which will
     -- always be treated as lowercase).  Note that only precomposed characters
     -- (e.g., U+00E1, not U+0061+0301) are recognized; decomposed character
     -- sequences will be treated as an unaccented character followed by a
     -- separate combining character.
-  | Allow_H  -- ^@fadgau@ will convert H's in Lojban text into apostrophes.
+  | Allow_H  -- ^'fadgau' will convert H's in Lojban text into apostrophes.
   | Ignore_naljbo_chars
-    -- ^@fadgau@ will remove any & all non-space characters outside of the
+    -- ^'fadgau' will remove any & all non-space characters outside of the
     -- Lojban alphabet, including accented vowels if 'Allow_accents' is not in
     -- effect and decimal digits if 'Translate_digits' is not in effect.
   | Translate_digits
-    -- ^@fadgau@ will replace any & all decimal digits in Lojban text with the
+    -- ^'fadgau' will replace any & all decimal digits in Lojban text with the
     -- characters for the corresponding PA /cmavo/.  Note that no syllable or
     -- word boundaries are assumed or imposed for the purposes of this
     -- transformation, so \"@0i@\" becomes \"@noi@\", not \"@no,i@\" or
     -- \"@no.i@\".  However, if 'Split_bad_diphthongs' is in effect, \"@0e@\"
     -- will become \"@no,e@\", and similarly for other bad vowel combinations.
   | Split_bad_diphthongs
-    -- ^@fadgau@ will break apart any invalid vowel clusters (including
+    -- ^'fadgau' will break apart any invalid vowel clusters (including
     -- triphthongs when 'Allow_triphthongs' is not in effect) by inserting
     -- commas, using a \"maximal munch\" rule that favors leading
     -- diphthongs/triphthongs (so \"aui\" will become \"au,i\", not \"a,ui\").
@@ -64,7 +64,7 @@ module Jbobaf.Jvacux (Jvacux(..), Tercuxna(..), defaults, isOpt, isNopt) where
     -- ^\"/fa'o/\" will lose its magic word status inside \"/lo'u/ ... /le'u/\"
     -- quotes.
   | Ignore_FAhO
-    -- ^@lerfendi@ will continue performing word splitting even after a /fa'o/
+    -- ^'lerfendi' will continue performing word splitting even after a /fa'o/
     -- is encountered (The /fa'o/ will still be returned in the list of words).
     -- When this option is not in effect, any text coming after a /fa'o/ will
     -- be returned as a 'String' at the end of the word list.

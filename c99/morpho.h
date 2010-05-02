@@ -13,4 +13,5 @@ _Bool isC_C(char c1, char c2);
 _Bool isC(char c);
 _Bool isV(char v);
 _Bool isVy(char v);
+_Bool xugismu(char* str);
 #endif
