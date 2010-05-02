@@ -1,6 +1,6 @@
 -- |Run-time configuration options and a Reader monad for keeping track of them
 
-module Jbobaf.Jvacux where
+module Jbobaf.Jvacux (module Jbobaf.Jvacux, runReaderT) where
  import Ix
  import Data.Set (Set)
  import Control.Monad.Error

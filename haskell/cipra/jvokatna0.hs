@@ -7,5 +7,6 @@ main = do
  luj <- if null argv
 	then putStrLn "lo lujvo lonu katna cu jai sarcu" >> exitFailure
 	else return (head argv)
- let rafs = jvacuxna (jvokatna luj) defaults
- if null rafs then putStrLn "na drani lujvo" else mapM_ putStrLn rafs
+ case runReaderT (jvokatna luj) defaults of
+  Left str -> putStrLn $ "na drani lujvo: " ++ str
+  Right rafs -> mapM_ putStrLn rafs
