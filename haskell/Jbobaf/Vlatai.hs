@@ -58,27 +58,27 @@ module Jbobaf.Vlatai (
  xubrivla, xugismu, xulujvo, xufu'ivla, xucmevla, xucmavo,
   xubrivla', xugismu', xulujvo', xufu'ivla', xucmevla', xucmavo'
   :: String -> Jvacux Bool
- xugismu str = kavbu (gismu_xusra str >> return True) (\_ -> return False)
- xugismu' str = kavbu (gismu_xusra' str >> return True) (\_ -> return False)
- xulujvo str = kavbu (lujvo_xusra str >> return True) (\_ -> return False)
- xulujvo' str = kavbu (lujvo_xusra' str >> return True) (\_ -> return False)
- xufu'ivla str = kavbu (fu'ivla_xusra str >> return True) (\_ -> return False)
- xufu'ivla' str = kavbu (fu'ivla_xusra' str >> return True) (\_ -> return False)
- xucmevla str = kavbu (cmevla_xusra str >> return True) (\_ -> return False)
- xucmevla' str = kavbu (cmevla_xusra' str >> return True) (\_ -> return False)
- xucmavo str = kavbu (cmavo_xusra str >> return True) (\_ -> return False)
- xucmavo' str = kavbu (cmavo_xusra' str >> return True) (\_ -> return False)
- xubrivla str = kavbu (brivla_xusra str >> return True) (\_ -> return False)
- xubrivla' str = kavbu (brivla_xusra' str >> return True) (\_ -> return False)
+ xugismu    = xusnada . gismu_xusra
+ xugismu'   = xusnada . gismu_xusra'
+ xulujvo    = xusnada . lujvo_xusra
+ xulujvo'   = xusnada . lujvo_xusra'
+ xufu'ivla  = xusnada . fu'ivla_xusra
+ xufu'ivla' = xusnada . fu'ivla_xusra'
+ xucmevla   = xusnada . cmevla_xusra
+ xucmevla'  = xusnada . cmevla_xusra'
+ xucmavo    = xusnada . cmavo_xusra
+ xucmavo'   = xusnada . cmavo_xusra'
+ xubrivla   = xusnada . brivla_xusra
+ xubrivla'  = xusnada . brivla_xusra'
 
- brivla_xusra, brivla_xusra' :: String -> Jvacuxtoi ()
+ brivla_xusra, brivla_xusra' :: String -> Jvacux ()
  brivla_xusra str = fadgau str >>= brivla_xusra'
  brivla_xusra' str = gismu_xusra' str
   `mplus` lujvo_xusra' str
   `mplus` fu'ivla_xusra' str
   `mplus` throwError "This string is not a {brivla}."
  
- gismu_xusra, gismu_xusra' :: String -> Jvacuxtoi ()
+ gismu_xusra, gismu_xusra' :: String -> Jvacux ()
  gismu_xusra str = fadgau str >>= gismu_xusra'
  gismu_xusra' [a, b, c, d, e] = do
   noemph <- isOpt Ignore_brivla_emphasis
@@ -87,7 +87,7 @@ module Jbobaf.Vlatai (
   xusra (noemph || not (isUpper e)) "Invalid {brivla} emphasis"
  gismu_xusra' _ = throwError "{gismu} must be five letterals long."
 
- lujvo_xusra, lujvo_xusra' :: String -> Jvacuxtoi ()
+ lujvo_xusra, lujvo_xusra' :: String -> Jvacux ()
  lujvo_xusra str = fadgau str >>= lujvo_xusra'
  lujvo_xusra' str = do
   noemph <- isOpt Ignore_brivla_emphasis
@@ -98,7 +98,7 @@ module Jbobaf.Vlatai (
    && not (null $ filter isUpper $ last $ init $ filter voc sylls))
    "Invalid {brivla} emphasis"
 
- fu'ivla_xusra, fu'ivla_xusra' :: String -> Jvacuxtoi ()
+ fu'ivla_xusra, fu'ivla_xusra' :: String -> Jvacux ()
  fu'ivla_xusra str = fadgau str >>= fu'ivla_xusra'
  fu'ivla_xusra' str = do
   noemph <- isOpt Ignore_brivla_emphasis
@@ -107,9 +107,9 @@ module Jbobaf.Vlatai (
   let vocSyls = filter voc $ syllabicate str
       emphQty = length $ filter (not . null . filter isUpper) vocSyls
   xusra (not $ null str) "{fu'ivla} must be non-empty."
-  snada (xugismu' str) >>= flip xusra "{fu'ivla} may not be {gismu}." . not
-  snada (xulujvo' str) >>= flip xusra "{fu'ivla} may not be {lujvo}." . not
-  if isC (head str) then snada (xulujvo' $ 't':'o':str)
+  xugismu' str >>= flip xusra "{fu'ivla} may not be {gismu}." . not
+  xulujvo' str >>= flip xusra "{fu'ivla} may not be {lujvo}." . not
+  if isC (head str) then (xulujvo' $ 't':'o':str)
     >>= flip xusra "{fu'ivla} may not fail the tosmabru test" . not
    else return ()
   xusra (notElem ' ' str) "{fu'ivla} may not have internal spaces or periods."
@@ -128,7 +128,7 @@ module Jbobaf.Vlatai (
     let (clust, rest) = span (\c -> isC c || c == 'y') (drop ccLoc str)
 	preclust = take ccLoc str
 	preCs = length $ filter isC preclust
-    slinky <- snada $ xulujvo' $ 't':'o':drop ccLoc str
+    slinky <- xulujvo' $ 't':'o':drop ccLoc str
     if elem 'y' clust || has_C_C clust
 	|| length (filter voc $ syllabicate rest) == 1
 	|| ccLoc /= 0 && slinky
@@ -142,7 +142,7 @@ module Jbobaf.Vlatai (
      else xusra (ccLoc == 0) "{fu'ivla} may not break apart into smaller words."
    Nothing -> throwError "{fu'ivla} must contain a consonant cluster."
 
- cmevla_xusra, cmevla_xusra' :: String -> Jvacuxtoi ()
+ cmevla_xusra, cmevla_xusra' :: String -> Jvacux ()
  cmevla_xusra str = fadgau str >>= cmevla_xusra'
  cmevla_xusra' [] = throwError "{cmevla} must be non-empty."
  cmevla_xusra' str = do
@@ -158,7 +158,7 @@ module Jbobaf.Vlatai (
     \ \"ndj\", \"ndz\", \"ntc\", or \"nts\"."
    _ -> return ()
 
- cmavo_xusra, cmavo_xusra' :: String -> Jvacuxtoi ()
+ cmavo_xusra, cmavo_xusra' :: String -> Jvacux ()
  cmavo_xusra str = fadgau str >>= cmavo_xusra'
  cmavo_xusra' [] = throwError "{cmavo} must be non-empty."
  cmavo_xusra' str@(c:xs) = do
@@ -210,7 +210,7 @@ module Jbobaf.Vlatai (
  --   is in effect; otherwise, an invalid vowel cluster causes an error to be
  --   thrown
 
- fadgau :: String -> Jvacuxtoi String
+ fadgau :: String -> Jvacux String
  fadgau str = do
   accents     <- isOpt Allow_accents
   ignoring    <- isOpt Ignore_naljbo_chars
@@ -300,7 +300,7 @@ module Jbobaf.Vlatai (
      then throwError "Apostrophes may not occur at the beginning of a string."
      else porfad str' >>= slakate
 
- jvokatna, jvokatna' :: String -> Jvacuxtoi [String]
+ jvokatna, jvokatna' :: String -> Jvacux [String]
  jvokatna str = fadgau str >>= jvokatna'
  jvokatna' str = do
   xusra (not $ hasNDJ str) "Invalid consonant triple in {lujvo}"
@@ -428,6 +428,6 @@ module Jbobaf.Vlatai (
   | isV c = V c : lertype xs
   | otherwise = BadCh : lertype xs
 
- xusra :: Bool -> String -> Jvacuxtoi ()
+ xusra :: Bool -> String -> Jvacux ()
  xusra True _ = return ()
  xusra False s = throwError s

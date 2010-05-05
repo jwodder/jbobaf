@@ -61,7 +61,7 @@ module Jbobaf.Lerfendi (lerfendi) where
  -- * As far as @lerfendi@ is concerned, ZO and ZEI differ only in spelling.
  --   Whether this actually leads to any problems has yet to be determined.
 
- lerfendi :: String -> Jvacuxtoi [Either String Valsi]
+ lerfendi :: String -> Jvacux [Either String Valsi]
  lerfendi = snada . lerfendi' Fadni
 
 ----------------------------------------
@@ -78,7 +78,7 @@ module Jbobaf.Lerfendi (lerfendi) where
 
 ----------------------------------------
 
- lerfendi' :: Flezvalei -> String -> Jvacux [Either String Valsi]
+ lerfendi' :: Flezvalei -> String -> Jvacux' [Either String Valsi]
  lerfendi' makfa str =
   let (ca, ba) = spicpa str
   in if null ca then return [] else troci (fadgau ca) >>= \ca' -> case ca' of
@@ -89,7 +89,7 @@ module Jbobaf.Lerfendi (lerfendi) where
 ----------------------------------------
 
  mafygau :: Flezvalei -> String -> [Either String Valsi]
-  -> Jvacux [Either String Valsi]
+  -> Jvacux' [Either String Valsi]
 
  -- How to search for ending ZOI delimiters: While the end has not been found,
  -- get the next chunk from the stream and split it into words.  If the first
@@ -187,7 +187,7 @@ module Jbobaf.Lerfendi (lerfendi) where
 
 ----------------------------------------
 
- fendi :: String -> Jvacux [Either String Valsi]
+ fendi :: String -> Jvacux' [Either String Valsi]
  fendi [] = return []
  fendi (',':xs) = fendi xs
   -- This ^^ was at one point possible due to some other bit of code.  Can this
@@ -241,9 +241,9 @@ module Jbobaf.Lerfendi (lerfendi) where
   (xs, a:b:ys) | not (isC b) -> Just (reverse (b:ys), reverse (xs ++ [a]))
 	       | otherwise -> Nothing
 
- brivlate :: String -> [String] -> Jvacux [Either String Valsi]
+ brivlate :: String -> [String] -> Jvacux' [Either String Valsi]
  brivlate pre body@(b1:bxs) = do
-  tosmabru <- xulujvo' $ 't':'o':concat body
+  tosmabru <- nupre $ xulujvo' $ 't':'o':concat body
   let allInit (c1:c2:xs) = if isV c2 then True
 			   else if isCC [c1, c2] then allInit (c2:xs)
 			   else False
@@ -257,7 +257,7 @@ module Jbobaf.Lerfendi (lerfendi) where
 				      ?: (pa, pb, True) :? (pre, [], False)
 		    Nothing -> (pre, [], False)
   let beta = b ++ concat body
-  xubriv <- xubrivla' beta
+  xubriv <- nupre $ xubrivla' beta
   fendi a ~~ if b' && xubriv then mkBrivla beta else shiftCy b body
 
  esv2str :: Either String Valsi -> String
@@ -267,7 +267,7 @@ module Jbobaf.Lerfendi (lerfendi) where
  xudenpa :: Char -> Bool
  xudenpa c = isSpace c || c == '.'
 
- shiftCy :: String -> [String] -> Jvacux [Either String Valsi]
+ shiftCy :: String -> [String] -> Jvacux' [Either String Valsi]
  shiftCy pre (cy@[_,'y']:rest) = fendi pre ~~ mkCmavo cy ~~ fendi (concat rest)
  shiftCy pre blob = return [Left $ pre ++ concat blob]
  -- The `pre' argument exists so that it can be prepended to an invalid string
@@ -277,10 +277,10 @@ module Jbobaf.Lerfendi (lerfendi) where
  emphed :: String -> Bool
  emphed = not . null . filter isUpper
 
- kavbu' :: Jvacuxtoi a -> a -> Jvacux a
+ kavbu' :: Jvacux a -> a -> Jvacux' a
  kavbu' jct d = troci jct >>= return . either (const d) id
  
- mkCmevla, mkCmavo, mkBrivla :: String -> Jvacux [Either String Valsi]
+ mkCmevla, mkCmavo, mkBrivla :: String -> Jvacux' [Either String Valsi]
  mkCmevla  [] = return []
  mkCmevla str = kavbu' (toCmevla str >>= \v -> return [Right v]) [Left str]
  mkCmavo   [] = return []

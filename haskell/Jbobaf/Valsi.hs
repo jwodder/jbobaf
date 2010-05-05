@@ -54,7 +54,7 @@ module Jbobaf.Valsi (
  rafsi (Vla2 {ck_rafsi = r}) = r
 
  toValsi, toCmavo, toCmevla, toBrivla, toGismu, toLujvo, toFu'ivla
-  :: String -> Jvacuxtoi Valsi
+  :: String -> Jvacux Valsi
 
  toValsi [] = throwError "Empty strings are not {valsi}."
  toValsi str = fadgau str >>= \fadni ->

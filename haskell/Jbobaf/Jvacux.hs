@@ -9,37 +9,37 @@ module Jbobaf.Jvacux (module Jbobaf.Jvacux, runReaderT, throwError) where
  import qualified Data.Set as Set
 
  type JvacuxT m a = ReaderT (Set Tercuxna) m a
- type Jvacux a = ReaderT (Set Tercuxna) Identity a
- type Jvacuxtoi a = ReaderT (Set Tercuxna) (Either String) a
+ type Jvacux a = ReaderT (Set Tercuxna) (Either String) a
+ type Jvacux' a = ReaderT (Set Tercuxna) Identity a
 
  isOpt, isNopt :: Monad m => Tercuxna -> JvacuxT m Bool
- isOpt = asks . Set.member
+ isOpt  = asks . Set.member
  isNopt = asks . Set.notMember
 
- nupre :: Jvacuxtoi a -> Jvacux a
+ nupre :: Jvacux a -> Jvacux' a
  nupre = mapReaderT (\(Right a) -> return a)
 
- troci :: Jvacuxtoi a -> Jvacux (Either String a)
+ troci :: Jvacux a -> Jvacux' (Either String a)
  troci = mapReaderT return
 
- kavbu :: Jvacuxtoi a -> (String -> Jvacux a) -> Jvacux a
+ kavbu :: Jvacux a -> (String -> Jvacux' a) -> Jvacux' a
  kavbu jct f = ask >>= either f return . runReaderT jct
 
- snada :: Jvacux a -> Jvacuxtoi a
+ snada :: Jvacux' a -> Jvacux a
  snada = mapReaderT (return . runIdentity)
 
+ xusnada :: Jvacux a -> Jvacux Bool
+ xusnada m = (m >> return True) `mplus` return False
+
 {- Are the following functions necessary and/or useful?
- fliba :: String -> Jvacuxtoi a
+ fliba :: String -> Jvacux a
  fliba = throwError
 
- kavbu' :: Jvacuxtoi a -> (String -> Jvacuxtoi a) -> Jvacuxtoi a
+ kavbu' :: Jvacux a -> (String -> Jvacux a) -> Jvacux a
  kavbu' = catchError
 
- xusnada :: Jvacuxtoi a -> Jvacux Bool
- xusnada m = kavbu (m >> return True) (\_ -> return False)
-
- xusnada' :: Jvacuxtoi a -> Jvacuxtoi Bool
- xusnada' m = (m >> return True) `mplus` return False
+ xusnada' :: Jvacux a -> Jvacux' Bool
+ xusnada' m = kavbu (m >> return True) (\_ -> return False)
 -}
 
  data Tercuxna =
