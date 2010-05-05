@@ -61,16 +61,15 @@ module Jbobaf.Lerfendi (lerfendi) where
  -- * As far as @lerfendi@ is concerned, ZO and ZEI differ only in spelling.
  --   Whether this actually leads to any problems has yet to be determined.
 
- lerfendi :: String -> Jvacux [Either String Valsi]
- lerfendi = lerfendi' Fadni
+ lerfendi :: String -> Jvacuxtoi [Either String Valsi]
+ lerfendi = snada . lerfendi' Fadni
 
 ----------------------------------------
 
  data Flezvalei =
   Fadni
   | After_ZO_ZEI
-    -- ZO and ZEI are essentially the same in how they treat the next word,
-    -- right?
+ -- ZO and ZEI are essentially the same in how they treat the next word, right?
   | After_ZOI (Maybe String) String
   | ErrorQuote
   | After_ZO_ZEI_error
@@ -82,10 +81,10 @@ module Jbobaf.Lerfendi (lerfendi) where
  lerfendi' :: Flezvalei -> String -> Jvacux [Either String Valsi]
  lerfendi' makfa str =
   let (ca, ba) = spicpa str
-  in if null ca then return [] else fadgau ca >>= \ca' -> case ca' of
-   Just [] -> lerfendi' makfa ba
-   Just x -> fendi x >>= mafygau makfa ba
-   Nothing -> Left ca~:lerfendi' (makfa < ErrorQuote ?: Fadni :? ErrorQuote) ba
+  in if null ca then return [] else troci (fadgau ca) >>= \ca' -> case ca' of
+   Right [] -> lerfendi' makfa ba
+   Right x -> fendi x >>= mafygau makfa ba
+   Left _ -> Left ca~:lerfendi' (makfa < ErrorQuote ?: Fadni :? ErrorQuote) ba
 
 ----------------------------------------
 
@@ -102,10 +101,10 @@ module Jbobaf.Lerfendi (lerfendi) where
   if null ca
    then return (null trail ?: [] :? [Left trail])
    else do
-    ca' <- fadgau ca
-    vals <- maybe (return []) fendi ca'
+    ca' <- troci $ fadgau ca
+    vals <- either (const $ return []) fendi ca'
     case (ca', vals) of
-     (Just x@(_:_), v:alsi)
+     (Right x@(_:_), v:alsi)
       | esv2str v == d -> Left trail ~: v ~: mafygau Fadni ba' alsi
      _ -> let (a, a') = span xudenpa ba
 	      (b, b') = break xudenpa a'
@@ -116,10 +115,10 @@ module Jbobaf.Lerfendi (lerfendi) where
   if null ca
    then return (null trail ?: [] :? [Left trail])
    else do
-    ca' <- fadgau ca
-    vals <- maybe (return []) fendi ca'
+    ca' <- troci $ fadgau ca
+    vals <- either (const $ return []) fendi ca'
     case (ca', vals) of
-     (Just x@(_:_), v:alsi)
+     (Right x@(_:_), v:alsi)
       | esv2str v == d -> Left trail ~: v ~: mafygau ErrorQuote ba' alsi
      _ -> let (a, a') = span xudenpa ba
 	      (b, b') = break xudenpa a'
@@ -278,10 +277,13 @@ module Jbobaf.Lerfendi (lerfendi) where
  emphed :: String -> Bool
  emphed = not . null . filter isUpper
 
+ kavbu' :: Jvacuxtoi a -> a -> Jvacux a
+ kavbu' jct d = troci jct >>= return . either (const d) id
+ 
  mkCmevla, mkCmavo, mkBrivla :: String -> Jvacux [Either String Valsi]
- mkCmevla [] = return []
- mkCmevla str = toCmevla str >>= return . (: []) . maybe (Left str) Right
- mkCmavo  [] = return []
- mkCmavo  str = toCmavo  str >>= return . (: []) . maybe (Left str) Right
- mkBrivla [] = return []
- mkBrivla str = toBrivla str >>= return . (: []) . maybe (Left str) Right
+ mkCmevla  [] = return []
+ mkCmevla str = kavbu' (toCmevla str >>= \v -> return [Right v]) [Left str]
+ mkCmavo   [] = return []
+ mkCmavo  str = kavbu' (toCmavo str  >>= \v -> return [Right v]) [Left str]
+ mkBrivla  [] = return []
+ mkBrivla str = kavbu' (toBrivla str >>= \v -> return [Right v]) [Left str]

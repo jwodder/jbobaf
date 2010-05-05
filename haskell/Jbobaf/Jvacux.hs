@@ -20,7 +20,7 @@ module Jbobaf.Jvacux (module Jbobaf.Jvacux, runReaderT, throwError) where
  nupre = mapReaderT (\(Right a) -> return a)
 
  troci :: Jvacuxtoi a -> Jvacux (Either String a)
- troci = mapReaderT (return . id)
+ troci = mapReaderT return
 
  kavbu :: Jvacuxtoi a -> (String -> Jvacux a) -> Jvacux a
  kavbu jct f = ask >>= either f return . runReaderT jct
@@ -28,8 +28,19 @@ module Jbobaf.Jvacux (module Jbobaf.Jvacux, runReaderT, throwError) where
  snada :: Jvacux a -> Jvacuxtoi a
  snada = mapReaderT (return . runIdentity)
 
- -- fliba :: String -> Jvacuxtoi a  -- Is this function necessary/useful?
- -- fliba = throwError
+{- Are the following functions necessary and/or useful?
+ fliba :: String -> Jvacuxtoi a
+ fliba = throwError
+
+ kavbu' :: Jvacuxtoi a -> (String -> Jvacuxtoi a) -> Jvacuxtoi a
+ kavbu' = catchError
+
+ xusnada :: Jvacuxtoi a -> Jvacux Bool
+ xusnada m = kavbu (m >> return True) (\_ -> return False)
+
+ xusnada' :: Jvacuxtoi a -> Jvacuxtoi Bool
+ xusnada' m = (m >> return True) `mplus` return False
+-}
 
  data Tercuxna =
   Use_dotside

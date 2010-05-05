@@ -3,7 +3,7 @@ module Jbobaf.Valsi (
   Vlalei(..), Valsi,
   -- * Fields
   valsi, klesi, selma'o, rafsi, ralvla, djuvla, selvla, notci,
-  -- * Conversion from strings
+  -- * Construction from strings
   toValsi, toCmavo, toCmevla, toBrivla, toGismu, toLujvo, toFu'ivla
  ) where
  import Char (toLower)
