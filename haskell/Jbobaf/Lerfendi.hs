@@ -82,12 +82,9 @@ module Jbobaf.Lerfendi (lerfendi) where
 
  data Flezvalei =
   Fadni
-  | After_ZO_ZEI
- -- ZO and ZEI are essentially the same in how they treat the next word, right?
-  | After_ZOI (Maybe String) String
   | ErrorQuote
-  | After_ZO_ZEI_error
-  | After_ZOI_error (Maybe String) String
+  | After_ZO_ZEI Bool  -- The Bool indicates whether we're inside an error quote
+  | After_ZOI Bool (Maybe String) String
   deriving (Eq, Ord, Read, Show)
 
 ----------------------------------------
@@ -110,7 +107,7 @@ module Jbobaf.Lerfendi (lerfendi) where
  -- word equals the delimiter, the end has been found.  Otherwise, consume the
  -- raw chunk from the stream and keep searching.
 
- mafygau (After_ZOI (Just d) trail) ba [] =
+ mafygau (After_ZOI lohu (Just d) trail) ba [] =
   let (ca, ba') = spicpa ba
   in if null ca
      then return (null trail ?: [] :? [Left trail])
@@ -118,57 +115,34 @@ module Jbobaf.Lerfendi (lerfendi) where
       ca' <- troci $ fadgau ca
       vals <- either (const $ return []) fendi ca'
       case (ca', vals) of
-       (Right x@(_:_), v:alsi)
-	| esv2str v == d -> Left trail ~: v ~: mafygau Fadni ba' alsi
+       (Right x@(_:_), v:alsi) | esv2str v == d -> Left trail ~: v
+	 ~: mafygau (lohu ?: ErrorQuote :? Fadni) ba' alsi
        _ -> let (a, a') = span xudenpa ba
 		(b, b') = break xudenpa a'
-	    in mafygau (After_ZOI (Just d) (trail ++ a ++ b)) b' []
-
- mafygau (After_ZOI_error (Just d) trail) ba [] =
-  let (ca, ba') = spicpa ba
-  in if null ca
-     then return (null trail ?: [] :? [Left trail])
-     else do
-      ca' <- troci $ fadgau ca
-      vals <- either (const $ return []) fendi ca'
-      case (ca', vals) of
-       (Right x@(_:_), v:alsi)
-	| esv2str v == d -> Left trail ~: v ~: mafygau ErrorQuote ba' alsi
-       _ -> let (a, a') = span xudenpa ba
-		(b, b') = break xudenpa a'
-	    in mafygau (After_ZOI_error (Just d) (trail ++ a ++ b)) b' []
+	    in mafygau (After_ZOI lohu (Just d) (trail ++ a ++ b)) b' []
 
  mafygau makfa ba [] = lerfendi' makfa ba
 
- mafygau (After_ZOI Nothing []) ba (v:alsi) = v ~:
-  mafygau (After_ZOI (Just $ esv2str v) [])
+ mafygau (After_ZOI lohu Nothing []) ba (v:alsi) = v ~:
+  mafygau (After_ZOI lohu (Just $ esv2str v) [])
    (null alsi ?: dropWhile xudenpa ba :? ba) alsi
 
- mafygau (After_ZOI_error Nothing []) ba (v:alsi) = v ~:
-  mafygau (After_ZOI_error (Just $ esv2str v) [])
-   (null alsi ?: dropWhile xudenpa ba :? ba) alsi
-
- mafygau (After_ZOI (Just d) trail) ba (v:alsi) =
+ mafygau (After_ZOI lohu (Just d) trail) ba (v:alsi) =
   let v' = esv2str v
-  in if v' == d then Left trail ~: v ~: mafygau Fadni ba alsi
-     else mafygau (After_ZOI (Just d) (trail ++ v')) ba alsi
+  in if v' == d
+     then Left trail ~: v ~: mafygau (lohu ?: ErrorQuote :? Fadni) ba alsi
+     else mafygau (After_ZOI lohu (Just d) (trail ++ v')) ba alsi
 
- mafygau (After_ZOI_error (Just d) trail) ba (v:alsi) =
-  let v' = esv2str v
-  in if v' == d then Left trail ~: v ~: mafygau ErrorQuote ba alsi
-     else mafygau (After_ZOI_error (Just d) (trail ++ v')) ba alsi
-
- mafygau After_ZO_ZEI ba (v:alsi) = v ~: mafygau Fadni ba alsi
-
- mafygau After_ZO_ZEI_error ba (v:alsi) = v ~: mafygau ErrorQuote ba alsi
+ mafygau (After_ZO_ZEI lohu) ba (v:alsi) =
+  v ~: mafygau (lohu ?: ErrorQuote :? Fadni) ba alsi
 
  mafygau makfa ba (Left s : alsi) = Left s ~: mafygau makfa ba alsi
 
  mafygau Fadni ba (Right v : alsi) = Right v ~: case valsi v of
-  "zo" -> mafygau After_ZO_ZEI ba alsi
-  "zei" -> mafygau After_ZO_ZEI ba alsi
-  "zoi" -> mafygau (After_ZOI Nothing []) ba alsi
-  "la'o" -> mafygau (After_ZOI Nothing []) ba alsi
+  "zo" -> mafygau (After_ZO_ZEI False) ba alsi
+  "zei" -> mafygau (After_ZO_ZEI False) ba alsi
+  "zoi" -> mafygau (After_ZOI False Nothing []) ba alsi
+  "la'o" -> mafygau (After_ZOI False Nothing []) ba alsi
   "lo'u" -> mafygau ErrorQuote ba alsi
   "fa'o" -> do
    ignore <- isOpt Ignore_FAhO
@@ -180,16 +154,16 @@ module Jbobaf.Lerfendi (lerfendi) where
  mafygau ErrorQuote ba (Right v : alsi) = Right v ~: case valsi v of
   "zo" -> do
    disabled <- isOpt LOhU_disables_ZO
-   mafygau (disabled ?: ErrorQuote :? After_ZO_ZEI_error) ba alsi
+   mafygau (disabled ?: ErrorQuote :? After_ZO_ZEI True) ba alsi
   "zei" -> do
    disabled <- isOpt LOhU_disables_ZEI
-   mafygau (disabled ?: ErrorQuote :? After_ZO_ZEI_error) ba alsi
+   mafygau (disabled ?: ErrorQuote :? After_ZO_ZEI True) ba alsi
   "zoi" -> do
    disabled <- isOpt LOhU_disables_ZOI
-   mafygau (disabled ?: ErrorQuote :? After_ZOI_error Nothing []) ba alsi
+   mafygau (disabled ?: ErrorQuote :? After_ZOI True Nothing []) ba alsi
   "la'o" -> do
    disabled <- isOpt LOhU_disables_ZOI
-   mafygau (disabled ?: ErrorQuote :? After_ZOI_error Nothing []) ba alsi
+   mafygau (disabled ?: ErrorQuote :? After_ZOI True Nothing []) ba alsi
   "le'u" -> mafygau Fadni ba alsi
   "fa'o" -> do
    disabled <- isOpt LOhU_disables_FAhO

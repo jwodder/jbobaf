@@ -29,7 +29,10 @@ cemymEImEI
 cemymEImei
 cemymeimEI
 cemymeimei
+cEmymeimei
 cemymEImymEI
+cemymEImymei
+cemymeimymei
 cEmymaidjra'i
 cEmymaidyjyra'i
 CAtadjysnu
@@ -44,3 +47,6 @@ ants
 la.singularytas.
 gerkuxogzo'u
 gerkuogzo'ux
+
+buzeizozoigy.test.gy
+zozeizozoigy.test.gy

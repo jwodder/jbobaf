@@ -10,6 +10,5 @@ main = do
    in if rafs /= rafs'
       then putStrLn $ "Failure splitting " ++ jvo ++ ": expected " ++ show rafs
        ++ ", got " ++ show rafs'
-      else return ())
-      --else putStrLn $ "jvokatna " ++ show jvo ++ " = " ++ show rafs')
+      else putStrLn $ "jvokatna " ++ show jvo ++ " = " ++ show rafs')
   $ map read (lines input)
