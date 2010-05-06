@@ -15,14 +15,13 @@ following conditions:
    "ndz", "ntc", & "nts" (case insensitive).
  - φ contains two or more syllables whose nuclei are not syllabic consonants.
  - φ contains a substring consisting of two or more adjacent consonants; denote
-   this substring by χ and the substring after it by ψ.
- - If χ is composed entirely of (overlapping, if more than one) initial
-   consonant pairs, ψ contains more than one syllable whose nucleus is not a
-   syllabic consonant, and prepending a string of the form CV to the
-   concatenation of χ and ψ cannot result in a morphologically valid {lujvo},
-   then χ is at the beginning of φ; otherwise, the substring of φ preceding χ
-   has the form of a {cmavo} and contains no more than three non-apostrophe
-   characters.
+   the first such substring by χ and the substring after it by ψ.
+ - If every pair of adjacent consonants in χ is an initial consonant pair, ψ
+   contains more than one syllable whose nucleus is not a syllabic consonant,
+   and prepending a string of the form CV to the concatenation of χ and ψ
+   cannot result in a morphologically valid {lujvo}, then χ is at the beginning
+   of φ; otherwise, the substring of φ preceding χ has the form of a {cmavo}
+   and contains no more than three non-apostrophe characters.
  - If information on emphasis is present, then the penultimate syllable in φ
    whose nucleus is not a syllabic consonant is the only syllable to bear
    primary emphasis.

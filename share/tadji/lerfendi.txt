@@ -26,7 +26,7 @@ A generalized form of the Lojban word-splitting algorithm, as I understand it:
     of errors or invalid text, are to be ignored.
   - [[TO DO: Add in how ZOI & FAhO are affected by the other magic words.]]
  - A syllable whose nucleus is neither a 'y' nor a syllabic consonant is
-   hereafter referred to as an "accentable syllable."
+   hereafter referred to as an "vocalic syllable."
  - A maximal-length string of the form /^C?[Vy]+([',][Vy]+)*$/ is hereafter
    referred to as a "{ma'osmi}."
  - Techniques for attempting to handle or recover from invalid strings are
@@ -50,19 +50,19 @@ A generalized form of the Lojban word-splitting algorithm, as I understand it:
      of γ preceding ω.  If α ends with a consonant, γ is invalid.
   4. If γ contains two or more adjacent consonants, each possibly separated by
      a single 'y' (hereafter referred to as a "consonant cluster"):
-   a. If the portion of γ starting at the beginning of the last accentable
+   a. If the portion of γ starting at the beginning of the last vocalic
       syllable before the first consonant cluster, or at the first consonant
-      cluster itself if there are no accentable syllables before it, contains
-      an accentable syllable with a capitalized or accented nucleus and
-      followed (not necessarily immediately) by one or more accentable
-      syllables (the first of which is hereafter called the "ultima"), then let
-      α be the substring of γ up to and including the end of the ultima, and
-      let ω be the substring of γ after the ultima.  Otherwise, let α equal γ
-      and let ω be the empty string (ε).
+      cluster itself if there are no vocalic syllables before it, contains an
+      vocalic syllable with a capitalized or accented nucleus and followed (not
+      necessarily immediately) by one or more vocalic syllables (the first of
+      which is hereafter called the "ultima"), then let α be the substring of γ
+      up to and including the end of the ultima, and let ω be the substring of
+      γ after the ultima.  Otherwise, let α equal γ and let ω be the empty
+      string (ε).
     i. Note that, due to steps 2 and 3, it is impossible at this point for an
-       accentable syllable to be followed by a non-empty string that does not
-       contain another accentable syllable.
-   b. If the last accentable syllable in α is capitalized or accented (either
+       vocalic syllable to be followed by a non-empty string that does not
+       contain another vocalic syllable.
+   b. If the last vocalic syllable in α is capitalized or accented (either
       because the first emphasis falls at the end of γ or because the ultima is
       also emphasized), or if the nucleus of the ultima is terminated by an
       apostrophe, a comma, or a consonant cluster containing a non-initial
@@ -76,7 +76,7 @@ A generalized form of the Lojban word-splitting algorithm, as I understand it:
       hold:
     i.   The consonant cluster at the beginning of the body consists entirely
 	 of initial (overlapping, if more than one) consonant pairs.
-    ii.  The body has more than one accentable syllable.
+    ii.  The body has more than one vocalic syllable.
     iii. Prepending a string of the form CV to the body cannot result in a
 	 morphologically valid {lujvo}.
       then let β be the body and let β′ be true.  Otherwise, if the portion of

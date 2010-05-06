@@ -52,7 +52,6 @@ module Jbobaf.Internals where
 	fla pos _ (c:xs) = fla (pos+1) (isC c) xs
 
  syllabicate :: String -> [String]
- -- How should this handle consonant clusters, especially non-initial ones?
  syllabicate [] = []
  syllabicate ('\'':xs) = ('\'':a) : syllabicate b where (a, b) = span isVy xs
  syllabicate (',':xs) = (',':a) : syllabicate b where (a, b) = span isVy xs
@@ -60,9 +59,8 @@ module Jbobaf.Internals where
   where (c, r) = span isC str
         (v, rest) = span isVy r
 
+ -- |Tests whether a syllable contains a non-Y vowel and is thus vocalic
  voc :: String -> Bool
- -- Tests whether a syllable contains a non-Y vowel and is thus accentable.
- -- The short name is solely for aesthetic reasons.
  voc = not . null . filter isV
 
  has_C_C :: String -> Bool
