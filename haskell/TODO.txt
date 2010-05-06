@@ -13,6 +13,7 @@
  - Uppercasing everything in the nucleus of an abnormally-stressed {cmevla}
  - Somehow handling {cmevla} with more than one emphasized syllable
 - Should lerfendi split "yyyy" into four separate "y"s?
+- Replace the error messages with a custom enumeration
 
 NEW FEATURES
 - Add functions to Valsi.hs for computing the component {rafsi}, source
@@ -49,18 +50,6 @@ NEW FEATURES
  - treating an opening ZOI delimiter not followed by a space or period as
    invalid
  - converting uppercase letters to {lerfu} words
-- Possibly make Jvacux into an Error monad as well as a Reader so that the user
-  can receive information about exactly *why* something (e.g., jvokatna) failed
- - An option could then be added to Jvacux for specifying whether error
-   messages should be in English or Lojban.
- - Add in a way for the xu* functions to return a reason why a word is invalid
- - This can be used to replace Maybes for denoting errors in certain functions
-   (i.e., fadgau, toValsi et alii).
- - Problem: This would cause the result of a Jvacux computation to be dependent
-   on whether an error occurred anywhere in the code, and so lerfendi could no
-   longer return anything without processing the entirety of its input.  Could
-   this possibly be solved using a ReaderT monad wrapped variously around an
-   Identity and Error monad?
 - Write a CGI frontend to lerfendi?
 - Add a function for testing whether a string is a valid diphthong or
   triphthong?

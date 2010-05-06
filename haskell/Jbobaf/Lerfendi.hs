@@ -1,6 +1,9 @@
 module Jbobaf.Lerfendi (lerfendi) where
  import Char
  import List
+ import Control.Monad.Identity
+ import Control.Monad.Reader
+ import Data.Set (Set)
  import Jbobaf.Internals
  import Jbobaf.Jvacux
  import Jbobaf.Valsi
@@ -62,9 +65,20 @@ module Jbobaf.Lerfendi (lerfendi) where
  --   Whether this actually leads to any problems has yet to be determined.
 
  lerfendi :: String -> Jvacux [Either String Valsi]
- lerfendi = snada . lerfendi' Fadni
+ lerfendi = mapReaderT (return . runIdentity) . lerfendi' Fadni
 
 ----------------------------------------
+
+ type Jvacux' a = ReaderT (Set Tercuxna) Identity a
+
+ err2id :: Jvacux a -> Jvacux' a
+ err2id = mapReaderT (\(Right a) -> return a)
+
+ troci :: Jvacux a -> Jvacux' (Either String a)
+ troci = mapReaderT return
+
+ kavbu' :: Jvacux a -> a -> Jvacux' a
+ kavbu' jct d = mapReaderT (return . either (const d) id) jct
 
  data Flezvalei =
   Fadni
@@ -82,9 +96,9 @@ module Jbobaf.Lerfendi (lerfendi) where
  lerfendi' makfa str =
   let (ca, ba) = spicpa str
   in if null ca then return [] else troci (fadgau ca) >>= \ca' -> case ca' of
+   Left _ -> Left ca ~: lerfendi' (makfa < ErrorQuote ?: Fadni :? ErrorQuote) ba
    Right [] -> lerfendi' makfa ba
-   Right x -> fendi x >>= mafygau makfa ba
-   Left _ -> Left ca~:lerfendi' (makfa < ErrorQuote ?: Fadni :? ErrorQuote) ba
+   Right  x -> fendi x >>= mafygau makfa ba
 
 ----------------------------------------
 
@@ -96,33 +110,33 @@ module Jbobaf.Lerfendi (lerfendi) where
  -- word equals the delimiter, the end has been found.  Otherwise, consume the
  -- raw chunk from the stream and keep searching.
 
- mafygau (After_ZOI (Just d) trail) ba [] = do
+ mafygau (After_ZOI (Just d) trail) ba [] =
   let (ca, ba') = spicpa ba
-  if null ca
-   then return (null trail ?: [] :? [Left trail])
-   else do
-    ca' <- troci $ fadgau ca
-    vals <- either (const $ return []) fendi ca'
-    case (ca', vals) of
-     (Right x@(_:_), v:alsi)
-      | esv2str v == d -> Left trail ~: v ~: mafygau Fadni ba' alsi
-     _ -> let (a, a') = span xudenpa ba
-	      (b, b') = break xudenpa a'
-	  in mafygau (After_ZOI (Just d) (trail ++ a ++ b)) b' []
+  in if null ca
+     then return (null trail ?: [] :? [Left trail])
+     else do
+      ca' <- troci $ fadgau ca
+      vals <- either (const $ return []) fendi ca'
+      case (ca', vals) of
+       (Right x@(_:_), v:alsi)
+	| esv2str v == d -> Left trail ~: v ~: mafygau Fadni ba' alsi
+       _ -> let (a, a') = span xudenpa ba
+		(b, b') = break xudenpa a'
+	    in mafygau (After_ZOI (Just d) (trail ++ a ++ b)) b' []
 
- mafygau (After_ZOI_error (Just d) trail) ba [] = do
+ mafygau (After_ZOI_error (Just d) trail) ba [] =
   let (ca, ba') = spicpa ba
-  if null ca
-   then return (null trail ?: [] :? [Left trail])
-   else do
-    ca' <- troci $ fadgau ca
-    vals <- either (const $ return []) fendi ca'
-    case (ca', vals) of
-     (Right x@(_:_), v:alsi)
-      | esv2str v == d -> Left trail ~: v ~: mafygau ErrorQuote ba' alsi
-     _ -> let (a, a') = span xudenpa ba
-	      (b, b') = break xudenpa a'
-	  in mafygau (After_ZOI_error (Just d) (trail ++ a ++ b)) b' []
+  in if null ca
+     then return (null trail ?: [] :? [Left trail])
+     else do
+      ca' <- troci $ fadgau ca
+      vals <- either (const $ return []) fendi ca'
+      case (ca', vals) of
+       (Right x@(_:_), v:alsi)
+	| esv2str v == d -> Left trail ~: v ~: mafygau ErrorQuote ba' alsi
+       _ -> let (a, a') = span xudenpa ba
+		(b, b') = break xudenpa a'
+	    in mafygau (After_ZOI_error (Just d) (trail ++ a ++ b)) b' []
 
  mafygau makfa ba [] = lerfendi' makfa ba
 
@@ -243,7 +257,7 @@ module Jbobaf.Lerfendi (lerfendi) where
 
  brivlate :: String -> [String] -> Jvacux' [Either String Valsi]
  brivlate pre body@(b1:bxs) = do
-  tosmabru <- nupre $ xulujvo' $ 't':'o':concat body
+  tosmabru <- err2id $ xulujvo' $ 't':'o':concat body
   let allInit (c1:c2:xs) = if isV c2 then True
 			   else if isCC [c1, c2] then allInit (c2:xs)
 			   else False
@@ -257,7 +271,7 @@ module Jbobaf.Lerfendi (lerfendi) where
 				      ?: (pa, pb, True) :? (pre, [], False)
 		    Nothing -> (pre, [], False)
   let beta = b ++ concat body
-  xubriv <- nupre $ xubrivla' beta
+  xubriv <- err2id $ xubrivla' beta
   fendi a ~~ if b' && xubriv then mkBrivla beta else shiftCy b body
 
  esv2str :: Either String Valsi -> String
@@ -277,9 +291,6 @@ module Jbobaf.Lerfendi (lerfendi) where
  emphed :: String -> Bool
  emphed = not . null . filter isUpper
 
- kavbu' :: Jvacux a -> a -> Jvacux' a
- kavbu' jct d = troci jct >>= return . either (const d) id
- 
  mkCmevla, mkCmavo, mkBrivla :: String -> Jvacux' [Either String Valsi]
  mkCmevla  [] = return []
  mkCmevla str = kavbu' (toCmevla str >>= \v -> return [Right v]) [Left str]

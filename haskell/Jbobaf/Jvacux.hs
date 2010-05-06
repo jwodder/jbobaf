@@ -1,46 +1,31 @@
 -- |Run-time configuration options and a Reader monad for keeping track of them
 
-module Jbobaf.Jvacux (module Jbobaf.Jvacux, runReaderT, throwError) where
+module Jbobaf.Jvacux (module Jbobaf.Jvacux, runReaderT, throwError, catchError)
+ where
  import Ix
- import Data.Set (Set)
+ import Data.Set (Set, member, notMember, fromList)
  import Control.Monad.Error
- import Control.Monad.Identity
  import Control.Monad.Reader
- import qualified Data.Set as Set
 
- type JvacuxT m a = ReaderT (Set Tercuxna) m a
  type Jvacux a = ReaderT (Set Tercuxna) (Either String) a
- type Jvacux' a = ReaderT (Set Tercuxna) Identity a
 
- isOpt, isNopt :: Monad m => Tercuxna -> JvacuxT m Bool
- isOpt  = asks . Set.member
- isNopt = asks . Set.notMember
-
- nupre :: Jvacux a -> Jvacux' a
- nupre = mapReaderT (\(Right a) -> return a)
-
- troci :: Jvacux a -> Jvacux' (Either String a)
- troci = mapReaderT return
-
- kavbu :: Jvacux a -> (String -> Jvacux' a) -> Jvacux' a
- kavbu jct f = ask >>= either f return . runReaderT jct
-
- snada :: Jvacux' a -> Jvacux a
- snada = mapReaderT (return . runIdentity)
+ isOpt, isNopt :: Monad m => Tercuxna -> ReaderT (Set Tercuxna) m Bool
+ isOpt  = asks . member
+ isNopt = asks . notMember
 
  xusnada :: Jvacux a -> Jvacux Bool
  xusnada m = (m >> return True) `mplus` return False
 
-{- Are the following functions necessary and/or useful?
+ nupre :: Jvacux a -> Set Tercuxna -> a
+ nupre jct opts = either error id $ runReaderT jct opts
+
+ -- Are these two functions necessary and/or useful?
+
  fliba :: String -> Jvacux a
  fliba = throwError
 
- kavbu' :: Jvacux a -> (String -> Jvacux a) -> Jvacux a
- kavbu' = catchError
-
- xusnada' :: Jvacux a -> Jvacux' Bool
- xusnada' m = kavbu (m >> return True) (\_ -> return False)
--}
+ kavbu :: Jvacux a -> (String -> Jvacux a) -> Jvacux a
+ kavbu = catchError
 
  data Tercuxna =
   Use_dotside
@@ -108,6 +93,6 @@ module Jbobaf.Jvacux (module Jbobaf.Jvacux, runReaderT, throwError) where
   deriving (Eq, Ord, Read, Show, Bounded, Enum, Ix)
 
  defaults :: Set Tercuxna
- defaults = Set.fromList [Use_dotside, Allow_accents, Ignore_naljbo_chars,
+ defaults = fromList [Use_dotside, Allow_accents, Ignore_naljbo_chars,
   Allow_triphthongs, Allow_H, Allow_ndj_in_fu'ivla, Allow_ndj_in_cmevla,
   No_commas_in_cmavo, Translate_digits, Split_bad_diphthongs]
