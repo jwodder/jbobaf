@@ -1,6 +1,6 @@
 {-# OPTIONS_HADDOCK hide #-}
 
-module Jbobaf.Internals where
+module Jbobaf.Canti where
  import Char (toLower)
  import List (find, findIndices)
  import Monad (liftM2)

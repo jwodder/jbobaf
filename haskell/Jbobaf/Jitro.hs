@@ -1,6 +1,6 @@
 -- |Run-time configuration options and a Reader monad for keeping track of them
 
-module Jbobaf.Jvacux (module Jbobaf.Jvacux, runReaderT, throwError, catchError)
+module Jbobaf.Jitro (module Jbobaf.Jitro, runReaderT, throwError, catchError)
  where
  import Ix
  import Data.Set (Set, member, notMember, fromList)

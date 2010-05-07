@@ -1,7 +1,7 @@
 import System (getArgs)
 import Data.Set (fromList)
 import Jbobaf.Lerfendi
-import Jbobaf.Jvacux
+import Jbobaf.Jitro
 import Jbobaf.Valsi
 
 main = do

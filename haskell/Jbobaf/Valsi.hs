@@ -9,8 +9,8 @@ module Jbobaf.Valsi (
  import Char (toLower)
  import Ix
  import Monad (mplus)
- import Jbobaf.Internals (findC_C)
- import Jbobaf.Jvacux
+ import Jbobaf.Canti (findC_C)
+ import Jbobaf.Jitro
  import Jbobaf.Vlatai
 
  data Vlalei = Gismu | Lujvo | Fu'ivla | Cmavo {- | Lujma'o -} | Cmevla

@@ -4,8 +4,8 @@ module Jbobaf.Lerfendi (lerfendi) where
  import Control.Monad.Identity
  import Control.Monad.Reader
  import Data.Set (Set)
- import Jbobaf.Internals
- import Jbobaf.Jvacux
+ import Jbobaf.Canti
+ import Jbobaf.Jitro
  import Jbobaf.Valsi
  import Jbobaf.Vlatai
 

@@ -1,5 +1,5 @@
 import System (getArgs)
-import Jbobaf.Jvacux
+import Jbobaf.Jitro
 import Jbobaf.Vlatai
 
 main = do

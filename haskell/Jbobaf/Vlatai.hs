@@ -21,8 +21,8 @@ module Jbobaf.Vlatai (
  import List (findIndices)
  import Monad (mplus)
  import qualified Data.Set as Set
- import Jbobaf.Internals
- import Jbobaf.Jvacux
+ import Jbobaf.Canti
+ import Jbobaf.Jitro
 
  isV, isVy, isC :: Char -> Bool
  isV = (`elem` "aeiou") . toLower
