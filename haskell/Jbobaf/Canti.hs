@@ -60,12 +60,11 @@ module Jbobaf.Canti where
   where (c, r) = span isC str
         (v, rest) = span isVy r
 
+ -- |Tests whether a syllable contains a non-Y vowel and is thus vocalic
  voc :: String -> Bool
- -- Tests whether a syllable contains a non-Y vowel and is thus accentable.
- -- The short name is solely for aesthetic reasons.
- voc = not . null . filter isV
+ voc = any isV
 
+ -- |Checks for the presence of a non-initial valid consonant pair
  has_C_C :: String -> Bool
- -- checks for the presence of a non-initial valid consonant pair
- has_C_C str = not $ null $ filter (\i -> let cc = take 2 $ drop i str
-  in isC_C cc && not (isCC cc)) (findIndices isC str)
+ has_C_C str = any (\i -> let cc = take 2 $ drop i str
+  in isC_C cc && not (isCC cc)) $ findIndices isC str
