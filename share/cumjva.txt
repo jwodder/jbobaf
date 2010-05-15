@@ -58,9 +58,13 @@ of Lojban:
   - precedences of magic words
   - whether to recognize LAhOI
   - how many SIs are required to erase an empty or non-empty quoted construct
+  - how "{.y.}" interacts with magic words
  - Syntax:
+  - whether to use anything listed at
+    <http://www.lojban.org/tiki/zasni+gerna+cenba+vreji>
   - whether to use xorxes' proposed change to the grammar of tags:
     <http://www.lojban.org/tiki/Internal+grammar+of+tags>
   - whether to require all descriptor {sumti} followed by a non-logical
     connective to be explicitly terminated
   - whether to allow LE KU and LA KU
+  - whether to allow free modifiers wherever indicators are allowed
