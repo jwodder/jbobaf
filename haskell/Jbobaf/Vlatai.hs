@@ -375,7 +375,7 @@ module Jbobaf.Vlatai (
       tosCheck [] = return ()
       tosCheck (x:_) = sregau [unraf pre, unraf post] SRE_extra_Y_hyphen
        where (pre, post) = splitAt (x+1) rolrafsi
-  tosCheck $ tail $ findIndices null rolrafsi
+  tosCheck $ drop 1 $ findIndices null rolrafsi
   when (length mulrafsi < 2) (sregau [] SRE_not_enough_rafsi)
    -- Can ^this^ even happen at this point?
   case span (\r -> raftai r == CVC || null r) rolrafsi of

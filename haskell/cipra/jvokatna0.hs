@@ -8,5 +8,5 @@ main = do
 	then putStrLn "lo lujvo lonu katna cu jai sarcu" >> exitFailure
 	else return (head argv)
  case runReaderT (jvokatna luj) defaults of
-  Left str -> putStrLn $ "na drani lujvo: " ++ str
+  Left x -> putStrLn $ "na drani lujvo: " ++ show x
   Right rafs -> mapM_ putStrLn rafs

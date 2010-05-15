@@ -37,6 +37,8 @@ cEmymaidjra'i
 cEmymaidyjyra'i
 CAtadjysnu
 cytadjysnu
+tocytadjysnu
+tozytadjysnu
 
 0i
 ka,e

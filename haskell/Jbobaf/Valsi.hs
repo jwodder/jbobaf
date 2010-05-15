@@ -56,7 +56,7 @@ module Jbobaf.Valsi (
  toValsi, toCmavo, toCmevla, toBrivla, toGismu, toLujvo, toFu'ivla
   :: String -> Jvacux Valsi
 
- toValsi [] = throwError "Empty strings are not {valsi}."
+ toValsi [] = throwError $ Selsrera ["toValsi"] SRE_empty_string
  toValsi str = fadgau str >>= \fadni ->
   if isC (last fadni) then toCmevla fadni
   else maybe (toCmavo fadni) (const $ toBrivla fadni) (findC_C fadni)
@@ -76,7 +76,7 @@ module Jbobaf.Valsi (
   kle <- (gismu_xusra' f >> return Gismu)
    `mplus` (lujvo_xusra' f >> return Lujvo)
    `mplus` (fu'ivla_xusra' f >> return Fu'ivla)
-   `mplus` throwError "You can't make a non-{brivla} into a Brivla object!"
+   `mplus` throwError (Selsrera ["toBrivla", str] SRE_invalid_word_form)
   return $ miniMake (map toLower f) kle
 
  toGismu str = do

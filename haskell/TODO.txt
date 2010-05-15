@@ -14,7 +14,6 @@
  - Uppercasing everything in the nucleus of an abnormally-stressed {cmevla}
  - Somehow handling {cmevla} with more than one emphasized syllable
 - Should lerfendi split "yyyy" into four separate "y"s?
-- Replace the error messages with a custom enumeration
 - Consider making Jvacux' use a State monad (in place of the Identity) to track
   the Flezvalei
 

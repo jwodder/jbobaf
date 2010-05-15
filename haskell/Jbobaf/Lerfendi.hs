@@ -74,7 +74,7 @@ module Jbobaf.Lerfendi (lerfendi) where
  err2id :: Jvacux a -> Jvacux' a
  err2id = mapReaderT (\(Right a) -> return a)
 
- troci :: Jvacux a -> Jvacux' (Either String a)
+ troci :: Jvacux a -> Jvacux' (Either Selsrera a)
  troci = mapReaderT return
 
  kavbu' :: Jvacux a -> a -> Jvacux' a
@@ -263,7 +263,7 @@ module Jbobaf.Lerfendi (lerfendi) where
  -- excessively.
 
  emphed :: String -> Bool
- emphed = not . null . filter isUpper
+ emphed = any isUpper
 
  mkCmevla, mkCmavo, mkBrivla :: String -> Jvacux' [Either String Valsi]
  mkCmevla  [] = return []
