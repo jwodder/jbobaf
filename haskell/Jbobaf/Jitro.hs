@@ -4,12 +4,13 @@
 module Jbobaf.Jitro (module Jbobaf.Jitro, runReaderT, throwError, catchError)
  where
  import Array
+ import List (intersperse)
  import Data.Set (Set, member, notMember, fromList)
  import Control.Monad.Error
  import Control.Monad.Reader
 
  type JvacuxT m a = ReaderT (Set Tercuxna) m a
- type Jvacux a = ReaderT (Set Tercuxna) (Either Selsrera) a
+ type Jvacux a = JvacuxT (Either Selsrera) a
 
  isOpt, isNopt :: Monad m => Tercuxna -> JvacuxT m Bool
  isOpt  = asks . member
@@ -19,11 +20,9 @@ module Jbobaf.Jitro (module Jbobaf.Jitro, runReaderT, throwError, catchError)
  xusnada m = (m >> return True) `mplus` return False
 
  nupre :: Jvacux a -> Set Tercuxna -> a
- nupre jct opts = either (error . show) id $ runReaderT jct opts
-	     -- Flesh out this ^^^ later!!!
+ nupre jct opts = either (error . sreskicu True) id $ runReaderT jct opts
 
- -- Are the following three functions necessary and/or useful?
-
+ -- Are the following three functions really necessary and/or useful?
  fliba :: Selsrera -> Jvacux a
  fliba = throwError
 
@@ -164,9 +163,7 @@ module Jbobaf.Jitro (module Jbobaf.Jitro, runReaderT, throwError, catchError)
    ("Internal error (this is not supposed to happen)",
     "canti pe'a selsre sei ba'a na fasnu")),  -- Rethink this translation.
   (SRE_invalid_word_form, ("Invalid word form", "naldra vlatai")),
-  (SRE_empty_string,
-   ("An empty string is not a word.",  --"lo nonporsi cu na valsi")),
-    ".e'anai nonporsi")),
+  (SRE_empty_string, ("An empty string is not a word.", ".e'anai nonporsi")),
   (SRE_invalid_emphasis,
    ("Invalid {brivla} emphasis",
     "naldra brivla basnymo'a")),
@@ -231,7 +228,7 @@ module Jbobaf.Jitro (module Jbobaf.Jitro, runReaderT, throwError, catchError)
     ".ei lo brivla cu vasru su'o re voksna slaka")),
   (SRE_must_end_with_vowel,
    ("{brivla} must end with a vowel.",
-    ".ei lo brivla cu se fanmo lo voksna"),
+    ".ei lo brivla cu se fanmo lo voksna")),
   (SRE_must_end_with_consonant,
    ("{cmevla} must end with a consonant.",
     ".ei lo cmevla cu se fanmo lo zunsna")),
@@ -245,3 +242,7 @@ module Jbobaf.Jitro (module Jbobaf.Jitro, runReaderT, throwError, catchError)
    ("{cmavo} may not contain internal or trailing consonants.",
     ".e'anai lo cmavo cu se nenri ja se fanmo lo zunsna")),
   (SRE_other_error, ("Unknown error", "fange selsre"))]
+
+ sreskicu :: Bool -> Selsrera -> String
+ sreskicu jbo sre = concat (intersperse ": " $ sre_velski sre) ++ ": "
+  ++ (if jbo then snd else fst) (sreski ! (sre_klesi sre))

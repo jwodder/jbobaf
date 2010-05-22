@@ -69,7 +69,7 @@ module Jbobaf.Lerfendi (lerfendi) where
 
 ----------------------------------------
 
- type Jvacux' a = ReaderT (Set Tercuxna) Identity a
+ type Jvacux' a = JvacuxT Identity a
 
  err2id :: Jvacux a -> Jvacux' a
  err2id = mapReaderT (\(Right a) -> return a)
