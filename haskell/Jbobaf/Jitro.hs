@@ -3,7 +3,7 @@
 
 module Jbobaf.Jitro (module Jbobaf.Jitro, runReaderT, throwError, catchError)
  where
- import Ix
+ import Array
  import Data.Set (Set, member, notMember, fromList)
  import Control.Monad.Error
  import Control.Monad.Reader
@@ -32,6 +32,8 @@ module Jbobaf.Jitro (module Jbobaf.Jitro, runReaderT, throwError, catchError)
 
  kavbu :: Jvacux a -> (Selsrera -> Jvacux a) -> Jvacux a
  kavbu = catchError
+
+-----------------------------------------
 
  data Tercuxna =
   Use_dotside
@@ -103,6 +105,8 @@ module Jbobaf.Jitro (module Jbobaf.Jitro, runReaderT, throwError, catchError)
   Allow_triphthongs, Allow_H, Allow_ndj_in_fu'ivla, Allow_ndj_in_cmevla,
   No_commas_in_cmavo, Translate_digits, Split_bad_diphthongs]
 
+---------------------------------------
+
  data Srelei =
   SRE_internal_error  -- something that is not supposed to happen
   | SRE_invalid_word_form  -- generic morphological failure
@@ -154,33 +158,90 @@ module Jbobaf.Jitro (module Jbobaf.Jitro, runReaderT, throwError, catchError)
   noMsg    = Selsrera ["noMsg"]     SRE_other_error
   strMsg s = Selsrera ["strMsg", s] SRE_other_error
 
-{-
- Error messages:
-  - SRE_na'e_fu'ivla - "{fu'ivla} may not be {gismu} or {lujvo}."
-  - SRE_no_spaces_allowed - "{valsi} may not have internal spaces or periods."
-  - SRE_must_end_with_vowel - "{brivla} must end with a vowel."
-  - SRE_no_Ys_allowed - "{fu'ivla} may not contain Y's."
-  - SRE_not_enough_syllables - "{brivla} must contain two or more vocalic syllables."
-  - SRE_non_initial_start - "Non-initial consonant clusters may not occur at the start of a {fu'ivla}."
-  - SRE_too_much_before_cluster - "The consonant cluster in a {fu'ivla} may be preceded by no more than three letters."
-   - "A consonant cluster in a {fu'ivla} must be preceded by no more than one {ma'osmi}."
-  - SRE_breaks_apart - "{fu'ivla} may not break apart into smaller words."
-  - SRE_lacks_cluster - "{fu'ivla} must contain a consonant cluster."
-  - SRE_must_end_with_consonant - "{cmevla} must end with a consonant."
-  - SRE_la_in_cmevla - "{cmevla} may not contain the strings \"la\", \"lai\", \"la'i\", or \"doi\"."
-  - SRE_consonant_inside_cmavo - "{cmavo} may not have internal spaces, periods, or consonants."
-  - SRE_non_Lojban_char - "Non-Lojbanic character in string"
-  - SRE_misplaced_apostrophe - "Apostrophe next to a non-vowel detected."
-   - "Apostrophes may not occur at the end of a string."
-   - "Apostrophes may not occur at the beginning of a string."
-  - SRE_bad_vowel_sequence - "Invalid diphthong detected"
-   - "Invalid 4-vowel sequence detected"
-   - "Invalid triphthong detected"
- - SRE_not_enough_rafsi - "{lujvo} must contain at least two {rafsi}."
- - SRE_extra_Y_hyphen - "Superfluous Y-hyphen in {lujvo}"
- - SRE_bad_rn_hyphen - "Invalid r/n-hyphen in {lujvo}"
- - SRE_missing_rn_hyphen - "R/n-hyphen missing from {lujvo}"
- - SRE_invalid_rafsi - "Invalid {rafsi} form"
- - SRE_tosmabru_failure - "{lujvo} missing tosmabru hyphen"
- - SRE_invalid_emphasis - "Invalid {brivla} emphasis"
--}
+ sreski :: Array Srelei (String, String)
+ sreski = array (minBound, maxBound) [
+  (SRE_internal_error,
+   ("Internal error (this is not supposed to happen)",
+    "canti pe'a selsre sei ba'a na fasnu")),  -- Rethink this translation.
+  (SRE_invalid_word_form, ("Invalid word form", "naldra vlatai")),
+  (SRE_empty_string,
+   ("An empty string is not a word.",  --"lo nonporsi cu na valsi")),
+    ".e'anai nonporsi")),
+  (SRE_invalid_emphasis,
+   ("Invalid {brivla} emphasis",
+    "naldra brivla basnymo'a")),
+  (SRE_bad_consonant_pair,
+   ("Invalid consonant pair",
+    "naldra zunsna bo remei")),
+  (SRE_bad_consonant_triple,
+   ("Invalid consonant triple",
+    "naldra zunsna bo cimei")),
+  (SRE_tosmabru_failure,
+   ("{lujvo} missing tosmabru hyphen",
+    "le lujvo cu claxu me'o .ybu noi sarcu fi tu'a la'o gy. tosmabru .gy.")),
+  (SRE_slinku'i_failure,
+   ("{fu'ivla} may not fail the slinku'i test.",
+    ".e'anai lo fu'ivla cu fliba lo cipra pe la'o gy. slinku'i .gy.")),
+  (SRE_bad_vowel_sequence,
+   ("Invalid vowel sequence detected",
+    "naldra voksna bo porsi")),
+  (SRE_no_spaces_allowed,
+   ("{valsi} may not have internal spaces or periods.",
+    ".e'anai lo valsi cu se nenri me'o tersei bu .a denpa bu")),
+    -- Check the translation of "space."
+  (SRE_lacks_cluster,
+   ("{brivla} must contain a consonant cluster.",
+    ".ei lo brivla cu vasru lo zunsna porsi")),
+  (SRE_non_Lojban_char,
+   ("Non-Lojbanic character in string",
+    ".e'anai naljbo lerfu")),
+  (SRE_misplaced_apostrophe,
+   ("Apostrophe found in an invalid location",
+    "me'o .y'y. naldra zvati")),
+  (SRE_no_commas_allowed,
+   ("Commas are prohibited.",
+    "me'o slaka bu jai se tolcru")),
+  (SRE_no_Ys_allowed,
+   ("{fu'ivla} may not contain Y's.",
+    ".e'anai lo fu'ivla cu vasru me'o .ybu")),
+  (SRE_na'e_fu'ivla,
+   ("{fu'ivla} may not be {gismu} or {lujvo}.",
+    ".e'anai lo fu'ivla cu gismu ja lujvo")),
+  (SRE_bad_rn_hyphen,
+   ("Invalid r/n-hyphen in {lujvo}",
+    "le terjo'e pe me'o ry. .a ny. naldra fi le lujvo")),
+  (SRE_missing_rn_hyphen,
+   ("R/n-hyphen missing from {lujvo}",
+    "lo lujvo cu claxu lo sarcu terjo'e pe me'o ry. .a ny.")),
+  (SRE_too_much_before_cluster,
+   ("Too much before consonant cluster in {brivla}",
+    "lo dukse cu lidne lo zunsna porsi ne'i lo brivla")),
+  (SRE_extra_Y_hyphen,
+   ("Superfluous Y-hyphen in {lujvo}",
+    "dukse me'o .ybu ne'i lo lujvo")),
+  (SRE_invalid_rafsi, ("Invalid {rafsi} form", "naldra raftai")),
+  (SRE_la_in_cmevla,
+   ("{cmevla} may not contain \"la\", \"lai\", \"la'i\", or \"doi\".",
+    ".e'anai lo cmevla cu vasru zo la .a zo lai .a zo la'i .a zo doi")),
+  (SRE_not_enough_rafsi,
+   ("{lujvo} must contain at least two {rafsi}.",
+    ".ei lo lujvo cu vasru su'o re rafsi")),
+  (SRE_not_enough_syllables,
+   ("{brivla} must contain two or more vocalic syllables.",
+    ".ei lo brivla cu vasru su'o re voksna slaka")),
+  (SRE_must_end_with_vowel,
+   ("{brivla} must end with a vowel.",
+    ".ei lo brivla cu se fanmo lo voksna"),
+  (SRE_must_end_with_consonant,
+   ("{cmevla} must end with a consonant.",
+    ".ei lo cmevla cu se fanmo lo zunsna")),
+  (SRE_breaks_apart,
+   ("{valsi} may not break apart into smaller words.",
+    ".e'anai lo valsi cu porpi lo cmalu valsi")),
+  (SRE_non_initial_start,
+   ("Non-initial consonant cluster at beginning of string",
+    ".e'anai lo na'e lidne zunsna bo porsi cu krasi")),
+  (SRE_consonant_inside_cmavo,
+   ("{cmavo} may not contain internal or trailing consonants.",
+    ".e'anai lo cmavo cu se nenri ja se fanmo lo zunsna")),
+  (SRE_other_error, ("Unknown error", "fange selsre"))]

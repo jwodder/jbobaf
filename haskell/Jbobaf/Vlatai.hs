@@ -76,7 +76,7 @@ module Jbobaf.Vlatai (
  brivla_xusra' str = gismu_xusra' str
   `mplus` lujvo_xusra' str
   `mplus` fu'ivla_xusra' str
-  `mplus` throwError (Selsrera ["brivla_xusra", str] SRE_invalid_word_form)
+  --`mplus` throwError (Selsrera ["brivla_xusra", str] SRE_invalid_word_form)
 
  gismu_xusra, gismu_xusra' :: String -> Jvacux ()
  gismu_xusra str = fadgau str >>= gismu_xusra'
