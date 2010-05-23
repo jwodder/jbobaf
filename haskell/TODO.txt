@@ -13,9 +13,11 @@
  - Converting all letters to lowercase when the stress is normal
  - Uppercasing everything in the nucleus of an abnormally-stressed {cmevla}
  - Somehow handling {cmevla} with more than one emphasized syllable
-- Should lerfendi split "yyyy" into four separate "y"s?
+- lerfendi needs to split "yyyy" into four separate "y"s
 - Consider making Jvacux' use a State monad (in place of the Identity) to track
   the Flezvalei
+- PROBLEM: When Allow_Y_in_fu'ivla is in effect, how should something like
+  "acy'ygre", "ácy'ygrelo", or "cacy'ygre" be handled?
 
 NEW FEATURES
 - Add functions to Valsi.hs for computing the component {rafsi}, source
@@ -45,7 +47,8 @@ NEW FEATURES
  - allowing superfluous hyphens in {lujvo}
  - allowing a word break at a comma that is after an ultima or non-dotside
    "la", before a {ma'osmi} at the head of a {brivla}, or between two {ma'osmi}
-   in a {cmavo} string when No_commas_in_cmavo is in effect
+   in a {cmavo} string when No_commas_in_cmavo is in effect (Should that last
+   one be on by default?)
  - Ignore_bad_ZOI_delims - causes a ZOI followed by a non-word string to
    (effectively) only quote that string
  - treating an opening ZOI delimiter not followed by a space or period as

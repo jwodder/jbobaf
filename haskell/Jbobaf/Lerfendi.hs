@@ -196,25 +196,23 @@ module Jbobaf.Lerfendi (lerfendi) where
 		alvocs = filter voc $ syllabicate alpha
 		omsyls = syllabicate omega
 		findUltima pre s = case break voc s of
-		 (_, []) -> return [Left str]  -- This should never happen.
-		 (_, [_]) -> brivlate alpha omsyls
+		 -- pre = portion of omsyls through the first emphed syllable
+		 -- s = rest of omsyls
+		 (_, [])     -> shiftCy alpha omsyls
+		 (_, [u])    -> (emphed u ?: shiftCy :? brivlate) alpha omsyls
 		 (c, d:e:ys) -> if emphed d || head e `elem` "'," || has_C_C e
 				then shiftCy alpha omsyls
 				else brivlate alpha (pre ++ c ++ [d])
 				      ~~ fendi (concat $ e:ys)
-	    in if null alvocs || not (emphed $ last alvocs)
-	       then case break emphed omsyls of
-		     (_, [])       -> brivlate alpha omsyls
-		     (_, [_])      -> shiftCy alpha omsyls
-		     (_, [_, ult]) -> (emphed ult ?: shiftCy :? brivlate)
-				       alpha omsyls
+	    in if not (null alvocs) && emphed (last alvocs)
+	       then findUltima [] omsyls
+	       else case break emphed omsyls of
+		     (_, [])   -> brivlate alpha omsyls
 		     (a, b:xs) -> findUltima (a ++ [b]) xs
-	       else findUltima [] omsyls
   Nothing -> ma'ocpa str
-   where ma'ocpa [] = return []
-	 ma'ocpa str@(c:xs)
-	  | isC c     = let (a, b) = break isC xs in mkCmavo (c:a) ~~ ma'ocpa b
-	  | otherwise = let (a, b) = break isC str in mkCmavo a ~~ ma'ocpa b
+   where ma'ocpa []  = return []
+	 ma'ocpa str = mkCmavo (c ++ v) ~~ ma'ocpa w
+	  where (c, v') = span isC str; (v, w) = break isC v'
 
 ----------------------------------------
 
@@ -223,25 +221,27 @@ module Jbobaf.Lerfendi (lerfendi) where
 
  finalMa'osmi :: String -> Maybe (String, String)
  finalMa'osmi str = case break isC (reverse str) of
-  ([], _) -> Nothing
-  (xs, []) -> Just ([], str)
-  (xs, [a]) -> Just ([], str)
+  ([], _)     -> Nothing
+  (xs, [])    -> Just ([], str)
+  (xs, [a])   -> Just ([], str)
   (xs, a:b:ys) | not (isC b) -> Just (reverse (b:ys), reverse (xs ++ [a]))
-	       | otherwise -> Nothing
+	       | otherwise   -> Nothing
 
  brivlate :: String -> [String] -> Jvacux' [Either String Valsi]
- brivlate pre body@(b1:bxs) = do
-  tosmabru <- err2id $ xulujvo' $ 't':'o':concat body
+ brivlate pre body@(b1:_) = do
+  -- pre = stuff before the consonant cluster
+  -- body = syllables from the consonant cluster through the ultima
+  slinku'i <- err2id $ xulujvo' $ 't':'o':concat body
   let allInit (c1:c2:xs) = if isV c2 then True
 			   else if isCC [c1, c2] then allInit (c2:xs)
 			   else False
-  let (a, b, b') = if allInit b1 && length (filter voc body) > 1 && not tosmabru
+  let (a, b, b') = if allInit b1 && length (filter voc body) > 1 && not slinku'i
    -- a = parts of `pre' not to prepend to body
    -- b = stuff to prepend to body
    -- b' = whether `pre' met our needs
 		   then (pre, [], True)
 		   else case finalMa'osmi pre of
-		    Just (pa, pb) -> length (filter (\c -> isC c || isV c) pb)<4
+		    Just (pa, pb) -> length (filter (`notElem` "',y") pb) < 4
 				      ?: (pa, pb, True) :? (pre, [], False)
 		    Nothing -> (pre, [], False)
   let beta = b ++ concat body
@@ -269,6 +269,6 @@ module Jbobaf.Lerfendi (lerfendi) where
  mkCmevla  [] = return []
  mkCmevla str = kavbu' (toCmevla str >>= \v -> return [Right v]) [Left str]
  mkCmavo   [] = return []
- mkCmavo  str = kavbu' (toCmavo str  >>= \v -> return [Right v]) [Left str]
+ mkCmavo  str = kavbu' (toCmavo  str >>= \v -> return [Right v]) [Left str]
  mkBrivla  [] = return []
  mkBrivla str = kavbu' (toBrivla str >>= \v -> return [Right v]) [Left str]

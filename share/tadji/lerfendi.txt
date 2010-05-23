@@ -59,7 +59,7 @@ A generalized form of the Lojban word-splitting algorithm, as I understand it:
       up to and including the end of the ultima, and let ω be the substring of
       γ after the ultima.  Otherwise, let α equal γ and let ω be the empty
       string (ε).
-    i. Note that, due to steps 2 and 3, it is impossible at this point for an
+    i. Note that, due to steps 2 and 3, it is impossible at this point for a
        vocalic syllable to be followed by a non-empty string that does not
        contain another vocalic syllable.
    b. If the last vocalic syllable in α is capitalized or accented (either
@@ -94,6 +94,6 @@ A generalized form of the Lojban word-splitting algorithm, as I understand it:
     iii. Otherwise, β is invalid.
   5. Otherwise, FENDI(γ) is the string formed by applying CMAVO to each maximal
      non-overlapping {ma'osmi} substring of γ, starting at the beginning of γ.
- - Observation: In a non-{cmene} string containing a consonant cluster, all
+ - Observation: In a non-{cmevla} string containing a consonant cluster, all
    {ma'osmi} before the one immediately before the cluster will always be
    converted into {cmavo}.

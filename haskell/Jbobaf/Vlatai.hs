@@ -127,8 +127,8 @@ module Jbobaf.Vlatai (
    $ xulujvo' ('t':'o':str) >>= flip when (sregau SRE_slinku'i_failure)
   when (elem ' ' str) (sregau SRE_no_spaces_allowed)
   unless (isV $ last str) (sregau SRE_must_end_with_vowel)
-  noBadCC "fu'ivla_xusra" str
-  unless ndj $ hasNDJ "fu'ivla_xusra" str
+  checkCC "fu'ivla_xusra" str
+  unless ndj $ checkNDJ "fu'ivla_xusra" str
   unless (canY || notElem 'y' str) (sregau SRE_no_Ys_allowed)
   when (length vocSyls < 2) (sregau SRE_not_enough_syllables)
   unless (noemph || emphQty == 0 || emphQty == 1 && any isUpper (last
@@ -160,8 +160,8 @@ module Jbobaf.Vlatai (
   let sregau = throwError . Selsrera ["cmevla_xusra", str]
   unless (isC $ last str) (sregau SRE_must_end_with_consonant)
   when (elem ' ' str) (sregau SRE_no_spaces_allowed)
-  noBadCC "cmevla_xusra" str
-  unless ndj $ hasNDJ "cmevla_xusra" str
+  checkCC "cmevla_xusra" str
+  unless ndj $ checkNDJ "cmevla_xusra" str
   unless dotty (case findLa str of
    Just (_, la, _) -> throwError $ Selsrera ["cmevla_xusra", str, la]
 		       SRE_la_in_cmevla
@@ -284,22 +284,19 @@ module Jbobaf.Vlatai (
       porfad (' ':' ':xs) = porfad (' ':xs)
       porfad (c:xs) = c ~: porfad xs
       porfad [] = return []
-      isDiphth v1 v2 = v1 `elem` "iuIU"
-       || v1 `elem` "aeoAEO" && toLower v2 == 'i'
-       || toLower v1 == 'a' && toLower v2 == 'u'
       vokfed [] = return []
       vokfed [v] = return [v]
-      vokfed [v1, v2] = if isDiphth v1 v2 then return [v1, v2]
+      vokfed [v1, v2] = if isVV [v1, v2] then return [v1, v2]
 			else if splitDiphth then return [v1, ',', v2]
 			else throwError $ Selsrera ["fadgau", str, [v1, v2]]
 			 SRE_bad_vowel_sequence
       vokfed vs@(v1:v2:v3:xs) =
-       if triphth && v1 `elem` "iuIU" && isDiphth v2 v3
+       if triphth && isVVV [v1, v2, v3]
        then return [v1, v2, v3] ~~ (null xs ?: return [] :? splitDiphth
 	?: ',' ~: vokfed xs
 	:? throwError (Selsrera ["fadgau", str, vs] SRE_bad_vowel_sequence))
        else if splitDiphth then
-	if isDiphth v1 v2
+	if isVV [v1, v2]
 	then return [v1, v2, ','] ~~ vokfed (v3:xs)
 	else return [v1, ','] ~~ vokfed (v2:v3:xs)
        else throwError $ Selsrera ["fadgau", str, vs] SRE_bad_vowel_sequence
@@ -319,8 +316,8 @@ module Jbobaf.Vlatai (
   let sregau vel lei = throwError $ Selsrera ("jvokatna" : str : vel) lei
   when (elem ' ' str) (sregau [] SRE_no_spaces_allowed)
   when (elem ',' str) (sregau [] SRE_no_commas_allowed)
-  noBadCC "jvokatna" str
-  hasNDJ "jvokatna" str
+  checkCC "jvokatna" str
+  checkNDJ "jvokatna" str
   (pre, fanmo) <- case lertype (reverse str) of
     V v2 : Apos : V v1 : C c1 : xs -> return (xs, [[c1, v1, '\'', v2]])
     V v2 : V v1 : C c1 : xs | notElem v1 "iuIU" -> return (xs, [[c1, v1, v2]])
@@ -422,8 +419,8 @@ module Jbobaf.Vlatai (
 
 -- Unexported functions: ------------------------------------------------------
 
- hasNDJ :: String -> String -> Jvacux ()
- hasNDJ f str = ndj str
+ checkNDJ :: String -> String -> Jvacux ()
+ checkNDJ f str = ndj str
   where ndj s = case dropWhile (/= 'n') s of
 		 'n':'d':'j':_ -> throwError $ Selsrera [f, str, "ndj"]
 				   SRE_bad_consonant_triple
@@ -436,8 +433,8 @@ module Jbobaf.Vlatai (
 		 'n':xs -> ndj xs
 		 [] -> return ()
 
- noBadCC :: String -> String -> Jvacux ()
- noBadCC f str = case [cc | i <- findIndices isC str,
+ checkCC :: String -> String -> Jvacux ()
+ checkCC f str = case [cc | i <- findIndices isC str,
    let cc = take 2 (drop i str), length cc /= 1, isC (cc !! 1), not (isC_C cc)]
   of cc:_ -> throwError $ Selsrera [f, str, cc] SRE_bad_consonant_pair
      []   -> return ()
