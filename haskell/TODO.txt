@@ -3,16 +3,19 @@
   tiki!!!
 - Test everything to make sure it works as it's intended!
  - Test performing word splitting with variant sets of options
+ - Improve the test words in jvokatna01.txt and fendi01.txt (especially by
+   making them all semantically valid)
+ - Make fendi.hs automated with comparisons against the correct answers
 - Add Haddock documentation for all of the exported functions, values, & types
 - Rethink how the Valsi type is structured & used
-- Deal with {lujma'o} somehow
-- Improve the test words in jvokatna01.txt and fendi01.txt (especially by
-  making them all semantically valid)
+ - Deal with {lujma'o} somehow
 - Make toCmevla handle emphasis by:
  - Converting all letters to lowercase when the stress is normal
  - Uppercasing everything in the nucleus of an abnormally-stressed {cmevla}
  - Somehow handling {cmevla} with more than one emphasized syllable
 - Should lerfendi split "yyyy" into four separate "y"s?
+- Consider making Jvacux' use a State monad (in place of the Identity) to track
+  the Flezvalei
 
 NEW FEATURES
 - Add functions to Valsi.hs for computing the component {rafsi}, source

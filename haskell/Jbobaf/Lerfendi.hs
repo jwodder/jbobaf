@@ -1,8 +1,11 @@
 module Jbobaf.Lerfendi (lerfendi) where
  import Char
  import List
- import Jbobaf.Internals
- import Jbobaf.Jvacux
+ import Control.Monad.Identity
+ import Control.Monad.Reader
+ import Data.Set (Set)
+ import Jbobaf.Canti
+ import Jbobaf.Jitro
  import Jbobaf.Valsi
  import Jbobaf.Vlatai
 
@@ -62,100 +65,84 @@ module Jbobaf.Lerfendi (lerfendi) where
  --   Whether this actually leads to any problems has yet to be determined.
 
  lerfendi :: String -> Jvacux [Either String Valsi]
- lerfendi = lerfendi' Fadni
+ lerfendi = mapReaderT (return . runIdentity) . lerfendi' Fadni
 
 ----------------------------------------
 
+ type Jvacux' a = JvacuxT Identity a
+
+ err2id :: Jvacux a -> Jvacux' a
+ err2id = mapReaderT (\(Right a) -> return a)
+
+ troci :: Jvacux a -> Jvacux' (Either Selsrera a)
+ troci = mapReaderT return
+
+ kavbu' :: Jvacux a -> a -> Jvacux' a
+ kavbu' jct d = mapReaderT (return . either (const d) id) jct
+
  data Flezvalei =
   Fadni
-  | After_ZO_ZEI
-    -- ZO and ZEI are essentially the same in how they treat the next word,
-    -- right?
-  | After_ZOI (Maybe String) String
   | ErrorQuote
-  | After_ZO_ZEI_error
-  | After_ZOI_error (Maybe String) String
+  | After_ZO_ZEI Bool  -- The Bool indicates whether we're inside an error quote
+  | After_ZOI Bool (Maybe String) String
   deriving (Eq, Ord, Read, Show)
 
 ----------------------------------------
 
- lerfendi' :: Flezvalei -> String -> Jvacux [Either String Valsi]
+ lerfendi' :: Flezvalei -> String -> Jvacux' [Either String Valsi]
  lerfendi' makfa str =
   let (ca, ba) = spicpa str
-  in if null ca then return [] else fadgau ca >>= \ca' -> case ca' of
-   Just [] -> lerfendi' makfa ba
-   Just x -> fendi x >>= mafygau makfa ba
-   Nothing -> Left ca~:lerfendi' (makfa < ErrorQuote ?: Fadni :? ErrorQuote) ba
+  in if null ca then return [] else troci (fadgau ca) >>= \ca' -> case ca' of
+   Left _ -> Left ca ~: lerfendi' (makfa < ErrorQuote ?: Fadni :? ErrorQuote) ba
+   Right [] -> lerfendi' makfa ba
+   Right  x -> fendi x >>= mafygau makfa ba
 
 ----------------------------------------
 
  mafygau :: Flezvalei -> String -> [Either String Valsi]
-  -> Jvacux [Either String Valsi]
+  -> Jvacux' [Either String Valsi]
 
  -- How to search for ending ZOI delimiters: While the end has not been found,
  -- get the next chunk from the stream and split it into words.  If the first
  -- word equals the delimiter, the end has been found.  Otherwise, consume the
  -- raw chunk from the stream and keep searching.
 
- mafygau (After_ZOI (Just d) trail) ba [] = do
+ mafygau (After_ZOI lohu (Just d) trail) ba [] =
   let (ca, ba') = spicpa ba
-  if null ca
-   then return (null trail ?: [] :? [Left trail])
-   else do
-    ca' <- fadgau ca
-    vals <- maybe (return []) fendi ca'
-    case (ca', vals) of
-     (Just x@(_:_), v:alsi)
-      | esv2str v == d -> Left trail ~: v ~: mafygau Fadni ba' alsi
-     _ -> let (a, a') = span xudenpa ba
-	      (b, b') = break xudenpa a'
-	  in mafygau (After_ZOI (Just d) (trail ++ a ++ b)) b' []
-
- mafygau (After_ZOI_error (Just d) trail) ba [] = do
-  let (ca, ba') = spicpa ba
-  if null ca
-   then return (null trail ?: [] :? [Left trail])
-   else do
-    ca' <- fadgau ca
-    vals <- maybe (return []) fendi ca'
-    case (ca', vals) of
-     (Just x@(_:_), v:alsi)
-      | esv2str v == d -> Left trail ~: v ~: mafygau ErrorQuote ba' alsi
-     _ -> let (a, a') = span xudenpa ba
-	      (b, b') = break xudenpa a'
-	  in mafygau (After_ZOI_error (Just d) (trail ++ a ++ b)) b' []
+  in if null ca
+     then return (null trail ?: [] :? [Left trail])
+     else do
+      ca' <- troci $ fadgau ca
+      vals <- either (const $ return []) fendi ca'
+      case (ca', vals) of
+       (Right x@(_:_), v:alsi) | esv2str v == d -> Left trail ~: v
+	 ~: mafygau (lohu ?: ErrorQuote :? Fadni) ba' alsi
+       _ -> let (a, a') = span xudenpa ba
+		(b, b') = break xudenpa a'
+	    in mafygau (After_ZOI lohu (Just d) (trail ++ a ++ b)) b' []
 
  mafygau makfa ba [] = lerfendi' makfa ba
 
- mafygau (After_ZOI Nothing []) ba (v:alsi) = v ~:
-  mafygau (After_ZOI (Just $ esv2str v) [])
+ mafygau (After_ZOI lohu Nothing []) ba (v:alsi) = v ~:
+  mafygau (After_ZOI lohu (Just $ esv2str v) [])
    (null alsi ?: dropWhile xudenpa ba :? ba) alsi
 
- mafygau (After_ZOI_error Nothing []) ba (v:alsi) = v ~:
-  mafygau (After_ZOI_error (Just $ esv2str v) [])
-   (null alsi ?: dropWhile xudenpa ba :? ba) alsi
-
- mafygau (After_ZOI (Just d) trail) ba (v:alsi) =
+ mafygau (After_ZOI lohu (Just d) trail) ba (v:alsi) =
   let v' = esv2str v
-  in if v' == d then Left trail ~: v ~: mafygau Fadni ba alsi
-     else mafygau (After_ZOI (Just d) (trail ++ v')) ba alsi
+  in if v' == d
+     then Left trail ~: v ~: mafygau (lohu ?: ErrorQuote :? Fadni) ba alsi
+     else mafygau (After_ZOI lohu (Just d) (trail ++ v')) ba alsi
 
- mafygau (After_ZOI_error (Just d) trail) ba (v:alsi) =
-  let v' = esv2str v
-  in if v' == d then Left trail ~: v ~: mafygau ErrorQuote ba alsi
-     else mafygau (After_ZOI_error (Just d) (trail ++ v')) ba alsi
-
- mafygau After_ZO_ZEI ba (v:alsi) = v ~: mafygau Fadni ba alsi
-
- mafygau After_ZO_ZEI_error ba (v:alsi) = v ~: mafygau ErrorQuote ba alsi
+ mafygau (After_ZO_ZEI lohu) ba (v:alsi) =
+  v ~: mafygau (lohu ?: ErrorQuote :? Fadni) ba alsi
 
  mafygau makfa ba (Left s : alsi) = Left s ~: mafygau makfa ba alsi
 
  mafygau Fadni ba (Right v : alsi) = Right v ~: case valsi v of
-  "zo" -> mafygau After_ZO_ZEI ba alsi
-  "zei" -> mafygau After_ZO_ZEI ba alsi
-  "zoi" -> mafygau (After_ZOI Nothing []) ba alsi
-  "la'o" -> mafygau (After_ZOI Nothing []) ba alsi
+  "zo" -> mafygau (After_ZO_ZEI False) ba alsi
+  "zei" -> mafygau (After_ZO_ZEI False) ba alsi
+  "zoi" -> mafygau (After_ZOI False Nothing []) ba alsi
+  "la'o" -> mafygau (After_ZOI False Nothing []) ba alsi
   "lo'u" -> mafygau ErrorQuote ba alsi
   "fa'o" -> do
    ignore <- isOpt Ignore_FAhO
@@ -167,16 +154,16 @@ module Jbobaf.Lerfendi (lerfendi) where
  mafygau ErrorQuote ba (Right v : alsi) = Right v ~: case valsi v of
   "zo" -> do
    disabled <- isOpt LOhU_disables_ZO
-   mafygau (disabled ?: ErrorQuote :? After_ZO_ZEI_error) ba alsi
+   mafygau (disabled ?: ErrorQuote :? After_ZO_ZEI True) ba alsi
   "zei" -> do
    disabled <- isOpt LOhU_disables_ZEI
-   mafygau (disabled ?: ErrorQuote :? After_ZO_ZEI_error) ba alsi
+   mafygau (disabled ?: ErrorQuote :? After_ZO_ZEI True) ba alsi
   "zoi" -> do
    disabled <- isOpt LOhU_disables_ZOI
-   mafygau (disabled ?: ErrorQuote :? After_ZOI_error Nothing []) ba alsi
+   mafygau (disabled ?: ErrorQuote :? After_ZOI True Nothing []) ba alsi
   "la'o" -> do
    disabled <- isOpt LOhU_disables_ZOI
-   mafygau (disabled ?: ErrorQuote :? After_ZOI_error Nothing []) ba alsi
+   mafygau (disabled ?: ErrorQuote :? After_ZOI True Nothing []) ba alsi
   "le'u" -> mafygau Fadni ba alsi
   "fa'o" -> do
    disabled <- isOpt LOhU_disables_FAhO
@@ -188,7 +175,7 @@ module Jbobaf.Lerfendi (lerfendi) where
 
 ----------------------------------------
 
- fendi :: String -> Jvacux [Either String Valsi]
+ fendi :: String -> Jvacux' [Either String Valsi]
  fendi [] = return []
  fendi (',':xs) = fendi xs
   -- This ^^ was at one point possible due to some other bit of code.  Can this
@@ -242,9 +229,9 @@ module Jbobaf.Lerfendi (lerfendi) where
   (xs, a:b:ys) | not (isC b) -> Just (reverse (b:ys), reverse (xs ++ [a]))
 	       | otherwise -> Nothing
 
- brivlate :: String -> [String] -> Jvacux [Either String Valsi]
+ brivlate :: String -> [String] -> Jvacux' [Either String Valsi]
  brivlate pre body@(b1:bxs) = do
-  tosmabru <- xulujvo' $ 't':'o':concat body
+  tosmabru <- err2id $ xulujvo' $ 't':'o':concat body
   let allInit (c1:c2:xs) = if isV c2 then True
 			   else if isCC [c1, c2] then allInit (c2:xs)
 			   else False
@@ -258,7 +245,7 @@ module Jbobaf.Lerfendi (lerfendi) where
 				      ?: (pa, pb, True) :? (pre, [], False)
 		    Nothing -> (pre, [], False)
   let beta = b ++ concat body
-  xubriv <- xubrivla' beta
+  xubriv <- err2id $ xubrivla' beta
   fendi a ~~ if b' && xubriv then mkBrivla beta else shiftCy b body
 
  esv2str :: Either String Valsi -> String
@@ -268,7 +255,7 @@ module Jbobaf.Lerfendi (lerfendi) where
  xudenpa :: Char -> Bool
  xudenpa c = isSpace c || c == '.'
 
- shiftCy :: String -> [String] -> Jvacux [Either String Valsi]
+ shiftCy :: String -> [String] -> Jvacux' [Either String Valsi]
  shiftCy pre (cy@[_,'y']:rest) = fendi pre ~~ mkCmavo cy ~~ fendi (concat rest)
  shiftCy pre blob = return [Left $ pre ++ concat blob]
  -- The `pre' argument exists so that it can be prepended to an invalid string
@@ -276,12 +263,12 @@ module Jbobaf.Lerfendi (lerfendi) where
  -- excessively.
 
  emphed :: String -> Bool
- emphed = not . null . filter isUpper
+ emphed = any isUpper
 
- mkCmevla, mkCmavo, mkBrivla :: String -> Jvacux [Either String Valsi]
- mkCmevla [] = return []
- mkCmevla str = toCmevla str >>= return . (: []) . maybe (Left str) Right
- mkCmavo  [] = return []
- mkCmavo  str = toCmavo  str >>= return . (: []) . maybe (Left str) Right
- mkBrivla [] = return []
- mkBrivla str = toBrivla str >>= return . (: []) . maybe (Left str) Right
+ mkCmevla, mkCmavo, mkBrivla :: String -> Jvacux' [Either String Valsi]
+ mkCmevla  [] = return []
+ mkCmevla str = kavbu' (toCmevla str >>= \v -> return [Right v]) [Left str]
+ mkCmavo   [] = return []
+ mkCmavo  str = kavbu' (toCmavo str  >>= \v -> return [Right v]) [Left str]
+ mkBrivla  [] = return []
+ mkBrivla str = kavbu' (toBrivla str >>= \v -> return [Right v]) [Left str]

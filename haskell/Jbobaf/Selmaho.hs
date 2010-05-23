@@ -2,7 +2,7 @@ module Jbobaf.Selmaho (Selma'o(..), getSelma'o, rolma'o) where
  import Ix
  import qualified Data.Map as Map
  import Jbobaf.Valsi
- 
+
  data Selma'o = BRIVLA | CMEVLA
   | A | BAI | BAhE | BE | BEI | BEhO | BIhE | BIhI | BO | BOI | BU | BY | CAI
   | CAhA | CEI | CEhE | CO | COI | CU | CUhE | DAhO | DOI | DOhU | FA | FAhA

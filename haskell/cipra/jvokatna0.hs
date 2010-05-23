@@ -1,5 +1,5 @@
 import System (getArgs, exitFailure)
-import Jbobaf.Jvacux
+import Jbobaf.Jitro
 import Jbobaf.Vlatai
 
 main = do
@@ -7,5 +7,6 @@ main = do
  luj <- if null argv
 	then putStrLn "lo lujvo lonu katna cu jai sarcu" >> exitFailure
 	else return (head argv)
- let rafs = jvacuxna (jvokatna luj) defaults
- if null rafs then putStrLn "na drani lujvo" else mapM_ putStrLn rafs
+ case runReaderT (jvokatna luj) defaults of
+  Left x -> putStrLn $ "na drani lujvo: " ++ show x
+  Right rafs -> mapM_ putStrLn rafs

@@ -1,6 +1,6 @@
 {-# OPTIONS_HADDOCK hide #-}
 
-module Jbobaf.Internals where
+module Jbobaf.Canti where
  import Char (toLower)
  import List (find, findIndices)
  import Monad (liftM2)
@@ -61,9 +61,9 @@ module Jbobaf.Internals where
 
  -- |Tests whether a syllable contains a non-Y vowel and is thus vocalic
  voc :: String -> Bool
- voc = not . null . filter isV
+ voc = any isV
 
+ -- |Checks for the presence of a non-initial valid consonant pair
  has_C_C :: String -> Bool
- -- checks for the presence of a non-initial valid consonant pair
- has_C_C str = not $ null $ filter (\i -> let cc = take 2 $ drop i str
-  in isC_C cc && not (isCC cc)) (findIndices isC str)
+ has_C_C str = any (\i -> let cc = take 2 $ drop i str
+  in isC_C cc && not (isCC cc)) $ findIndices isC str
