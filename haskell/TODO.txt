@@ -18,6 +18,7 @@
   the Flezvalei
 - PROBLEM: When Allow_Y_in_fu'ivla is in effect, how should something like
   "acy'ygre", "ácy'ygrelo", or "cacy'ygre" be handled?
+- PROBLEM: How should something like "CUGRUsi" be split up?
 
 NEW FEATURES
 - Add functions to Valsi.hs for computing the component {rafsi}, source

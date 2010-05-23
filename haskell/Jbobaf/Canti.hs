@@ -6,7 +6,7 @@ module Jbobaf.Canti where
  import Monad (liftM2)
  import {-# SOURCE #-} Jbobaf.Vlatai (isC, isVy, isV, isCC, isC_C)
 
- infixr 5 ~:, ~~, ~:~
+ infixr 5 ~:, ~~
  infixr 0 ?:, :?
 
  (~:) :: Monad m => a -> m [a] -> m [a]
@@ -14,9 +14,6 @@ module Jbobaf.Canti where
 
  (~~) :: Monad m => m [a] -> m [a] -> m [a]
  (~~) = liftM2 (++)
-
- (~:~) :: Monad m => m a -> m [a] -> m [a]
- (~:~) = liftM2 (:)
 
  data TernaryBranch a = a :? a deriving (Eq, Ord, Read, Show, Bounded)
 
