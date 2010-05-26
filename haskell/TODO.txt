@@ -14,8 +14,6 @@
  - Uppercasing everything in the nucleus of an abnormally-stressed {cmevla}
  - Somehow handling {cmevla} with more than one emphasized syllable
 - lerfendi needs to split "yyyy" into four separate "y"s
-- Consider making Jvacux' use a State monad (in place of the Identity) to track
-  the Flezvalei
 - PROBLEM: When Allow_Y_in_fu'ivla is in effect, how should something like
   "acy'ygre", "ácy'ygrelo", or "cacy'ygre" be handled?
 - PROBLEM: How should something like "CUGRUsi" be split up?

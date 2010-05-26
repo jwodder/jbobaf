@@ -1,8 +1,6 @@
 module Jbobaf.Valsi (
   -- * Types
-  Vlalei(..), Valsi,
-  -- * Fields
-  valsi, klesi, selma'o, rafsi, ralvla, djuvla, selvla, notci,
+  Vlalei(..), Valsi(..), kunti_valsi,
   -- * Construction from strings
   toValsi, toCmavo, toCmevla, toBrivla, toGismu, toLujvo, toFu'ivla
  ) where
@@ -16,42 +14,17 @@ module Jbobaf.Valsi (
  data Vlalei = Gismu | Lujvo | Fu'ivla | Cmavo {- | Lujma'o -} | Cmevla
   deriving (Eq, Ord, Read, Show, Bounded, Enum, Ix)
 
- -- In the interest of keeping the Valsi type abstract and thus preventing
- -- users from messing with its values, the field names (which shall not be
- -- exported) shall all begin with "ck_" (for "{ckaji}"), and prefix-less
- -- accessors shall be created for each field.
-
- data Valsi = Vla1 {ck_valsi :: String, ck_klesi :: Vlalei}
-  -- ck_valsi stores the normalized form of the word (converted to all
-  -- lowercase for non-{cmevla}).
-  | Vla2 {
-   ck_valsi :: String,
-   ck_klesi :: Vlalei,
-   ck_selma'o, ck_ralvla, ck_djuvla, ck_selvla, ck_notci :: Maybe String,
-   ck_rafsi :: [String]
+ data Valsi = Valsi {
+   valsi :: String,
+   -- ck_valsi stores the normalized form of the word (converted to all
+   -- lowercase for non-{cmevla}).
+   klesi :: Vlalei,
+   selma'o, ralvla, djuvla, selvla, notci :: Maybe String,
+   rafsi :: [String]
   } deriving (Eq, Ord, Read, Show)
 
- valsi :: Valsi -> String
- valsi = ck_valsi
-
- klesi :: Valsi -> Vlalei
- klesi = ck_klesi
-
- selma'o, ralvla, djuvla, selvla, notci :: Valsi -> Maybe String
- selma'o (Vla1 {}) = Nothing
- selma'o (Vla2 {ck_selma'o = s}) = s
- ralvla (Vla1 {}) = Nothing
- ralvla (Vla2 {ck_ralvla = r}) = r
- djuvla (Vla1 {}) = Nothing
- djuvla (Vla2 {ck_djuvla = d}) = d
- selvla (Vla1 {}) = Nothing
- selvla (Vla2 {ck_selvla = s}) = s
- notci (Vla1 {}) = Nothing
- notci (Vla2 {ck_notci = n}) = n
-
- rafsi :: Valsi -> [String]
- rafsi (Vla1 {}) = []
- rafsi (Vla2 {ck_rafsi = r}) = r
+ kunti_valsi :: Valsi
+ kunti_valsi = Valsi "" Gismu Nothing Nothing Nothing Nothing Nothing []
 
  toValsi, toCmavo, toCmevla, toBrivla, toGismu, toLujvo, toFu'ivla
   :: String -> Jvacux Valsi
@@ -76,7 +49,7 @@ module Jbobaf.Valsi (
   kle <- (gismu_xusra' f >> return Gismu)
    `mplus` (lujvo_xusra' f >> return Lujvo)
    `mplus` (fu'ivla_xusra' f >> return Fu'ivla)
-   `mplus` throwError (Selsrera ["toBrivla", str] SRE_invalid_word_form)
+   --`mplus` throwError (Selsrera ["toBrivla", str] SRE_invalid_word_form)
   return $ miniMake (map toLower f) kle
 
  toGismu str = do
@@ -94,4 +67,4 @@ module Jbobaf.Valsi (
   fu'ivla_xusra' f
   return $ miniMake (map toLower f) Fu'ivla
 
- miniMake str kle = Vla1 {ck_valsi = str, ck_klesi = kle}  -- not exported
+ miniMake str kle = kunti_valsi {valsi = str, klesi = kle}  -- not exported

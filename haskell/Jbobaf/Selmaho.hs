@@ -19,14 +19,12 @@ module Jbobaf.Selmaho (Selma'o(..), getSelma'o, rolma'o) where
 
  getSelma'o :: Valsi -> Selma'o
  getSelma'o vla = case klesi vla of
-  Gismu -> BRIVLA
-  Lujvo -> BRIVLA
+  Gismu   -> BRIVLA
+  Lujvo   -> BRIVLA
   Fu'ivla -> BRIVLA
-  Cmavo -> case Map.lookup (valsi vla) rolma'o of
-   Just s -> s
-   Nothing -> UNKNOWN
---Lujma'o -> undefined
-  Cmevla -> CMEVLA
+  Cmavo   -> maybe UNKNOWN id $ Map.lookup (valsi vla) rolma'o
+--Lujma'o -> UNKNOWN
+  Cmevla  -> CMEVLA
 
  rolma'o :: Map.Map String Selma'o
  rolma'o = Map.fromAscList [

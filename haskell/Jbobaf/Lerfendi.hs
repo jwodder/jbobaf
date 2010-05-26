@@ -29,6 +29,11 @@ module Jbobaf.Lerfendi (lerfendi) where
  --
  -- Miscellaneous features and things to watch out for:
  --
+ -- * Despite the tendency of Error monads to force strict evaluation,
+ --   @lerfendi@ uses a couple of graceless hacks to achieve non-strict
+ --   evaluation internally, so you can process its return values while still
+ --   feeding it input.
+ --
  -- * If the text after a FAhO is nonempty after stripping leading whitespace &
  --   periods, it is returned as a @Left String@.
  --

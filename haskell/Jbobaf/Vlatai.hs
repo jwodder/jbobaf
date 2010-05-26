@@ -36,7 +36,7 @@ module Jbobaf.Vlatai (
  isVV _ = False
 
  isVVV :: String -> Bool
- isVVV [v1, v2, v3] = v1 `elem` "iuIU" && isVV [v2, v3]
+ isVVV [v1, v2, v3] = v1 `elem` "iuIU" && v2 `notElem` "iuIU" && isVV [v2, v3]
  isVVV _ = False
 
  isCC, isC_C :: String -> Bool

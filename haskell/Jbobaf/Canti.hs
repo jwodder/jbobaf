@@ -17,7 +17,7 @@ module Jbobaf.Canti where
 
  data TernaryBranch a = a :? a deriving (Eq, Ord, Read, Show, Bounded)
 
- instance Functor TernaryBranch where fmap f (x :? y) = f x :? f y
+ -- instance Functor TernaryBranch where fmap f (x :? y) = f x :? f y
 
  (?:) :: Bool -> TernaryBranch a -> a
  True ?: (y :? _) = y
@@ -47,18 +47,6 @@ module Jbobaf.Canti where
 	 then Just (take pos str, "doi", drop (pos+3) str)
 	 else fla (pos+4) False xs
 	fla pos _ (c:xs) = fla (pos+1) (isC c) xs
-
-{-      fla _ _ [] = Nothing
-	fla pos False ('l':'a':'\'':'i':c:xs)
-	 | notElem c "',aeiouy" = Just (take pos str, "la'i", drop (pos+4) str)
-	fla pos False ('l':'a':'i':c:xs)
-	 | notElem c "',aeiouy" = Just (take pos str, "lai", drop (pos+3) str)
-	fla pos False ('l':'a':c:xs)
-	 | notElem c "',aeiouy" = Just (take pos str, "la", drop (pos+2) str)
-	fla pos False ('d':'o':'i':c:xs)
-	 | notElem c "',aeiouy" = Just (take pos str, "doi", drop (pos+3) str)
-	fla pos _ (c:xs) = fla (pos+1) (isC c) xs
--}
 
  -- |Splits a word into \"syllables\" of the form \/^(C+|[',])?V+$\/.  Note
  -- that this is for internal use only and is not suitable as an actual
