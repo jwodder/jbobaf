@@ -5,7 +5,7 @@ HC_OPTS = -O
 OBJS = Jbobaf/Canti.hi Jbobaf/Jitro.hi Jbobaf/Lerfendi.hi Jbobaf/Selmaho.hi \
  Jbobaf/Valsi.hi Jbobaf/Vlatai.hi
 
-all : $(OBJS)
+all : $(OBJS) Jbobaf.hi
 
 .o.hi : ;
 .hs.o :
@@ -23,9 +23,12 @@ Jbobaf/Valsi.o : Jbobaf/Vlatai.hi
 Jbobaf/Lerfendi.o : Jbobaf/Valsi.hi Jbobaf/Vlatai.hi
 Jbobaf/Selmaho.o : Jbobaf/Valsi.hi
 
-doc : Jbobaf/*.hs
-	haddock -ho doc -t Jbobaf Jbobaf/*.hs
+Jbobaf.o : $(OBJS)
+
+doc : Jbobaf.hs Jbobaf/*.hs
+	haddock -ho doc -t Jbobaf Jbobaf.hs Jbobaf/*.hs
 
 clean :
 	( cd Jbobaf; rm -f *.o *.hi *.o-boot *.hi-boot )
+	rm -f *.o *.hi
 	rm -rf doc

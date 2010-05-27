@@ -1,8 +1,18 @@
 -- |Run-time configuration options and a combined Reader-Error monad for
 -- keeping track of them
 
-module Jbobaf.Jitro (module Jbobaf.Jitro, runReaderT, throwError, catchError)
- where
+module Jbobaf.Jitro (
+  -- * Jvacux type
+  JvacuxT, Jvacux, isOpt, isNopt, xusnada, nupre, fliba, fliba', kavbu,
+  -- ** Re-exported from Control.Monad.* 
+  runReaderT, throwError, catchError,
+  -- * Options
+  Tercuxna(..), defaults,
+  -- * Errors
+  Srelei(..), Selsrera(..),
+  -- ** Error messages
+  sreski, sreskicu
+ ) where
  import Array
  import List (intersperse)
  import Data.Set (Set, member, notMember, fromList)

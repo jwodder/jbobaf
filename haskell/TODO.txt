@@ -11,7 +11,8 @@
  - Deal with {lujma'o} somehow
 - Make toCmevla handle emphasis by:
  - Converting all letters to lowercase when the stress is normal
- - Uppercasing everything in the nucleus of an abnormally-stressed {cmevla}
+ - Uppercasing everything in the nucleus of an abnormally-stressed {cmevla} (or
+   should that be fadgau's job?)
  - Somehow handling {cmevla} with more than one emphasized syllable
 - lerfendi needs to split "yyyy" into four separate "y"s
 - PROBLEM: When Allow_Y_in_fu'ivla is in effect, how should something like
