@@ -118,6 +118,7 @@ module Jbobaf.Vlatai (
   noemph <- isOpt Ignore_brivla_emphasis
   canY   <- isOpt Allow_Y_in_fu'ivla
   ndj    <- isOpt Allow_ndj_in_fu'ivla
+  commas <- isNopt No_commas_in_fu'ivla
   let vocSyls = filter voc $ syllabicate str
       emphQty = length $ filter (any isUpper) vocSyls
       sregau = throwError . Selsrera ["fu'ivla_xusra", str]
@@ -126,6 +127,7 @@ module Jbobaf.Vlatai (
   when (isC $ head str)
    $ xulujvo' ('t':'o':str) >>= flip when (sregau SRE_slinku'i_failure)
   when (elem ' ' str) (sregau SRE_no_spaces_allowed)
+  unless (commas || notElem ',' str) (sregau SRE_no_commas_allowed)
   unless (isV $ last str) (sregau SRE_must_end_with_vowel)
   checkCC "fu'ivla_xusra" str
   unless ndj $ checkNDJ "fu'ivla_xusra" str
@@ -157,9 +159,11 @@ module Jbobaf.Vlatai (
  cmevla_xusra' str = do
   dotty <- isOpt Use_dotside
   ndj   <- isOpt Allow_ndj_in_cmevla
+  slaka <- isNopt No_commas_in_cmevla
   let sregau = throwError . Selsrera ["cmevla_xusra", str]
   unless (isC $ last str) (sregau SRE_must_end_with_consonant)
   when (elem ' ' str) (sregau SRE_no_spaces_allowed)
+  unless (slaka || notElem ',' str) (sregau SRE_no_commas_allowed)
   checkCC "cmevla_xusra" str
   unless ndj $ checkNDJ "cmevla_xusra" str
   unless dotty (case findLa str of
@@ -454,16 +458,13 @@ module Jbobaf.Vlatai (
  checkNDJ :: String -> String -> Jvacux ()
  checkNDJ f str = ndj str
   where ndj s = case dropWhile (/= 'n') s of
-		 'n':'d':'j':_ -> throwError $ Selsrera [f, str, "ndj"]
-				   SRE_bad_consonant_triple
-		 'n':'d':'z':_ -> throwError $ Selsrera [f, str, "ndz"]
-				   SRE_bad_consonant_triple
-		 'n':'t':'c':_ -> throwError $ Selsrera [f, str, "ndz"]
-				   SRE_bad_consonant_triple
-		 'n':'t':'s':_ -> throwError $ Selsrera [f, str, "ndz"]
-				   SRE_bad_consonant_triple
+		 'n':'d':'j':_ -> flib "dj"
+		 'n':'d':'z':_ -> flib "dz"
+		 'n':'t':'c':_ -> flib "tc"
+		 'n':'t':'s':_ -> flib "ts"
 		 'n':xs -> ndj xs
 		 [] -> return ()
+	flib dj = throwError $ Selsrera [f,str,'n':dj] SRE_bad_consonant_triple
 
  checkCC :: String -> String -> Jvacux ()
  checkCC f str = case [cc | i <- findIndices isC str,

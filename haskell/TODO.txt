@@ -30,7 +30,6 @@ NEW FEATURES
  - allowing commas between consonants
  - allowing commas between a consonant and a vowel
  - prohibiting commas between vowels
- - prohibiting commas in {fu'ivla} and {cmevla}
  - restricting consonant clusters in {fu'ivla} and {cmevla} (separate options)
    to have all consonant pairs after the first be initial
  - prohibiting rising diphthongs after a consonant (with an option for only
@@ -44,10 +43,15 @@ NEW FEATURES
  - recognizing {fu'ivla rafsi}
  - prohibiting a 'y' within the first consonant cluster of a {fu'ivla}
  - allowing superfluous hyphens in {lujvo}
- - allowing a word break at a comma that is after an ultima or non-dotside
-   "la", before a {ma'osmi} at the head of a {brivla}, or between two {ma'osmi}
-   in a {cmavo} string when No_commas_in_cmavo is in effect (Should that last
-   one be on by default?)
+ - allowing a word break at a comma that occurs (These should be separate
+   options):
+  - after an ultima
+  - after a non-dotside "la" in a {cmevla} chunk
+  - before a {ma'osmi} at the head of a {brivla}
+  - between two {ma'osmi} in a {cmavo} string when No_commas_in_cmavo is in
+    effect (Should this one be on by default?)
+  - inside a {cmevla} when No_commas_in_cmevla is in effect
+  - inside a {fu'ivla} when No_commas_in_fu'ivla is in effect
  - Ignore_bad_ZOI_delims - causes a ZOI followed by a non-word string to
    (effectively) only quote that string
  - treating an opening ZOI delimiter not followed by a space or period as

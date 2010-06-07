@@ -53,6 +53,8 @@ module Jbobaf.Jitro (
     -- ^Triphthongs (consisting of an \'i\' or a \'u\' followed by one of the
     -- four falling diphthongs) will be allowed in Lojban words.
   | No_commas_in_cmavo  -- ^/Cmavo/ will not be allowed to contain commas.
+  | No_commas_in_cmevla  -- ^/Cmevla/ will not be allowed to contain commas.
+  | No_commas_in_fu'ivla  -- ^/Fu'ivla/ will not be allowed to contain commas.
   | Ignore_brivla_emphasis
     -- ^The presence or absence of capitalized/accented syllables will be
     -- ignored when determining whether a string is a valid /brivla/ or not.
