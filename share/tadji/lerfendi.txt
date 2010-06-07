@@ -52,13 +52,14 @@ A generalized form of the Lojban word-splitting algorithm, as I understand it:
      a single 'y' (hereafter referred to as a "consonant cluster"):
    a. If the portion of γ starting at the beginning of the last vocalic
       syllable before the first consonant cluster, or at the first consonant
-      cluster itself if there are no vocalic syllables before it, contains an
+      cluster itself if there is no vocalic syllable before it, contains a
       vocalic syllable with a capitalized or accented nucleus and followed (not
       necessarily immediately) by one or more vocalic syllables (the first of
       which is hereafter called the "ultima"), then let α be the substring of γ
       up to and including the end of the ultima, and let ω be the substring of
-      γ after the ultima.  Otherwise, let α equal γ and let ω be the empty
-      string (ε).
+      γ after the ultima.  Otherwise, if there is no such capitalized syllable
+      (possibly due to lack of emphasis information), let α equal γ and let ω
+      be the empty string (ε).
     i. Note that, due to steps 2 and 3, it is impossible at this point for a
        vocalic syllable to be followed by a non-empty string that does not
        contain another vocalic syllable.

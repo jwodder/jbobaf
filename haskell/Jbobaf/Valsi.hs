@@ -11,7 +11,7 @@ module Jbobaf.Valsi (
  import Jbobaf.Jitro
  import Jbobaf.Vlatai
 
- data Vlalei = Gismu | Lujvo | Fu'ivla | Cmavo {- | Lujma'o -} | Cmevla
+ data Vlalei = Gismu | Lujvo | Fu'ivla | Cmavo | {- Lujma'o | -} Cmevla
   deriving (Eq, Ord, Read, Show, Bounded, Enum, Ix)
 
  data Valsi = Valsi {

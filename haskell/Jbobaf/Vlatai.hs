@@ -14,7 +14,7 @@ module Jbobaf.Vlatai (
   -- * Normalization
   fadgau,
   -- * /Lujvo/ manipulation
-  jvokatna, jvokatna', Raftai(..), raftai
+  jvokatna, jvokatna', Raftai(..), raftai, rafyjongau
  ) where
  import Char
  import Ix
@@ -416,6 +416,38 @@ module Jbobaf.Vlatai (
  raftai [c1, v1, c2, c3, v2] | isC c1 && isV v1 && isC_C [c2, c3] && isV v2
   = CVC_CV
  raftai _ = Srerafsi
+
+ rafyjongau :: [String] -> Jvacux String
+ -- assumes that the {rafsi} are pre-normalized
+ -- This function *should* support construction of {lujvo cmevla}.
+ rafyjongau rafs = do
+  when (length rafs < 2)
+   (throwError $ Selsrera ("rafyjongau":rafs) SRE_not_enough_rafsi)
+  let insertYs _ [] = return []
+      insertYs prev (raf:xs) = do
+	let tai = raftai raf
+	when (tai == Srerafsi)
+	 (throwError $ Selsrera ["rafyjongau", raf] SRE_invalid_rafsi)
+	let y1 = if not (null prev) && isC (last prev)
+		  && (not (isC_C [last prev, head raf]) || last prev == 'n'
+		   && take 2 raf `elem` ["dj", "dz", "tc", "ts"])
+		 then ("y" ~:)
+		 else id
+	let (y2, p) = if tai == CCVC || tai == CVC_C && not (null xs)
+		      then (("y" ~:), "y")
+		      else if null prev && tai == CVV
+		       && (length xs > 1 || raftai (head xs) /= CCV)
+		      then (((take 1 (head xs) == "r" ?: "n" :? "r") ~:), "y")
+		      -- Using "take 1" avoids problems with null {rafsi}.
+		      else (id, prev)
+	y1 $ raf ~: y2 (insertYs p xs)
+  rafs2 <- insertYs [] rafs
+  return $ concat $ case span ((== CVC) . raftai) rafs2 of
+   (cvcs@(r1:r2:xs), "y":rest) ->
+    has_C_C (concat cvcs) ?: rafs2 :? (r1:"y":r2:xs ++ "y":rest)
+   (cvcs@(r1:xs), rest@[[_,_,c1,c2,_]]) | isCC [c1, c2] ->
+    has_C_C (concat rafs2) ?: rafs2 :? (r1:"y":xs ++ rest)
+   _ -> rafs2
 
 -- Unexported functions: ------------------------------------------------------
 
