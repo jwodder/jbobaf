@@ -1,0 +1,6 @@
+- Problems with the current version of the word-splitting algorithm:
+ - When Y's are allowed in {fu'ivla}, how should something like "acy'ygre",
+   "ácy'ygrelo", or "cacy'ygre" be split?
+ - How should something like "CUGRUsi" be split?
+- Consider converting the C implementation to C++ so that I have to deal with
+  data structures and memory management less

@@ -14,52 +14,14 @@
    should that be fadgau's job?)
  - Somehow handling {cmevla} with more than one emphasized syllable
 - lerfendi needs to split "yyyy" into four separate "y"s
-- PROBLEM: When Allow_Y_in_fu'ivla is in effect, how should something like
-  "acy'ygre", "ácy'ygrelo", or "cacy'ygre" be handled?
-- PROBLEM: How should something like "CUGRUsi" be split up?
 
-NEW FEATURES
+IDEAS FOR NEW FEATURES
 - Add functions to Valsi.hs for computing the component {rafsi}, source
   {tanru}, and {lujvo} score for {lujvo} & {lujvo cmene}.
 - Add an equivalent to Vlatai.pm's jvozba
 - Make jvokatna able to split {lujvo cmene}
 - Add a function for recognizing type-3 {fu'ivla} and splitting them into
   {rafsi} & non-{rafsi}
-- Add & implement Jvacux options for:
- - LAhOI ("{la'oi}" and "{zo'oi}"?)
- - allowing commas between consonants
- - allowing commas between a consonant and a vowel
- - prohibiting commas between vowels
- - restricting consonant clusters in {fu'ivla} and {cmevla} (separate options)
-   to have all consonant pairs after the first be initial
- - prohibiting rising diphthongs after a consonant (with an option for only
-   prohibiting/allowing them in {cmavo}?)
- - prohibiting rising diphthongs in {fu'ivla}
- - prohibiting {cmevla} that begin with non-initial consonant pairs
- - allowing {rafsi} of the form C[iu]V?
- - allowing {rafsi} containing Y's?
- - allowing {rafsi} containing syllables with empty onsets? (e.g., "ka,e")
- - replacing the 5-letter rule with a "{ma'osmi} rule"
- - recognizing {fu'ivla rafsi}
- - prohibiting a 'y' within the first consonant cluster of a {fu'ivla}
- - allowing superfluous hyphens in {lujvo}
- - allowing a word break at a comma that occurs (These should be separate
-   options):
-  - after an ultima
-  - after a non-dotside "la" in a {cmevla} chunk
-  - before a {ma'osmi} at the head of a {brivla}
-  - between two {ma'osmi} in a {cmavo} string when No_commas_in_cmavo is in
-    effect (Should this one be on by default?)
-  - inside a {cmevla} when No_commas_in_cmevla is in effect
-  - inside a {fu'ivla} when No_commas_in_fu'ivla is in effect
- - Ignore_bad_ZOI_delims - causes a ZOI followed by a non-word string to
-   (effectively) only quote that string
- - treating an opening ZOI delimiter not followed by a space or period as
-   invalid
- - converting uppercase letters to {lerfu} words
- - using the alternative rapprochement orthography (converted by fadgau to the
-   canonical orthography)
- - making ZEI only take effect when preceded by a valid ZEI-{seltau}
 - Write a CGI frontend to lerfendi?
 - Add a function for determining the {vlalei} of a word without having to make
   it into a Valsi object?
@@ -75,3 +37,45 @@ NEW FEATURES
  - in a numeric sequence - ':' and ';' to "pi'e"
  - before a number - '-' to "ni'u"?
  - before a number - '+' to "ma'u"?
+
+JVACUX OPTIONS TO ADD
+- Common and/or documented variants:
+ - LAhOI ("{la'oi}" and "{zo'oi}"?)
+ - converting uppercase letters to {lerfu} words (This will require modifying
+   Lerfendi.hs, as periods can then be inserted into strings during
+   normalization.)
+ - recognizing {fu'ivla rafsi}
+ - using the alternative rapprochement orthography (converted by fadgau to the
+   canonical orthography)
+ - allowing superfluous hyphens in {lujvo}
+ - replacing the 5-letter rule with a "{ma'osmi} rule"
+ - restricting consonant clusters in {fu'ivla} and {cmevla} (separate options)
+   to have all consonant pairs after the first be initial
+- Handling errors:
+ - Ignore_bad_ZOI_delims - causes a ZOI followed by a non-word string to
+   (effectively) only quote that string
+ - treating an opening ZOI delimiter not followed by a space or period as
+   invalid
+ - making ZEI only take effect when preceded by a valid ZEI-{seltau}
+ - allowing a word break at a comma that occurs (These should be separate
+   options):
+  - after an ultima
+  - after a non-dotside "la" in a {cmevla} chunk
+  - before a {ma'osmi} at the head of a {brivla}
+  - between two {ma'osmi} in a {cmavo} string when No_commas_in_cmavo is in
+    effect (Should this be on by default?)
+  - inside a {cmevla} when No_commas_in_cmevla is in effect
+  - inside a {fu'ivla} when No_commas_in_fu'ivla is in effect
+- Commas:
+ - allowing commas between consonants
+ - allowing commas between a consonant and a vowel
+ - prohibiting commas between vowels
+- Unlikely {rafsi} options: (These will necessitate `raftai' using Jvacux.)
+ - allowing {rafsi} of the form C[iu]V?
+ - allowing {rafsi} containing Y's?
+ - allowing {rafsi} containing syllables with empty onsets? (e.g., "ka,e")
+- prohibiting rising diphthongs after a consonant (with an option for only
+  prohibiting/allowing them in {cmavo}?)
+- prohibiting rising diphthongs in {fu'ivla}
+- prohibiting {cmevla} that begin with non-initial consonant pairs
+- prohibiting a 'y' within the first consonant cluster of a {fu'ivla}

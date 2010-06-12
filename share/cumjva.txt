@@ -36,6 +36,7 @@ of Lojban:
    - whether a non-superfluous comma may appear between a consonant & a vowel
    - whether mandatory periods may be formally omitted when adjacent to
      whitespace
+   - whether non-superfluous commas are allowed inside {cmevla} and/or {fu'ivla}
   - whether the dotside is in effect
   - whether a {cmene} may lack both vowels & syllabic consonants
    - If they cannot, and assuming that the dotside is not in effect, is "{la
