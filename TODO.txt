@@ -2,5 +2,5 @@
  - When Y's are allowed in {fu'ivla}, how should something like "acy'ygre",
    "ácy'ygrelo", or "cacy'ygre" be split?
  - How should something like "CUGRUsi" be split?
-- Consider converting the C implementation to C++ so that I have to deal with
-  data structures and memory management less
+- Consider converting the C implementation to C++ so that I don't have to
+  manually deal with data structures, memory management, and exception handling

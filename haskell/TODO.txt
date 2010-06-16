@@ -37,6 +37,8 @@ IDEAS FOR NEW FEATURES
  - in a numeric sequence - ':' and ';' to "pi'e"
  - before a number - '-' to "ni'u"?
  - before a number - '+' to "ma'u"?
+- Add functions for converting a {lujvo} or list of {rafsi} into a list of
+  {rafsi} & hyphens?
 
 JVACUX OPTIONS TO ADD
 - Common and/or documented variants:
