@@ -70,3 +70,5 @@ of Lojban:
   - whether to require all descriptor {sumti} followed by a non-logical
     connective to be explicitly terminated
   - whether to allow LE KU and LA KU
+  - whether to allow constructs of the form "GA [sumti] [sumti] ... GI [sumti]
+    [sumti] ..." without the need for termsets

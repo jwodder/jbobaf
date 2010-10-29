@@ -81,3 +81,4 @@ JVACUX OPTIONS TO ADD
 - prohibiting rising diphthongs in {fu'ivla}
 - prohibiting {cmevla} that begin with non-initial consonant pairs
 - prohibiting a 'y' within the first consonant cluster of a {fu'ivla}
+- ignoring the effects of all magic words while word-splitting

@@ -19,15 +19,16 @@ How to split a {lujvo} into its component {rafsi} and check it for validity:
   e. Otherwise, the {lujvo} is invalid.
  2. While there remains a non-empty substring of the {lujvo} that has not yet
     been split into {rafsi}:
-  a. If the remaining substring is of the form CVV[rn]?, then if neither or
-     both of the below conditions hold, the CVV portion forms a {rafsi}.  If
-     exactly one of the below conditions holds, the {lujvo} is invalid.
+  a. If the remaining substring is of the form CVV, optionally terminated by an
+     'r' or 'n', then:
    i.  If either more than one {rafsi} has been identified or else exactly one
        {rafsi}, which is not of the form CCV, has been identified, then the
        remaining substring must end with a consonant that is an 'r', unless the
        first letter after the substring is an 'r', in which case the substring
        must end with an 'n'.
    ii. Otherwise, the substring may not end with a consonant.
+     If the above conditions are met, the CVV portion forms a {rafsi}.  If not,
+     the {lujvo} is invalid.
   b. If the remaining substring ends with a string of the form CVCy (hereafter
      referred to as φ), then if all of the following conditions hold:
    i.   φ is immediately preceded by a consonant which forms an initial

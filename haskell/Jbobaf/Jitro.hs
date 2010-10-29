@@ -99,8 +99,8 @@ module Jbobaf.Jitro (
     -- ^\"/zei/\" will lose its magic word status inside \"/lo'u/ ... /le'u/\"
     -- quotes.
   | LOhU_disables_ZOI
-    -- ^\"/zoi/\" will lose its magic word status inside \"/lo'u/ ... /le'u/\"
-    -- quotes.
+    -- ^\"/zoi/\" and \"/la'o/\" will lose their magic word statuses inside
+    -- \"/lo'u/ ... /le'u/\" quotes.
   | LOhU_disables_FAhO
     -- ^\"/fa'o/\" will lose its magic word status inside \"/lo'u/ ... /le'u/\"
     -- quotes.
