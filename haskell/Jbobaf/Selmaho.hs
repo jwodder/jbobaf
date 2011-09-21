@@ -1,5 +1,5 @@
 module Jbobaf.Selmaho (Selma'o(..), getSelma'o, rolma'o) where
- import Ix
+ import Data.Ix
  import qualified Data.Map as Map
  import Jbobaf.Valsi
 

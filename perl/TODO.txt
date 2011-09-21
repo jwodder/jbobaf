@@ -1,9 +1,9 @@
 - Finish lerfendi.pl (including the to-do items at the end of the file)
 - Finish Vlasisku.pm
  - Change all of the functions into methods of Lojban::Vlatid (renamed to
-   Lojban::Vlaste).  Calling these functions as class methods should cause them
-   to operate on a global Vlatid/Vlaste object (which is publicly accessible)
-   instead.
+   Lojban::Vlaste).
+  - Should calling these functions as class methods cause them to operate on a
+    global (and publicly accessible) Vlatid/Vlaste object instead?
  - Document the fact that failure to open the word list causes the functions to
    croak.
 - Lojban::Vlatai:

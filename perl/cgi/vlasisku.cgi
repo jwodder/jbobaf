@@ -3,7 +3,7 @@
 # <minimiscience+vlasisku@gmail.com>.  Feel free to do whatever the {bais.} you
 # want with it.
 use strict;
-use CGI qw< :standard start_table start_Tr start_td start_div >;
+use CGI qw< :standard start_table start_div >;
 use CGI::Carp 'fatalsToBrowser';
 use Lojban::Valsi;
 use Lojban::Vlasisku qw< :DEFAULT :stodi >;
@@ -11,8 +11,7 @@ use Lojban::Vlasisku qw< :DEFAULT :stodi >;
 print header, start_html(-title => 'Vlasisku', -style => {-src => 'jbobaf.css'},
  -script => {-src => 'sisydju.js', -language => 'JavaScript'},
  -onLoad => 'initFormAddition()');
-print start_table({-align => 'center', -border => 0, -class => 'main'});
-print start_Tr, start_td, h2('Vlasisku');
+print start_div({-class => 'main'}), h2('Vlasisku');
 
 my(@fields, @relations, @queries, @bools);
 print start_form;
@@ -138,7 +137,7 @@ print p({-class => 'link'}, a({-href => 'http://github.com/jwodder/jbobaf'},
  'Jbobaf'), '|', a({-href => 'jvozba.cgi'}, 'Jvozba'), '|',
  a({-href => 'ralju.html'}, 'ralju'));
 
-print end_table, end_Tr, end_td, end_html;
+print end_div, end_html;
 
 sub printValsi {
  my $vla = shift;

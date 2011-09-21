@@ -1,4 +1,4 @@
-import System (getArgs)
+import System.Environment (getArgs)
 import Data.Set (fromList)
 import Jbobaf.Lerfendi
 import Jbobaf.Jitro

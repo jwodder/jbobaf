@@ -13,8 +13,8 @@ module Jbobaf.Jitro (
   -- ** Error messages
   sreski, sreskicu
  ) where
- import Array
- import List (intersperse)
+ import Data.Array
+ import Data.List (intersperse)
  import Data.Set (Set, member, notMember, fromList)
  import Control.Monad.Error
  import Control.Monad.Reader

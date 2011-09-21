@@ -3,15 +3,14 @@
 # <minimiscience+jvozba@gmail.com>.  Feel free to do whatever the {bais.} you
 # want with it.
 use strict;
-use CGI qw< :standard start_table start_Tr start_td -nosticky >;
+use CGI qw< :standard start_table start_div -nosticky >;
 use CGI::Carp 'fatalsToBrowser';
 use Lojban::Vlatai qw< :fancu :lerpoi >;
 use Lojban::Vlasisku qw< :DEFAULT :stodi >;
 use Lojban::Valsi;
 
 print header, start_html(-title => 'Jvozba', -style => {-src => 'jbobaf.css'});
-print start_table({-align => 'center', -border => 0, -class => 'main'});
-print start_Tr, start_td, h2('Jvozba');
+print start_div({-class => 'main'}), h2('Jvozba');
 
 print h4('Create a', tt('lujvo'));
 print start_form(-method => 'GET');
@@ -29,7 +28,7 @@ IFBLOCK: { if (url_param('tanru')) {
   lc url_param('tanru');
  if (@valsi < 2) {
   print p({-class => 'link'}, b('Error:'), 'You need at least two'
-   . ' <tt>valsi</tt> to make a <tt>lujvo</tt>');
+   . ' <tt>valsi</tt> to make a <tt>lujvo</tt>.');
   last IFBLOCK;
  }
  my @rafsi;
@@ -86,7 +85,7 @@ print p({-class => 'link'}, b(tt('lujvo:')), textfield('lujvo', '', 32, 128),
 print endform;
 
 if (url_param('lujvo')) {
- for (terjvo(lc url_param('lujvo'), 1)) {
+ for (terjvo(lc trim(url_param('lujvo')), 1)) {
   if (ref) { printValsi($_) }
   else {
    print p({-class => 'link'}, b('Error:'), 'No match found for "' .
@@ -99,7 +98,7 @@ print p({-class => 'link'}, a({-href => 'http://github.com/jwodder/jbobaf'},
  'Jbobaf'), '|', a({-href => 'vlasisku.cgi'}, 'Vlasisku'), '|',
  a({-href => 'ralju.html'}, 'ralju'));
 
-print end_table, end_Tr, end_td, end_html;
+print end_div, end_html;
 
 sub printValsi {
  my $vla = shift;
@@ -112,6 +111,8 @@ sub printValsi {
  }
  print end_table, br;
 }
+
+sub trim {my $str = shift; $str =~ s/^\s+|\s+$//g; return $str; }
 
 __END__
 

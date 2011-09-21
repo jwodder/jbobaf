@@ -1,6 +1,6 @@
 module Jbobaf.Lerfendi (lerfendi) where
- import Char
- import List
+ import Data.Char
+ import Data.List
  import Control.Monad.Identity
  import Control.Monad.Reader
  import Data.Set (Set)

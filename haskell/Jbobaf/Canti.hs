@@ -1,9 +1,9 @@
 {-# OPTIONS_HADDOCK hide #-}
 
 module Jbobaf.Canti where
- import Char (toLower)
- import List (find, findIndices)
- import Monad (liftM2)
+ import Control.Monad (liftM2)
+ import Data.Char (toLower)
+ import Data.List (find, findIndices)
  import {-# SOURCE #-} Jbobaf.Vlatai (isC, isVy, isV, isCC, isC_C)
 
  infixr 5 ~:, ~~
@@ -20,7 +20,7 @@ module Jbobaf.Canti where
  -- instance Functor TernaryBranch where fmap f (x :? y) = f x :? f y
 
  (?:) :: Bool -> TernaryBranch a -> a
- True ?: (y :? _) = y
+ True  ?: (y :? _) = y
  False ?: (_ :? z) = z
 
  findC_C :: String -> Maybe Int
@@ -67,3 +67,4 @@ module Jbobaf.Canti where
  has_C_C :: String -> Bool
  has_C_C str = any (\i -> let cc = take 2 $ drop i str
   in isC_C cc && not (isCC cc)) $ findIndices isC str
+ -- has_C_C = any (\cc -> isC_C cc && not (isCC cc)) . map (take 2) . tails

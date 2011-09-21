@@ -26,6 +26,11 @@ IDEAS FOR NEW FEATURES
 - Add a function for determining the {vlalei} of a word without having to make
   it into a Valsi object?
 - Should the isV* functions support accented vowels?
+- Consider making Valsi just an encapsulation of (String, Vlalei) and create
+  another type (Stecmi? Vlastecmi?) that contains a Valsi and its vlaste fields
+- Add functions for converting a {lujvo} or list of {rafsi} into a list of
+  {rafsi} & hyphens?
+- Make rafyjongau return the {lujvo}'s score along with the {lujvo}?
 - When Translate_digits (or a different option?) is in effect, fadgau should
   perform the following conversions:
  - 'π' to "pai"
@@ -37,8 +42,6 @@ IDEAS FOR NEW FEATURES
  - in a numeric sequence - ':' and ';' to "pi'e"
  - before a number - '-' to "ni'u"?
  - before a number - '+' to "ma'u"?
-- Add functions for converting a {lujvo} or list of {rafsi} into a list of
-  {rafsi} & hyphens?
 
 JVACUX OPTIONS TO ADD
 - Common and/or documented variants:

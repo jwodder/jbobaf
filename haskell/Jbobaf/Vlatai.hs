@@ -16,10 +16,10 @@ module Jbobaf.Vlatai (
   -- * /Lujvo/ manipulation
   jvokatna, jvokatna', Raftai(..), raftai, rafyjongau
  ) where
- import Char
- import Ix
- import List (findIndices)
- import Monad (mplus, when, unless)
+ import Control.Monad (mplus, when, unless)
+ import Data.Char
+ import Data.Ix
+ import Data.List (findIndices)
  import qualified Data.Set as Set
  import Jbobaf.Canti
  import Jbobaf.Jitro

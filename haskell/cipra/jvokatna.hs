@@ -1,4 +1,4 @@
-import System (getArgs)
+import System.Environment (getArgs)
 import Jbobaf.Jitro
 import Jbobaf.Vlatai
 

@@ -4,9 +4,9 @@ body {
  color: #000000;
 }
 
-table {font-size: 15px; border-collapse: collapse; }
-table.main {width: 500pt; margin-left: auto; margin-right: auto; }
+div.main {width: 500pt; margin-left: auto; margin-right: auto; font-size: 15px;}
 
+table {border-collapse: collapse; }
 th {text-align: justify; }
 td {vertical-align: top; }
 td.kaicme {text-align: right; font-weight: bold; font-family: monospace;

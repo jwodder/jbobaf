@@ -4,9 +4,9 @@ module Jbobaf.Valsi (
   -- * Construction from strings
   toValsi, toCmavo, toCmevla, toBrivla, toGismu, toLujvo, toFu'ivla
  ) where
- import Char (toLower)
- import Ix
- import Monad (mplus)
+ import Control.Monad (mplus)
+ import Data.Char (toLower)
+ import Data.Ix
  import Jbobaf.Canti (findC_C)
  import Jbobaf.Jitro
  import Jbobaf.Vlatai

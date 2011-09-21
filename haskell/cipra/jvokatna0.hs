@@ -1,4 +1,5 @@
-import System (getArgs, exitFailure)
+import System.Environment (getArgs)
+import System.Exit (exitFailure)
 import Jbobaf.Jitro
 import Jbobaf.Vlatai
 
