@@ -18,3 +18,4 @@
 - Update all of the documentation for the modified files (see CHANGES.txt)
 - Write documentation for Lojban::Vlatid
 - Rewrite sisku.pl, vlasisku.cgi, and jvozba.cgi to use the new code
+- Change all occurrences of my e-mail address to use my SDF one?

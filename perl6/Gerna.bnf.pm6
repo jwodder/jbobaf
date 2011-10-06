@@ -121,6 +121,7 @@ grammar Lojban {
  regex sumti_tail {
   (<sumti_6> <relative_clauses>?)? <sumti_tail_1>
   | <relative_clauses> <sumti_tail_1>
+  # Why not "<sumti_6>? <relative_clauses>? <sumti_tail_1>"?
  }
 
  regex sumti_tail_1 {

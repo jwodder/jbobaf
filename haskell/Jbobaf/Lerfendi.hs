@@ -1,9 +1,7 @@
 module Jbobaf.Lerfendi (lerfendi) where
  import Data.Char
- import Data.List
  import Control.Monad.Identity
  import Control.Monad.Reader
- import Data.Set (Set)
  import Jbobaf.Canti
  import Jbobaf.Jitro
  import Jbobaf.Valsi
@@ -110,7 +108,7 @@ module Jbobaf.Lerfendi (lerfendi) where
       ca'  <- mapReaderT return $ fadgau ca
       vals <- either (const $ return []) fendi ca'
       case (ca', vals) of
-       (Right x@(_:_), v:alsi)
+       (Right (_:_), v:alsi)
         | esv2str v == d -> Left trail ~: v ~: mafygau (Fadni, lohu) ba' alsi
        _ -> let (a, a') = span xudenpa ba
 		(b, b') = break xudenpa a'
@@ -138,33 +136,27 @@ module Jbobaf.Lerfendi (lerfendi) where
   "zoi"  -> mafygau (After_ZOI Nothing [], False) ba alsi
   "la'o" -> mafygau (After_ZOI Nothing [], False) ba alsi
   "lo'u" -> mafygau (Fadni, True) ba alsi
-  "fa'o" -> do
-   ignore <- isOpt Ignore_FAhO
-   if ignore then mafygau (Fadni, False) ba alsi
-      else let trail = concatMap esv2str alsi ++ dropWhile xudenpa ba
-	   in return (null trail ?: [] :? [Left trail])
+  "fa'o" -> do ignore <- isOpt Ignore_FAhO
+	       if ignore then mafygau (Fadni, False) ba alsi
+		  else let trail = concatMap esv2str alsi++dropWhile xudenpa ba
+		       in return (null trail ?: [] :? [Left trail])
   _ -> mafygau (Fadni, False) ba alsi
 
  mafygau c@(Fadni, True) ba (Right v : alsi) = Right v ~: case valsi v of
-  "zo" -> do
-   disabled <- isOpt LOhU_disables_ZO
-   mafygau (disabled ?: c :? (After_ZO_ZEI, True)) ba alsi
-  "zei" -> do
-   disabled <- isOpt LOhU_disables_ZEI
-   mafygau (disabled ?: c :? (After_ZO_ZEI, True)) ba alsi
-  "zoi" -> do
-   disabled <- isOpt LOhU_disables_ZOI
-   mafygau (disabled ?: c :? (After_ZOI Nothing [], True)) ba alsi
-  "la'o" -> do
-   disabled <- isOpt LOhU_disables_ZOI
-   mafygau (disabled ?: c :? (After_ZOI Nothing [], True)) ba alsi
+  "zo"   -> do disabled <- isOpt LOhU_disables_ZO
+	       mafygau (disabled ?: c :? (After_ZO_ZEI, True)) ba alsi
+  "zei"  -> do disabled <- isOpt LOhU_disables_ZEI
+	       mafygau (disabled ?: c :? (After_ZO_ZEI, True)) ba alsi
+  "zoi"  -> do disabled <- isOpt LOhU_disables_ZOI
+	       mafygau (disabled ?: c :? (After_ZOI Nothing [], True)) ba alsi
+  "la'o" -> do disabled <- isOpt LOhU_disables_ZOI
+	       mafygau (disabled ?: c :? (After_ZOI Nothing [], True)) ba alsi
   "le'u" -> mafygau (Fadni, False) ba alsi
-  "fa'o" -> do
-   disabled <- isOpt LOhU_disables_FAhO
-   ignored <- isOpt Ignore_FAhO
-   if disabled || ignored then mafygau c ba alsi
-      else let trail = concatMap esv2str alsi ++ ba
-	   in return (null trail ?: [] :? [Left trail])
+  "fa'o" -> do disabled <- isOpt LOhU_disables_FAhO
+	       ignored <- isOpt Ignore_FAhO
+	       if disabled || ignored then mafygau c ba alsi
+		  else let trail = concatMap esv2str alsi ++ ba
+		       in return (null trail ?: [] :? [Left trail])
   _ -> mafygau c ba alsi
 
 ----------------------------------------
@@ -216,8 +208,8 @@ module Jbobaf.Lerfendi (lerfendi) where
  finalMa'osmi :: String -> Maybe (String, String)
  finalMa'osmi str = case break isC (reverse str) of
   ([], _)     -> Nothing
-  (xs, [])    -> Just ([], str)
-  (xs, [a])   -> Just ([], str)
+  (_, [])     -> Just ([], str)
+  (_, [_])    -> Just ([], str)
   (xs, a:b:ys) | not (isC b) -> Just (reverse (b:ys), reverse (xs ++ [a]))
 	       | otherwise   -> Nothing
 

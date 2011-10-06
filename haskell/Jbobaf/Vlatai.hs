@@ -106,7 +106,7 @@ module Jbobaf.Vlatai (
   noemph <- isOpt Ignore_brivla_emphasis
   let sylls = syllabicate str
       emphQty = length $ filter (any isUpper) sylls
-  jvokatna' str
+  _ <- jvokatna' str
   unless (noemph || emphQty == 0 || emphQty == 1 && any isUpper (last $ init
    $ filter voc sylls)) (throwError $ Selsrera ["lujvo_xusra", str]
    SRE_invalid_emphasis)
@@ -278,9 +278,9 @@ module Jbobaf.Vlatai (
       porfad (c:',':xs) | not (isVy c) = porfad (c:xs)
       porfad (',':c:xs) | not (isVy c) = porfad (c:xs)
       porfad ('\'':'\'':xs) = porfad ('\'':xs)
-      porfad (c:'\'':xs) | not (isVy c) =
+      porfad (c:'\'':_) | not (isVy c) =
        throwError $ Selsrera ["fadgau", str, [c, '\'']] SRE_misplaced_apostrophe
-      porfad ('\'':c:xs) | not (isVy c) =
+      porfad ('\'':c:_) | not (isVy c) =
        throwError $ Selsrera ["fadgau", str, ['\'', c]] SRE_misplaced_apostrophe
       porfad "'"= throwError $ Selsrera ["fadgau", str] SRE_misplaced_apostrophe
       porfad "," = return []
@@ -449,7 +449,7 @@ module Jbobaf.Vlatai (
   return $ concat $ case span ((== CVC) . raftai) rafs2 of
    (cvcs@(r1:r2:xs), "y":rest) ->
     has_C_C (concat cvcs) ?: rafs2 :? (r1:"y":r2:xs ++ "y":rest)
-   (cvcs@(r1:xs), rest@[[_,_,c1,c2,_]]) | isCC [c1, c2] ->
+   (r1:xs, rest@[[_,_,c1,c2,_]]) | isCC [c1, c2] ->
     has_C_C (concat rafs2) ?: rafs2 :? (r1:"y":xs ++ rest)
    _ -> rafs2
 

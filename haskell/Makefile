@@ -1,5 +1,5 @@
 HC = ghc
-HC_OPTS = -O
+HC_OPTS = -O -Wall
 .SUFFIXES : .o .hs .hi .hc .hi-boot .o-boot .hs-boot
 
 OBJS = Jbobaf/Canti.hi Jbobaf/Jitro.hi Jbobaf/Lerfendi.hi Jbobaf/Selmaho.hi \

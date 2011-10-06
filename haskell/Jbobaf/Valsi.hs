@@ -30,19 +30,17 @@ module Jbobaf.Valsi (
   :: String -> Jvacux Valsi
 
  toValsi [] = throwError $ Selsrera ["toValsi"] SRE_empty_string
- toValsi str = fadgau str >>= \fadni ->
-  if isC (last fadni) then toCmevla fadni
-  else maybe (toCmavo fadni) (const $ toBrivla fadni) (findC_C fadni)
+ toValsi str = fadgau str >>= \fad -> if isC (last fad) then toCmevla fad
+				      else maybe (toCmavo fad)
+					    (const $ toBrivla fad) (findC_C fad)
 
- toCmevla str = do
-  f <- fadgau str
-  cmevla_xusra' f
-  return $ miniMake f Cmevla
+ toCmevla str = do f <- fadgau str
+		   cmevla_xusra' f
+		   return $ miniMake f Cmevla
 
- toCmavo str = do
-  f <- fadgau str
-  cmavo_xusra' f
-  return $ miniMake (map toLower f) Cmavo
+ toCmavo str = do f <- fadgau str
+		  cmavo_xusra' f
+		  return $ miniMake (map toLower f) Cmavo
 
  toBrivla str = do
   f <- fadgau str
@@ -52,19 +50,17 @@ module Jbobaf.Valsi (
    --`mplus` throwError (Selsrera ["toBrivla", str] SRE_invalid_word_form)
   return $ miniMake (map toLower f) kle
 
- toGismu str = do
-  f <- fadgau str
-  gismu_xusra' f
-  return $ miniMake (map toLower f) Gismu
+ toGismu str = do f <- fadgau str
+		  gismu_xusra' f
+		  return $ miniMake (map toLower f) Gismu
 
- toLujvo str = do
-  f <- fadgau str
-  lujvo_xusra' f
-  return $ miniMake (map toLower f) Lujvo
+ toLujvo str = do f <- fadgau str
+		  lujvo_xusra' f
+		  return $ miniMake (map toLower f) Lujvo
 
- toFu'ivla str = do
-  f <- fadgau str
-  fu'ivla_xusra' f
-  return $ miniMake (map toLower f) Fu'ivla
+ toFu'ivla str = do f <- fadgau str
+		    fu'ivla_xusra' f
+		    return $ miniMake (map toLower f) Fu'ivla
 
+ miniMake :: String -> Vlalei -> Valsi
  miniMake str kle = kunti_valsi {valsi = str, klesi = kle}  -- not exported
