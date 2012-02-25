@@ -1,4 +1,6 @@
 package Lojban::Valsi;
+use warnings;
+use strict;
 use overload '<=>' => 'karbi', 'cmp' => 'karbi', '""' => 'valsi';
 use Carp;
 use Lojban::Vlatai (':lerpoi', '@klesi');

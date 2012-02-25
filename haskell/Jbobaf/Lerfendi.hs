@@ -196,9 +196,9 @@ module Jbobaf.Lerfendi (lerfendi) where
 		     (_, [])   -> brivlate alpha omsyls
 		     (a, b:xs) -> findUltima (a ++ [b]) xs
   Nothing -> ma'ocpa str
-   where ma'ocpa []  = return []
-	 ma'ocpa str = mkCmavo (c ++ v) ~~ ma'ocpa w
-	  where (c, v') = span isC str; (v, w) = break isC v'
+  where ma'ocpa []  = return []
+	ma'ocpa str = mkCmavo (c ++ v) ~~ ma'ocpa w
+	 where (c, v') = span isC str; (v, w) = break isC v'
 
 ----------------------------------------
 

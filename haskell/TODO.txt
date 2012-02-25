@@ -1,6 +1,7 @@
 - Make sure that everything complies with (or at least is compatible with)
   everything listed on the "BPFK Section: Formal Morphology" page of the
   tiki!!!
+ - Also cf. valfendi.txt
 - Test everything to make sure it works as it's intended!
  - Test performing word splitting with variant sets of options
  - Improve the test words in jvokatna01.txt and fendi01.txt (especially by

@@ -11,6 +11,7 @@ sisku.pl:
  - Add a way to break {lujvo} apart and give the entries for the parts
  - Add options for searching the notes & hints of {valsi}
  - Add an option for searching by {selma'o}
+ - Consider getting rid of -F and having it be on by default
 
 jvozba.pl:
  - Implement {lujvo} formation with "{zei}" for otherwise invalid words (i.e.,

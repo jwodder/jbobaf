@@ -1,4 +1,6 @@
 package Lojban::Vlatai;
+use warnings;
+use strict;
 require Exporter;
 our @ISA = ('Exporter');
 our $VERSION = v2.0;

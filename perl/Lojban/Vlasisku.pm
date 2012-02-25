@@ -1,4 +1,6 @@
 package Lojban::Vlasisku;
+use warnings;
+use strict;
 
 require Exporter;
 our @ISA = ('Exporter');

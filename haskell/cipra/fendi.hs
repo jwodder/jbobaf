@@ -13,4 +13,5 @@ main = do
  input <- if null argv' then getContents else readFile (head argv')
  let jarco (Left str) = putStrLn $ "Naljbo: " ++ str
      jarco (Right vla) = putStrLn $ show (klesi vla) ++ ": " ++ valsi vla
- mapM_ jarco $ nupre (lerfendi input) opts
+     input' = unlines $ map (takeWhile (/= '#')) $ lines input
+ mapM_ jarco $ nupre (lerfendi input') opts

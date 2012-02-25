@@ -58,3 +58,10 @@ zozeizozoigy.test.gy
 
 ba'e ba'er ba'ercatra
 ba'eba'erba'ercatra
+
+# From an e-mail by Pierre Abbat:
+lonji      # gismu
+paklonji   # lujvo
+klonji     # slinku'i
+sklonji    # valid
+masklonji  # invalid

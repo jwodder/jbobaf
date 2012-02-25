@@ -1,4 +1,6 @@
 package Lojban::Vlatid;
+use warnings;
+use strict;
 
 use overload '<>' => 'cpacu', '+=' => sub { $_[0]{i} += $_[1] },
  '-=' => sub {
