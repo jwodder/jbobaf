@@ -43,6 +43,9 @@ IDEAS FOR NEW FEATURES
  - in a numeric sequence - ':' and ';' to "pi'e"
  - before a number - '-' to "ni'u"?
  - before a number - '+' to "ma'u"?
+- Add an isCxC (is_CC? isInnerCC? isxCC?) function that tests for membership in
+  fadni (Then move everything in Vlatai.hs-boot and everything in Vlatai.hs
+  involving sets to Canti.hs and just re-export it from Vlatai.hs)
 
 JVACUX OPTIONS TO ADD
 - Common and/or documented variants:

@@ -1,3 +1,5 @@
+- Make sure everything is in line with the "BPFK Section: Formal Morphology"
+  page of the tiki
 - Problems with the current version of the word-splitting algorithm:
  - When Y's are allowed in {fu'ivla}, how should something like "acy'ygre",
    "ácy'ygrelo", or "cacy'ygre" be split?

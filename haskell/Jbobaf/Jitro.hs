@@ -14,7 +14,7 @@ module Jbobaf.Jitro (
   sreski, sreskicu
  ) where
  import Data.Array
- import Data.List (intersperse)
+ import Data.List (intercalate)
  import Data.Set (Set, member, notMember, fromList)
  import Control.Monad.Error
  import Control.Monad.Reader
@@ -256,5 +256,5 @@ module Jbobaf.Jitro (
   (SRE_other_error, ("Unknown error", "fange selsre"))]
 
  sreskicu :: Bool -> Selsrera -> String
- sreskicu jbo sre = concat (intersperse ": " $ sre_velski sre) ++ ": "
-  ++ (if jbo then snd else fst) (sreski ! (sre_klesi sre))
+ sreskicu jbo sre = intercalate ": " (sre_velski sre)
+  ++ ": " ++ (if jbo then snd else fst) (sreski ! sre_klesi sre)

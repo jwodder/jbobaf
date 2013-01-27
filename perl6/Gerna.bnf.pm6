@@ -69,7 +69,7 @@ grammar Lojban {
 
  regex tail_terms { <terms>? (<VAU><free>*)? }
 
- regex terms { <terms_1> + }
+ regex terms { <terms_1>+ }
 
  regex terms_1 { <terms_2> (<PEhE> <free>* <joik_jek> <terms_2>)* }
 

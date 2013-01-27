@@ -26,16 +26,19 @@ if (param()) {
 } else { print subquery(0) }
 print end_div;
 
-print p({-class => 'link'}, button(-id => 'suhi', -value => '+', -disabled => 1,
- -onClick => 'addSubquery()'), button(-id => 'vuhu', -value => '-', @fields > 1
- ? () : (-disabled => 1), -onClick => 'removeSubquery()'));
+print p({-class => 'link'},
+ button(-id => 'suhi', -value => '+', -disabled => 1,
+	-onClick => 'addSubquery()'),
+ button(-id => 'vuhu', -value => '-', -disabled => (@fields <= 1),
+	-onClick => 'removeSubquery()'));
 
 print p({-class => 'link'},
  checkbox(-name => 'gismu', -checked => 1, -label => 'Search gismu'),
- checkbox(-name => 'cmavo', -id => 'cmavo', -checked => 1, -label =>
- 'Search cmavo', -onClick => 'toggleCmavo()'),
- checkbox(-name => 'lujmaho', -id => 'lujmaho', -checked => 0, -label =>
- 'Search compound cmavo', !param() || param('cmavo') ? () : (-disabled => 1)));
+ checkbox(-name => 'cmavo', -id => 'cmavo', -checked => 1,
+	  -label => 'Search cmavo', -onClick => 'toggleCmavo()'),
+ checkbox(-name => 'lujmaho', -id => 'lujmaho', -checked => 0,
+	  -label => 'Search compound cmavo',
+	  -disabled => param() && !param('cmavo')));
 
 print p({-class => 'link'}, submit('mode', 'sisku'), submit('mode', 'cunso'));
 print endform;

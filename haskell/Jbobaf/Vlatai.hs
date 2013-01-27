@@ -25,14 +25,14 @@ module Jbobaf.Vlatai (
  import Jbobaf.Jitro
 
  isV, isVy, isC :: Char -> Bool
- isV = (`elem` "aeiou") . toLower
+ isV  = (`elem` "aeiou")  . toLower
  isVy = (`elem` "aeiouy") . toLower
- isC = (`elem` "bcdfgjklmnprstvxz") . toLower
+ isC  = (`elem` "bcdfgjklmnprstvxz") . toLower
 
  isVV :: String -> Bool
- isVV [v1, v2] = v1 `elem` "iuIU" && isVy v2
-  || v1 `elem` "aeoAEO" && toLower v2 == 'i'
-  || toLower v1 == 'a' && toLower v2 == 'u'
+ isVV [v1, v2] = v1 `elem` "iuIU"   && isVy v2
+	      || v1 `elem` "aeoAEO" && toLower v2 == 'i'
+	      || toLower v1 == 'a'  && toLower v2 == 'u'
  isVV _ = False
 
  isVVV :: String -> Bool

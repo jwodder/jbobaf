@@ -15,9 +15,10 @@ print start_div({-class => 'main'}), h2('Jvozba');
 print h4('Create a', tt('lujvo'));
 print start_form(-method => 'GET');
 print p({-class => 'link'}, b(tt('tanru:')), textfield('tanru', '', 32, 128));
-print p({-class => 'link'}, radio_group(-name => 'vlalei', -values =>
- ['brivla', 'pluja', 'cmene'], -default => 'brivla', -labels => {brivla =>
- 'brivla only', pluja => 'brivla and cmene', cmene => 'cmene only'}));
+print p({-class => 'link'}, radio_group(-name => 'vlalei',
+ -values => ['brivla', 'pluja', 'cmene'], -default => 'brivla',
+ -labels => {brivla => 'brivla only', pluja => 'brivla and cmene',
+	     cmene => 'cmene only'}));
 # Attempting to wrap the Lojban words in the radio button descriptions in tt()
 # doesn't work, as CGI.pm HTML-encodes all form data.
 print p({-class => 'link'}, submit(-label => 'zbasu'));
