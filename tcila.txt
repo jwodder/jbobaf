@@ -1,5 +1,5 @@
 The current general goal is to implement various functions, types, values, et
-cetera in C/C++, Haskell, and Perl for performing the following tasks:
+cetera in Haskell & Perl (et alii?) for performing the following tasks:
  - Lojban morphology:
   - determining whether a given string is a valid {gismu}, {lujvo}, {fu'ivla},
     {cmavo}, or {cmene}

@@ -48,7 +48,7 @@ module Jbobaf.Canti where
 	 else fla (pos+4) False xs
 	fla pos _ (c:xs) = fla (pos+1) (isC c) xs
 
- -- |Splits a word into \"syllables\" of the form \/^(C+|[',])?V+$\/.  Note
+ -- |Splits a word into \"syllables\" of the form @/^(C+|[',])?V+$/@.  Note
  -- that this is for internal use only and is not suitable as an actual
  -- syllabication routine.
  syllabicate :: String -> [String]
